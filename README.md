@@ -78,9 +78,9 @@ Los usuarios pueden interactuar con los artículos mediante:
 Los visitantes pueden explorar los artículos desde la página principal del sistema.
 
 ---
-
 # 📂 Estructura del Proyecto
 
+```text
 Hydron/
 │
 ├── css/              # Archivos de estilos
@@ -95,8 +95,8 @@ Hydron/
 ├── dashboard.php     # Panel de administración
 │
 └── README.md
+```
 ---
-
 # 🧪 Tecnologías Utilizadas
 
 El sistema fue desarrollado utilizando tecnologías de desarrollo web:
@@ -125,17 +125,13 @@ El sistema fue desarrollado utilizando tecnologías de desarrollo web:
 
 # 👥 Equipo de Desarrollo
 
-
-
-
-
 | Integrante | Rol | Contacto |
-|-------------|-------------|
-| Delgado Robles Braulio Emiliano| Full stack | bdelgado2@ucol.mx |
-| Figueroa Huerta Isai Shalom | Full stack | ifigueroa7@ucol.mx |
-| Ibarra Cortés Mía Mariana| Full stack | mibarra7@ucol.mx |
-| Salgado Zepeda David | Full stack | dsalgado4@ucol.mx |
-| Segura Paulino Isis Alejandra| Full stack | isegura@ucol.mx |
+|------------|-----|----------|
+| Delgado Robles Braulio Emiliano | Full Stack | bdelgado2@ucol.mx |
+| Figueroa Huerta Isai Shalom | Full Stack | ifigueroa7@ucol.mx |
+| Ibarra Cortés Mía Mariana | Full Stack | mibarra7@ucol.mx |
+| Salgado Zepeda David | Full Stack | dsalgado4@ucol.mx |
+| Segura Paulino Isis Alejandra | Full Stack | isegura@ucol.mx |
 
 ---
 
