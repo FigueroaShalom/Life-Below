@@ -254,6 +254,7 @@ $selected_post = $_GET['post'] ?? '';
                 <!-- Botón para login (si no está logueado) -->
                 <?php if (!isset($_SESSION['user']) && $current_section !== 'login'): ?>
                     <a href="?section=login" class="login-btn">LOGIN</a>
+                     <a href="?section=register" class="login-btn">REGISTER</a>
                 <?php endif; ?>
             </div>
         </nav>
@@ -614,19 +615,28 @@ $selected_post = $_GET['post'] ?? '';
             <?php if ($current_section === 'login' && !isset($_SESSION['user'])): ?>
                 <div class="login-container">
                     <div class="login-box">
-                        <h2> Acceso para exploradores</h2>
-                        <form method="POST">
+                        <h2>Acceso para exploradores</h2>
+
+                        <?php
+                        if(isset($error)){
+                            echo "<p style='color:red;'>$error</p>";
+                        }
+                        ?>
+
+                        <form action="database/login.php" method="POST">
                             <div class="form-group">
                                 <label>Usuario:</label>
                                 <input type="text" name="username" required>
                             </div>
+
                             <div class="form-group">
                                 <label>Contraseña:</label>
                                 <input type="password" name="password" required>
                             </div>
+
                             <button type="submit" name="login" class="btn">Ingresar</button>
                         </form>
-                        <p class="login-hint">Usuario: marino | Contraseña: oceano123</p>
+
                     </div>
                 </div>
             <?php endif; ?>
@@ -730,6 +740,35 @@ $selected_post = $_GET['post'] ?? '';
                         <button type="button" onclick="hideEditForm()" class="btn-secondary">Cancelar</button>
                     </form>
                 </div>
+            // Seccion de registro
+            <?php endif; ?>
+            <?php if ($current_section === 'register'): ?>
+            <div class="login-container">
+                <div class="login-box">
+                    <h2>Crear cuenta</h2>
+
+                    <form action="../database/guardado.php" method="POST">
+
+                        <div class="form-group">
+                            <label>Usuario:</label>
+                            <input type="text" name="user" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Email:</label>
+                            <input type="email" name="email" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Contraseña:</label>
+                            <input type="password" name="password" required>
+                        </div>
+
+                        <button type="submit" class="btn">Registrarse</button>
+
+                    </form>
+                </div>
+            </div>
             <?php endif; ?>
         </div>
     </main>
