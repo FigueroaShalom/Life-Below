@@ -138,25 +138,25 @@ El sistema fue desarrollado utilizando tecnologías de desarrollo web:
 # 🚀 Lista de Actividades
 
 ### Fase 1: Planificación y Protocolo 
-- [x] [cite_start]Definición del problema y justificación [cite: 412, 423]
-- [x] [cite_start]Establecimiento de objetivos e hipótesis [cite: 432, 435]
-- [x] [cite_start]Elaboración del Marco Teórico [cite: 437]
-- [x] [cite_start]Diseño de Mockups iniciales [cite: 478]
-- [x] [cite_start]Creación del cronograma y presupuesto [cite: 475, 477]
+- [x] Definición del problema y justificación
+- [x] Establecimiento de objetivos e hipótesis
+- [x] Elaboración del Marco Teórico 
+- [x] Diseño de Mockups iniciales 
+- [x] Creación del cronograma y presupuesto
 
 ### Fase 2: Diseño y Base de Datos 
-- [x] [cite_start]Diseño de la arquitectura de la base de datos (Modelo E-R) [cite: 493]
-- [cite_start][/] Creación de tablas en MySQL (Usuarios, Roles, Artículos) [cite: 494]
-- [ ] [cite_start]Diseño de interfaces finales (Dashboard Administrador/Editor/Autor) [cite: 479]
+- [x] Diseño de la arquitectura de la base de datos  
+- [ ]Creación de tablas en MySQL (Usuarios, Roles, Artículos) 
+- [ ] Diseño de interfaces finales (Dashboard Administrador/Editor/Autor)
 
 ### Fase 3: Desarrollo (En Proceso) 🏗️
-- [x] [cite_start]Configuración del entorno local (XAMPP) [cite: 491]
-- [cite_start][/] Implementación de sistema de Login y Registro con PHP [cite: 468]
-- [ ] [cite_start]Maquetación de la página principal (Home) con HTML/CSS [cite: 470, 471]
-- [ ] [cite_start]Conexión dinámica PHP-MySQL para la gestión de artículos [cite: 469]
+- [x] Configuración del entorno local (XAMPP)
+- [ ]Implementación de sistema de Login y Registro con PHP 
+- [ ] Maquetación de la página principal (Home) con HTML/CSS 
+- [ ] Conexión dinámica PHP-MySQL para la gestión de artículos
 
 ### Fase 4: Pruebas y Entrega Final 
-- [ ] [cite_start]Pruebas de usabilidad y roles de usuario [cite: 483]
+- [ ] Pruebas de usabilidad y roles de usuario
 - [ ] Depuración de errores en el backend
 - [ ] Entrega final y documentación
 
