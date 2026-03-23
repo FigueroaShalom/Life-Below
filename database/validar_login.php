@@ -7,14 +7,14 @@ $password = trim($_POST['password'] ?? '');
 
 if (empty($user) || empty($password)) { echo "error_vacio"; exit(); }
 
-$stmt = $conn->prepare("SELECT id, user, contraseña FROM usuarios WHERE user = ?");
+$stmt = $conn->prepare("SELECT id, user, password FROM usuarios WHERE user = ?");
 $stmt->bind_param("s", $user);
 $stmt->execute();
 $result = $stmt->get_result();
 
 if ($result->num_rows > 0) {
     $fila = $result->fetch_assoc();
-    if (password_verify($password, $fila['contraseña'])) {
+    if (password_verify($password, $fila['passwordAA'])) {
         $_SESSION['user'] = $fila['user'];
         $_SESSION['user_id'] = $fila['id']; // ID para las relaciones de la BD
         echo "ok";

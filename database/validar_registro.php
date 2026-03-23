@@ -62,7 +62,7 @@ elseif ($action === "registro") {
     $passwordHash = password_hash($password, PASSWORD_DEFAULT);
 
     // INSERTAR
-    $sql = "INSERT INTO usuarios (user, contraseña, email, fecha_de_registro)
+    $sql = "INSERT INTO usuarios (user, password, email, fecha_de_registro)
             VALUES ('$user','$passwordHash','$email',NOW())";
 
     if ($conn->query($sql)) {
