@@ -6,37 +6,59 @@ $current_section = $_GET['section'] ?? 'inicio';
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><?php echo SITE_NAME; ?> - Aprendiendo sobre la vida marina</title>
+    <title><?php echo SITE_NAME; ?> - Vida Marina</title>
     <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
 </head>
 <body>
-    <header>
-        <div class="nav-container">
-            <div class="logo">
-             <a href="index.php?section=inicio">
-             <img src="uploads/logo.png"alt="<?php echo SITE_NAME; ?>" class="site-logo">
-             </a>
-            </div>
 
-            
-            <nav>
-                <ul class="nav-menu">
-                    <li><a href="index.php?section=inicio" class="<?php echo $current_section === 'inicio' ? 'active' : ''; ?>"> Inicio</a></li>
-                    <li><a href="index.php?section=watch" class="<?php echo $current_section === 'watch' ? 'active' : ''; ?>">▶ WATCH</a></li>
-                    <li><a href="index.php?section=galeria" class="<?php echo $current_section === 'galeria' ? 'active' : ''; ?>"> GALERÍA</a></li>
-                    <li><a href="index.php?section=noticias" class="<?php echo $current_section === 'noticias' ? 'active' : ''; ?>"> NOTICIAS</a></li>
-                    <li><a href="index.php?section=articulos" class="<?php echo $current_section === 'articulos' ? 'active' : ''; ?>">ARTÍCULOS</a></li>
-                    
-                    <?php if (isset($_SESSION['user'])): ?>
-                        <li><a href="index.php?section=dashboard" class="<?php echo $current_section === 'dashboard' ? 'active' : ''; ?>">Dashboard</a></li>
-                        <li><a href="index.php?logout=1">Salir</a></li>
-                    <?php else: ?>
-                        <li><a href="index.php?section=login" class="<?php echo $current_section === 'login' ? 'active' : ''; ?>">🔑 Iniciar Sesión</a></li>
-                    <?php endif; ?>
-                </ul>
-            </nav>
+<header class="hy-header">
+    <div class="hy-nav-inner">
+        <a href="index.php?section=inicio" class="hy-logo">
+            <img src="uploads/logo.png" alt="<?php echo SITE_NAME; ?>" class="hy-logo-img">
+        </a>
+
+        <nav class="hy-nav">
+            <a href="index.php?section=inicio"   class="hy-nav-link <?php echo $current_section==='inicio'   ? 'hy-active':'' ?>">Inicio</a>
+            <a href="index.php?section=watch"    class="hy-nav-link <?php echo $current_section==='watch'    ? 'hy-active':'' ?>">▶ Watch</a>
+            <a href="index.php?section=galeria"  class="hy-nav-link <?php echo $current_section==='galeria'  ? 'hy-active':'' ?>">Galería</a>
+            <a href="index.php?section=noticias" class="hy-nav-link <?php echo $current_section==='noticias' ? 'hy-active':'' ?>">Noticias</a>
+            <a href="index.php?section=articulos"class="hy-nav-link <?php echo $current_section==='articulos'? 'hy-active':'' ?>">Artículos</a>
+        </nav>
+
+        <div class="hy-nav-actions">
+            <?php if (isset($_SESSION['user'])): ?>
+                <span class="hy-user-chip">👤 <?php echo htmlspecialchars($_SESSION['user']); ?></span>
+                <a href="index.php?section=dashboard" class="hy-btn-outline <?php echo $current_section==='dashboard'?'hy-active':'' ?>">Dashboard</a>
+                <a href="index.php?logout=1" class="hy-btn-solid">Salir</a>
+            <?php else: ?>
+                <a href="index.php?section=login"    class="hy-btn-outline">Iniciar sesión</a>
+                <a href="index.php?section=registro" class="hy-btn-solid">Regístrate</a>
+            <?php endif; ?>
         </div>
-    </header>
-    
-    <main>
-        <div class="container">
+
+        <!-- Hamburger mobile -->
+        <button class="hy-hamburger" id="hyHamburger" aria-label="Menú">
+            <span></span><span></span><span></span>
+        </button>
+    </div>
+
+    <!-- Mobile menu -->
+    <div class="hy-mobile-menu" id="hyMobileMenu">
+        <a href="index.php?section=inicio">Inicio</a>
+        <a href="index.php?section=watch">▶ Watch</a>
+        <a href="index.php?section=galeria">Galería</a>
+        <a href="index.php?section=noticias">Noticias</a>
+        <a href="index.php?section=articulos">Artículos</a>
+        <?php if (isset($_SESSION['user'])): ?>
+            <a href="index.php?section=dashboard">Dashboard</a>
+            <a href="index.php?logout=1">Salir</a>
+        <?php else: ?>
+            <a href="index.php?section=login">Iniciar sesión</a>
+            <a href="index.php?section=registro">Regístrate</a>
+        <?php endif; ?>
+    </div>
+</header>
+
+<main class="hy-main">
