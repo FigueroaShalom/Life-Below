@@ -1,15 +1,15 @@
-# 🌊 HYDRON
+# 🌊 LIFE BELOW
 ### Un mar de ideas, un punto entre la ciencia y la sociedad
 
 ---
 
-# 📖 ¿Qué es Hydron?
+# 📖 ¿Qué es Life Below?
 
-**Hydron** es una plataforma web diseñada para **difundir información relacionada con la conservación de los océanos y los ecosistemas marinos**, alineándose con el **Objetivo de Desarrollo Sostenible 14 (ODS 14): Vida Submarina**.
+**Life Below** es una plataforma web diseñada para **difundir información relacionada con la conservación de los océanos y los ecosistemas marinos**, alineándose con el **Objetivo de Desarrollo Sostenible 14 (ODS 14): Vida Submarina**.
 
 El sistema permite a los usuarios **consultar artículos, visualizar contenido educativo y participar en la difusión de información ambiental**, mientras que los administradores y editores pueden **gestionar y supervisar las publicaciones dentro de la plataforma**.
 
-Hydron busca **acercar el conocimiento científico y ambiental a la sociedad**, facilitando el acceso a información clara, organizada y accesible sobre los desafíos que enfrentan los océanos.
+Life Below busca **acercar el conocimiento científico y ambiental a la sociedad**, facilitando el acceso a información clara, organizada y accesible sobre los desafíos que enfrentan los océanos.
 
 ---
 
@@ -17,7 +17,7 @@ Hydron busca **acercar el conocimiento científico y ambiental a la sociedad**, 
 
 El **ODS 14** tiene como objetivo **conservar y utilizar de manera sostenible los océanos, mares y recursos marinos**.
 
-Hydron contribuye a este objetivo mediante:
+Life Below contribuye a este objetivo mediante:
 
 - Difusión de información sobre problemas ambientales marinos.
 - Publicación de contenido educativo sobre conservación oceánica.
@@ -51,13 +51,13 @@ La contaminación y degradación de los océanos es un problema que afecta a tod
 
 Debido a esta situación, muchas personas no tienen acceso a información clara que les permita entender los problemas que afectan a los mares y cómo pueden contribuir a su cuidado.
 
-Por esta razón, el proyecto **Hydron** propone el desarrollo de una plataforma web que traduzca información científica sobre el océano a un lenguaje más simple, accesible y visual, permitiendo que la sociedad pueda comprender mejor estos temas y fomentar una mayor conciencia ambiental.
+Por esta razón, el proyecto **Life Below** propone el desarrollo de una plataforma web que traduzca información científica sobre el océano a un lenguaje más simple, accesible y visual, permitiendo que la sociedad pueda comprender mejor estos temas y fomentar una mayor conciencia ambiental.
 
 ---
 
 # 🧩 Funcionalidades del Sistema
 
-La plataforma Hydron incluye diversas funcionalidades orientadas a la gestión y visualización de información.
+La plataforma Life Below incluye diversas funcionalidades orientadas a la gestión y visualización de información.
 
 ### 👤 Gestión de usuarios
 Permite registrar y administrar usuarios dentro del sistema.
@@ -81,7 +81,7 @@ Los visitantes pueden explorar los artículos desde la página principal del sis
 # 📂 Estructura del Proyecto
 
 ```text
-Hydron/
+Life-Below/
 │
 ├── css/              # Archivos de estilos
 ├── js/               # Scripts de JavaScript
@@ -134,6 +134,49 @@ El sistema fue desarrollado utilizando tecnologías de desarrollo web:
 | Segura Paulino Isis Alejandra | Full Stack | isegura@ucol.mx |
 
 ---
+
+# 🚀 Lista de Actividades
+
+### Fase 1: Planificación y Protocolo 
+- [x] Definición del problema y justificación
+- [x] Establecimiento de objetivos e hipótesis
+- [x] Elaboración del Marco Teórico 
+- [x] Diseño de Mockups iniciales 
+- [x] Creación del cronograma y presupuesto
+
+### Fase 2: Infraestructura y Módulos Base 🏗️
+- [x] **Base de Datos y Conectividad**
+    - [x] Creación de tablas y relaciones en MySQL.
+    - [x] Configuración de conexión PHP-MySQL.
+- [x] **Sistema de Acceso**
+    - [x] Desarrollo de Login funcional.
+    - [x] Implementación de redirección según rol (Admin/Editor/Autor).
+    - [x] Gestión y mejora de sesiones de usuario.
+- [x] **Módulos de Contenido**
+    - [x] Desarrollo del Dashboard de Autor
+    - [x] Maquetación del módulo **Life Below Watch**
+    - [x] Implementación de la Galería multimedia.
+    - [x] Desarrollo del módulo de Noticias.
+
+### Fase 3: Funcionalidades Avanzadas, Seguridad y Cierre 🔒
+- [x] **Gestión Administrativa**
+    - [x] Desarrollo de Dashboards para Administrador y Editor.
+    - [x] Implementación del CRUD de artículos y tesis.
+- [ ] **Servicios Interactivos**
+    - [ ] Desarrollo de mapa dinámico y servicios de relación del mar.
+    - [ ] Creación del **Ocean Impact Simulator**.
+    - [ ] Integración con visualización dinámica de datos.
+- [ ] **Seguridad y Optimización**
+    - [ ] Protección contra inyección SQL y validación de formularios.
+    - [ ] Protección avanzada de rutas y sesiones.
+    - [ ] Optimización de consultas SQL y limpieza de código.
+- [ ] **Interfaz y UX**
+    - [ ] Aplicación completa de CSS y diseño responsivo.
+    - [ ] Mejora visual de los dashboards y navegación.
+- [ ] **Cierre del Proyecto**
+    - [ ] Pruebas finales por roles y corrección de bugs.
+    - [ ] Elaboración de documentación técnica y manual de usuario.
+    - [ ] Preparación de la presentación final.
 
 # 🚧 Estado del Proyecto
 

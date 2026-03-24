@@ -14,7 +14,7 @@ $result = $stmt->get_result();
 
 if ($result->num_rows > 0) {
     $fila = $result->fetch_assoc();
-    if (password_verify($password, $fila['passwordAA'])) {
+    if (password_verify($password, $fila['password'])) {
         $_SESSION['user'] = $fila['user'];
         $_SESSION['user_id'] = $fila['id']; // ID para las relaciones de la BD
         echo "ok";
