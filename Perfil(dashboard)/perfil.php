@@ -2,7 +2,7 @@
 session_start();
 
 if(!isset($_SESSION['id'])){
-    header("Location: login.php");
+    header("Location: ../index.php");
     exit();
 }
 
@@ -10,7 +10,6 @@ if(!isset($_SESSION['id'])){
 header("Cache-Control: no-store, no-cache, must-revalidate, max-age=0");
 header("Pragma: no-cache");
 
-// 🔥 CAMBIO AQUÍ
 $user = $_SESSION['user'];
 $email = $_SESSION['email'];
 $rol = $_SESSION['rol'];
@@ -24,76 +23,168 @@ $rol = $_SESSION['rol'];
 
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 
+<!-- TU CSS HYDRON -->
+<link rel="stylesheet" href="../style.css">
+
 <style>
-body{background:#f4f6f9;}
-.sidebar{width:250px;background:#0d6efd;color:white;min-height:100vh;}
-.usuario{background:#0b5ed7;padding:15px;border-radius:10px;text-align:center;margin-bottom:20px;}
-.menu .btn{width:100%;margin-bottom:10px;}
-.contenido{flex:1;padding:30px;background:#f8f9fa;}
+/* Ajustes específicos dashboard HYDRON */
+.hy-dashboard {
+    display: flex;
+    min-height: 100vh;
+}
+
+.hy-sidebar {
+    width: 260px;
+    background: var(--navy);
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.hy-user-box {
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: var(--radius);
+    padding: 1.2rem;
+    text-align: center;
+}
+
+.hy-user-box img {
+    width: 70px;
+    border-radius: 50%;
+    margin-bottom: .6rem;
+}
+
+.hy-user-name {
+    font-weight: 800;
+    color: #fff;
+}
+
+.hy-user-email {
+    font-size: .8rem;
+    color: rgba(255,255,255,0.6);
+}
+
+.hy-user-role {
+    margin-top: .4rem;
+    font-size: .75rem;
+    background: rgba(0,200,240,0.15);
+    color: var(--cyan);
+    padding: 3px 10px;
+    border-radius: 50px;
+    display: inline-block;
+}
+
+.hy-menu {
+    margin-top: 1rem;
+}
+
+.hy-menu button,
+.hy-menu a {
+    width: 100%;
+    margin-bottom: .5rem;
+}
+
+.hy-menu button {
+    border: none;
+    border-radius: 50px;
+    padding: 10px;
+    font-weight: 700;
+    background: rgba(255,255,255,0.08);
+    color: #fff;
+    transition: all .2s;
+}
+
+.hy-menu button:hover {
+    background: var(--ocean);
+}
+
+.hy-menu .admin {
+    background: rgba(255,180,0,0.15);
+    color: #ffc107;
+}
+
+.hy-menu .logout {
+    background: rgba(220,50,50,0.15);
+    color: #ff6b6b;
+}
+
+.hy-content {
+    flex: 1;
+    padding: 2rem;
+    background: var(--off-white);
+}
+
+.hy-content-box {
+    background: #fff;
+    border-radius: var(--radius);
+    padding: 2rem;
+    box-shadow: var(--shadow);
+    border: 1.5px solid var(--border);
+}
 </style>
 </head>
 
 <body>
 
-<div class="d-flex">
+<div class="hy-dashboard">
 
 <!-- SIDEBAR -->
-<div class="sidebar p-3">
+<div class="hy-sidebar">
 
-<div class="usuario">
-<img src="https://cdn-icons-png.flaticon.com/512/149/149071.png" width="70"><br>
+<div class="hy-user-box">
+<img src="https://cdn-icons-png.flaticon.com/512/149/149071.png">
 
-<!-- 🔥 CAMBIO -->
-<strong><?php echo $user; ?></strong><br>
-<small><?php echo $email; ?></small><br>
-
-<?php echo ucfirst($rol); ?>
+<div class="hy-user-name"><?php echo $user; ?></div>
+<div class="hy-user-email"><?php echo $email; ?></div>
+<div class="hy-user-role"><?php echo ucfirst($rol); ?></div>
 </div>
 
-<div class="menu">
+<div class="hy-menu">
 
 <?php if($rol == "administrador"){ ?>
-<button class="btn btn-light" onclick="cargar('crear_Contenido')">Crear Contenido</button>
-<button class="btn btn-light" onclick="cargar('mis_Publicaciones')">Mis Publiciones</button>
-<button class="btn btn-light" onclick="cargar('mis_borradores')">Mis Borradores</button>
-<button class="btn btn-light" onclick="cargar('mis_publicacionePendientes')">Mis publicaciones Pendientes</button>
-<button class="btn btn-light" onclick="cargar('publicaciones_Revision')">Publicaciones en Revisión</button>
-<button class="btn btn-warning" onclick="cargar('administrar_Usuarios')">Administrar usuarios</button>
-<button class="btn btn-warning" onclick="cargar('crear_Usuarios')">Crear Usuario</button>
+<button onclick="cargar('crear_Contenido')">Crear Contenido</button>
+<button onclick="cargar('mis_Publicaciones')">Mis Publicaciones</button>
+<button onclick="cargar('mis_borradores')">Mis Borradores</button>
+<button onclick="cargar('mis_publicacionePendientes')">Pendientes</button>
+<button onclick="cargar('publicaciones_Revision')">En revisión</button>
+<button class="admin" onclick="cargar('administrar_Usuarios')">Administrar usuarios</button>
+<button class="admin" onclick="cargar('crear_Usuarios')">Crear Usuario</button>
 
 <?php } elseif($rol == "editor"){ ?>
-<button class="btn btn-light" onclick="cargar('crear_Contenido')">Crear Contenido</button>
-<button class="btn btn-light" onclick="cargar('mis_Publicaciones')">Mis Publiciones</button>
-<button class="btn btn-light" onclick="cargar('mis_borradores')">Mis Borradores</button>
-<button class="btn btn-light" onclick="cargar('mis_publicacionePendientes')">Mis publicaciones Pendientes</button>
-<button class="btn btn-light" onclick="cargar('publicaciones_Revision')">Publicaciones en Revisión</button>
+<button onclick="cargar('crear_Contenido')">Crear Contenido</button>
+<button onclick="cargar('mis_Publicaciones')">Mis Publicaciones</button>
+<button onclick="cargar('mis_borradores')">Mis Borradores</button>
+<button onclick="cargar('mis_publicacionePendientes')">Pendientes</button>
+<button onclick="cargar('publicaciones_Revision')">En revisión</button>
 
 <?php } elseif($rol == "autor"){ ?>
-<button class="btn btn-light" onclick="cargar('crear_Contenido')">Crear Contenido</button>
-<button class="btn btn-light" onclick="cargar('mis_Publicaciones')">Mis Publiciones</button>
-<button class="btn btn-light" onclick="cargar('mis_borradores')">Mis Borradores</button>
-<button class="btn btn-light" onclick="cargar('mis_publicacionePendientes')">Mis publicaciones Pendientes</button>
+<button onclick="cargar('crear_Contenido')">Crear Contenido</button>
+<button onclick="cargar('mis_Publicaciones')">Mis Publicaciones</button>
+<button onclick="cargar('mis_borradores')">Mis Borradores</button>
+<button onclick="cargar('mis_publicacionePendientes')">Pendientes</button>
 
 <?php } else { ?>
-<p class="text-center">Sin permisos</p>
+<p style="color:white;text-align:center;">Sin permisos</p>
 <?php } ?>
 
-<a href="logout.php" class="btn btn-danger">Cerrar sesión</a>
+<a href="logout.php" class="logout btn">Cerrar sesión</a>
 
 </div>
 </div>
 
 <!-- CONTENIDO -->
-<div class="contenido" id="contenido">
+<div class="hy-content">
+<div class="hy-content-box" id="contenido">
 <h4>Bienvenido <?php echo $user; ?> 👋</h4>
 <p>Selecciona una opción del menú</p>
+</div>
 </div>
 
 </div>
 
 <script>
-
-// cargar contenido sin recargar la pagina
 function cargar(modulo){
     fetch(modulo + ".php")
     .then(res => res.text())
@@ -102,12 +193,11 @@ function cargar(modulo){
     });
 }
 
-// anti boton atras
+// anti botón atrás
 window.history.forward();
 window.onpageshow = function(e){
     if(e.persisted) location.reload();
 };
-
 </script>
 
 </body>

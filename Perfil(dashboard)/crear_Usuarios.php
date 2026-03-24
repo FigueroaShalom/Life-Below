@@ -39,6 +39,7 @@ if(!isset($_SESSION['id']) || $_SESSION['rol'] != "administrador"){
 <option value="administrador">Administrador</option>
 <option value="editor">Editor</option>
 <option value="autor">Autor</option>
+<option value="autor">Usuario</option>
 </select>
 </div>
 
