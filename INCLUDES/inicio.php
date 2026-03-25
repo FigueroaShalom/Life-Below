@@ -22,7 +22,7 @@ $carousel_images = [
 <section class="hy-hero">
     <div class="hy-hero-bg"></div>
     <div class="hy-hero-content">
-        <span class="hy-hero-tag">🌊 ODS 14 · Vida Submarina</span>
+        <span class="hy-hero-tag">🌊 ODS 14 · Vida Submarina </span>
         <h1 class="hy-hero-title">
             Un mar de ideas,<br>un punto entre la<br>
             <span class="hy-hero-accent">ciencia y la sociedad</span>
