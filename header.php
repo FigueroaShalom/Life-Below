@@ -30,7 +30,7 @@ $current_section = $_GET['section'] ?? 'inicio';
         <div class="hy-nav-actions">
             <?php if (isset($_SESSION['user'])): ?>
                 <span class="hy-user-chip">👤 <?php echo htmlspecialchars($_SESSION['user']); ?></span>
-                <a href="index.php?section=dashboard" class="hy-btn-outline <?php echo $current_section==='dashboard'?'hy-active':'' ?>">Dashboard</a>
+                <a href="Perfil(dashboard)/perfil.php" class="hy-btn-outline <?php echo $current_section==='dashboard'?'hy-active':'' ?>">Dashboard</a>
                 <a href="index.php?logout=1" class="hy-btn-solid">Salir</a>
             <?php else: ?>
                 <a href="index.php?section=login"    class="hy-btn-outline">Iniciar sesión</a>
