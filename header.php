@@ -22,6 +22,7 @@ $current_section = $_GET['section'] ?? 'inicio';
         <nav class="hy-nav">
             <a href="index.php?section=inicio"   class="hy-nav-link <?php echo $current_section==='inicio'   ? 'hy-active':'' ?>">Inicio</a>
             <a href="index.php?section=watch"    class="hy-nav-link <?php echo $current_section==='watch'    ? 'hy-active':'' ?>">▶ Watch</a>
+            <a href="index.php?section=mapa_dinamico" class="hy-nav-link <?php echo $current_section==='mapa_dinamico' ? 'hy-active':'' ?>">🗺️ Mapa</a>
             <a href="index.php?section=galeria"  class="hy-nav-link <?php echo $current_section==='galeria'  ? 'hy-active':'' ?>">Galería</a>
             <a href="index.php?section=noticias" class="hy-nav-link <?php echo $current_section==='noticias' ? 'hy-active':'' ?>">Noticias</a>
             <a href="index.php?section=articulos"class="hy-nav-link <?php echo $current_section==='articulos'? 'hy-active':'' ?>">Artículos</a>
@@ -48,6 +49,7 @@ $current_section = $_GET['section'] ?? 'inicio';
     <div class="hy-mobile-menu" id="hyMobileMenu">
         <a href="index.php?section=inicio">Inicio</a>
         <a href="index.php?section=watch">▶ Watch</a>
+        <a href="index.php?section=mapa_dinamico">🗺️ Mapa</a>
         <a href="index.php?section=galeria">Galería</a>
         <a href="index.php?section=noticias">Noticias</a>
         <a href="index.php?section=articulos">Artículos</a>

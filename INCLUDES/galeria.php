@@ -11,14 +11,11 @@ $per_page  = 4;
 
 // Taxonomías de iNaturalist para vida marina
 $categorias = [
-    ''           => ['label' => 'Todas',        'icon' => '🌊', 'taxon_id' => 1],
-    'peces'      => ['label' => 'Peces',         'icon' => '🐟', 'taxon_id' => 47178],
-    'mamiferos'  => ['label' => 'Mamíferos',     'icon' => '🐬', 'taxon_id' => 40151],
-    'moluscos'   => ['label' => 'Moluscos',      'icon' => '🐙', 'taxon_id' => 47115],
-    'crustaceos' => ['label' => 'Crustáceos',    'icon' => '🦀', 'taxon_id' => 85493],
-    'corales'    => ['label' => 'Corales',       'icon' => '🪸', 'taxon_id' => 57774],
-    'tortugas'   => ['label' => 'Tortugas',      'icon' => '🐢', 'taxon_id' => 26487],
-    'tiburones'  => ['label' => 'Tiburones',     'icon' => '🦈', 'taxon_id' => 47273],
+    'peces'      => ['label' => 'Peces',      'icon' => '🐟', 'taxon_id' => 47178],
+    'moluscos'   => ['label' => 'Moluscos',   'icon' => '🐙', 'taxon_id' => 47115],
+    'crustaceos' => ['label' => 'Crustáceos', 'icon' => '🦀', 'taxon_id' => 85493],
+    'corales'    => ['label' => 'Corales',    'icon' => '🪸', 'taxon_id' => 57774],
+    'tiburones'  => ['label' => 'Tiburones',  'icon' => '🦈', 'taxon_id' => 47273],
 ];
 
 // Función para llamar a iNaturalist
@@ -108,7 +105,7 @@ if ($categoria && isset($categorias[$categoria])) {
     $params['taxon_id'] = $categorias[$categoria]['taxon_id'];
 } else {
     // Sin categoría: buscar en taxa marinos principales
-    $params['taxon_id'] = '47178,40151,47115,85493,57774,26487,47273';
+    $params['taxon_id'] = '47178,47115,85493,57774,47273';
 }
 
 // Búsqueda por texto
@@ -126,7 +123,12 @@ $total_pages = ceil(min($total, 500) / $per_page); // iNaturalist max 500
 ?>
 
 <style>
-.hy-gallery-wrap { max-width: 1280px; margin: 0 auto; padding: 3rem 2rem; }
+.hy-gallery-wrap { 
+    width: 100%;
+    max-width: 100%;
+    margin: 0;
+    padding: 2rem 2rem;
+}
 
 /* Header */
 .hy-gallery-header {
@@ -197,25 +199,46 @@ $total_pages = ceil(min($total, 500) / $per_page); // iNaturalist max 500
 
 /* Grid */
 .hy-gallery-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    gap: 1.2rem;
+    column-count: 5;
+    column-gap: 1rem;
+    width: 100%;
 }
+
+@media (max-width: 1400px) {
+    .hy-gallery-grid { column-count: 4; }
+}
+
+@media (max-width: 1100px) {
+    .hy-gallery-grid { column-count: 3; }
+}
+
+@media (max-width: 768px) {
+    .hy-gallery-grid { column-count: 2; }
+}
+
+@media (max-width: 500px) {
+    .hy-gallery-grid { column-count: 1; }
+}
+
 .hy-gallery-card {
-    background: #fff; border-radius: 16px; overflow: hidden;
-    box-shadow: 0 4px 20px rgba(0,40,80,0.1);
-    border: 1.5px solid rgba(0,120,190,0.08);
-    transition: transform .25s, box-shadow .25s;
-    position: relative;
+    display: inline-block;
+    width: 100%;
+    margin-bottom: 1rem;
+    break-inside: avoid;
 }
+
 .hy-gallery-card:hover { transform: translateY(-5px); box-shadow: 0 12px 40px rgba(0,40,80,0.16); }
 
 .hy-gallery-card-img-wrap {
-    position: relative; height: 210px; overflow: hidden; background: #001828;
+    position: relative;
+    overflow: hidden;
+    background: #001828;
 }
 .hy-gallery-card-img {
-    width: 100%; height: 100%; object-fit: cover;
-    transition: transform .4s ease;
+    width: 100%;
+    height: auto;
+    object-fit: cover;
+    border-radius: 16px 16px 0 0;
 }
 .hy-gallery-card:hover .hy-gallery-card-img { transform: scale(1.06); }
 
