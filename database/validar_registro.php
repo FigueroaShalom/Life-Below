@@ -1,7 +1,6 @@
 <?php
 include("Conexion_base.php");
 
-// 🧠 SABER QUÉ HACER
 $action = $_POST['action'] ?? '';
 
 // 🔍 VALIDAR USUARIO
@@ -9,13 +8,12 @@ if ($action === "validar_user") {
 
     $user = trim($_POST['user']);
 
-    $result = $conn->query("SELECT id FROM usuarios WHERE user='$user'");
+    $stmt = $conn->prepare("SELECT id FROM usuarios WHERE user = ?");
+    $stmt->bind_param("s", $user);
+    $stmt->execute();
+    $result = $stmt->get_result();
 
-    if ($result->num_rows > 0) {
-        echo "existe";
-    } else {
-        echo "disponible";
-    }
+    echo ($result->num_rows > 0) ? "existe" : "disponible";
 }
 
 // 🔍 VALIDAR EMAIL
@@ -23,13 +21,12 @@ elseif ($action === "validar_email") {
 
     $email = trim($_POST['email']);
 
-    $result = $conn->query("SELECT id FROM usuarios WHERE email='$email'");
+    $stmt = $conn->prepare("SELECT id FROM usuarios WHERE email = ?");
+    $stmt->bind_param("s", $email);
+    $stmt->execute();
+    $result = $stmt->get_result();
 
-    if ($result->num_rows > 0) {
-        echo "existe";
-    } else {
-        echo "disponible";
-    }
+    echo ($result->num_rows > 0) ? "existe" : "disponible";
 }
 
 // 🚀 REGISTRO
@@ -44,28 +41,35 @@ elseif ($action === "registro") {
         exit();
     }
 
-    // VALIDAR USER
-    $checkUser = $conn->query("SELECT id FROM usuarios WHERE user='$user'");
-    if ($checkUser->num_rows > 0) {
+    // 🔍 VALIDAR USER
+    $stmt = $conn->prepare("SELECT id FROM usuarios WHERE user = ?");
+    $stmt->bind_param("s", $user);
+    $stmt->execute();
+    if ($stmt->get_result()->num_rows > 0) {
         echo "user";
         exit();
     }
 
-    // VALIDAR EMAIL
-    $checkEmail = $conn->query("SELECT id FROM usuarios WHERE email='$email'");
-    if ($checkEmail->num_rows > 0) {
+    // 🔍 VALIDAR EMAIL
+    $stmt = $conn->prepare("SELECT id FROM usuarios WHERE email = ?");
+    $stmt->bind_param("s", $email);
+    $stmt->execute();
+    if ($stmt->get_result()->num_rows > 0) {
         echo "email";
         exit();
     }
 
-    // ENCRIPTAR
+    // 🔐 ENCRIPTAR
     $passwordHash = password_hash($password, PASSWORD_DEFAULT);
 
-    // INSERTAR
-    $sql = "INSERT INTO usuarios (user, password, email, fecha_de_registro)
-            VALUES ('$user','$passwordHash','$email',NOW())";
+    // 🔥 ROL AUTOMÁTICO
+    $rol = "usuario";
 
-    if ($conn->query($sql)) {
+    // ✅ INSERTAR CORRECTO
+    $stmt = $conn->prepare("INSERT INTO usuarios (user, email, password, rol) VALUES (?, ?, ?, ?)");
+    $stmt->bind_param("ssss", $user, $email, $passwordHash, $rol);
+
+    if ($stmt->execute()) {
         echo "ok";
     } else {
         echo "error";
@@ -73,3 +77,4 @@ elseif ($action === "registro") {
 }
 
 $conn->close();
+?>
