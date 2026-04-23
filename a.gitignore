@@ -1,2 +1,8 @@
 uploads/
 *.exe
+.env
+config_keys.php
+/data/
+*.log
+.DS_Store
+node_modules/

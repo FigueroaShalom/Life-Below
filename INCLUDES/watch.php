@@ -26,19 +26,31 @@ function getYoutubeThumbnail($url) {
 
 // ── Cargar videos ─────────────────────────────────────────────────────────────
 $cat_filter = $_GET['cat'] ?? '';
-$sql = "
-    SELECT v.id, v.titulo, v.descripcion, v.video_url, v.categoria, v.fecha_publicacion,
-           u.user AS autor,
-           (SELECT COUNT(*) FROM likes WHERE id_publicacion = v.id) AS total_likes
-    FROM videos v
-    JOIN usuarios u ON v.id_autor = u.id
-";
+
 if ($cat_filter) {
-    $cat_safe = $conn->real_escape_string($cat_filter);
-    $sql .= " WHERE v.categoria = '$cat_safe'";
+    $stmt = $conn->prepare("
+        SELECT v.id, v.titulo, v.descripcion, v.video_url, v.categoria, v.fecha_publicacion,
+               u.user AS autor,
+               (SELECT COUNT(*) FROM likes WHERE id_publicacion = v.id) AS total_likes
+        FROM videos v
+        JOIN usuarios u ON v.id_autor = u.id
+        WHERE v.categoria = ?
+        ORDER BY v.fecha_publicacion DESC
+    ");
+    $stmt->bind_param("s", $cat_filter);
+    $stmt->execute();
+    $videos = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+} else {
+    $sql = "
+        SELECT v.id, v.titulo, v.descripcion, v.video_url, v.categoria, v.fecha_publicacion,
+               u.user AS autor,
+               (SELECT COUNT(*) FROM likes WHERE id_publicacion = v.id) AS total_likes
+        FROM videos v
+        JOIN usuarios u ON v.id_autor = u.id
+        ORDER BY v.fecha_publicacion DESC
+    ";
+    $videos = $conn->query($sql)->fetch_all(MYSQLI_ASSOC);
 }
-$sql .= " ORDER BY v.fecha_publicacion DESC";
-$videos = $conn->query($sql)->fetch_all(MYSQLI_ASSOC);
 
 $categorias = ['general', 'peces', 'mamiferos', 'conservacion', 'documental'];
 ?>
