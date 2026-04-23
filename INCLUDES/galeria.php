@@ -1,21 +1,24 @@
 <?php
-ini_set('memory_limit', '256M');
-// ── CONFIGURACIÓN ──────────────────────────────────────────
-// iNaturalist API — sin key, completamente gratis
-// Documentación: https://api.inaturalist.org/v1/docs/
+// ════════════════════════════════════════════════════════════
+// GALERÍA DE VIDA MARINA — Pexels API
+// ════════════════════════════════════════════════════════════
 
-$categoria = $_GET['category'] ?? '';
-$busqueda  = trim($_GET['q'] ?? '');
-$page      = max(1, (int)($_GET['page'] ?? 1));
-$per_page  = 4;
+$pexels_token = '1WF26Si56hRMDSEqmVbQkBr9fRpO87YbFAOmJE3L8OBgi9hIR52tQ9ic';
+
+$busqueda = trim($_GET['q'] ?? 'ocean life marine');
+$page = max(1, (int)($_GET['page'] ?? 1));
+$per_page = 12;
 
 // Taxonomías de iNaturalist para vida marina
 $categorias = [
-    'peces'      => ['label' => 'Peces',      'icon' => '🐟', 'taxon_id' => 47178],
-    'moluscos'   => ['label' => 'Moluscos',   'icon' => '🐙', 'taxon_id' => 47115],
-    'crustaceos' => ['label' => 'Crustáceos', 'icon' => '🦀', 'taxon_id' => 85493],
-    'corales'    => ['label' => 'Corales',    'icon' => '🪸', 'taxon_id' => 57774],
-    'tiburones'  => ['label' => 'Tiburones',  'icon' => '🦈', 'taxon_id' => 47273],
+    ''           => ['label' => 'Todas',        'icon' => '≈', 'taxon_id' => 1],
+    'peces'      => ['label' => 'Peces',         'icon' => '•', 'taxon_id' => 47178],
+    'mamiferos'  => ['label' => 'Mamíferos',     'icon' => '◆', 'taxon_id' => 40151],
+    'moluscos'   => ['label' => 'Moluscos',      'icon' => '⊗', 'taxon_id' => 47115],
+    'crustaceos' => ['label' => 'Crustáceos',    'icon' => '◈', 'taxon_id' => 85493],
+    'corales'    => ['label' => 'Corales',       'icon' => '❈', 'taxon_id' => 57774],
+    'tortugas'   => ['label' => 'Tortugas',      'icon' => '◊', 'taxon_id' => 26487],
+    'tiburones'  => ['label' => 'Tiburones',     'icon' => '▶', 'taxon_id' => 47273],
 ];
 
 // Función para llamar a iNaturalist

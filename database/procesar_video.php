@@ -1,24 +1,34 @@
 <?php
-session_start();
+
+
+if (session_status() === PHP_SESSION_NONE) session_start();
 require_once __DIR__ . '/Conexion_base.php';
 
-if (!isset($_SESSION['user_id'])) {
-    header('Location: ../index.php?section=login');
+header('Content-Type: application/json');
+
+// ── Función helper: responder JSON y salir ────────────────────────────────────
+function responder(bool $ok, string $mensaje): void {
+    echo json_encode(['ok' => $ok, 'mensaje' => $mensaje]);
     exit;
 }
 
-$accion   = $_POST['accion'] ?? '';
-$redirect = '../index.php?section=dashboard&tab=videos';
+// ── Verificar sesión ──────────────────────────────────────────────────────────
+if (!isset($_SESSION['id'])) {
+    responder(false, 'Sesión no válida. Inicia sesión nuevamente.');
+}
+
+$accion    = $_POST['accion'] ?? '';
+$id_autor  = (int)$_SESSION['id'];
 
 // ── Helper: subir archivo de video ────────────────────────────────────────────
-function subirVideoArchivo($file_input) {
+function subirVideoArchivo(string $file_input): array {
     if (!isset($_FILES[$file_input]) || $_FILES[$file_input]['error'] !== UPLOAD_ERR_OK) {
         return ['ok' => false, 'error' => 'Error al recibir el archivo.'];
     }
 
-    $file     = $_FILES[$file_input];
-    $maxSize  = 200 * 1024 * 1024; // 200 MB
-    $allowed  = ['video/mp4', 'video/webm', 'video/quicktime', 'video/x-msvideo'];
+    $file       = $_FILES[$file_input];
+    $maxSize    = 200 * 1024 * 1024; // 200 MB
+    $allowed    = ['video/mp4', 'video/webm', 'video/quicktime', 'video/x-msvideo'];
     $allowedExt = ['mp4', 'webm', 'mov', 'avi'];
 
     if ($file['size'] > $maxSize) {
@@ -44,7 +54,6 @@ function subirVideoArchivo($file_input) {
         mkdir($uploadDir, 0755, true);
     }
 
-    // Nombre único
     $filename = uniqid('vid_', true) . '.' . $ext;
     $destPath = $uploadDir . $filename;
 
@@ -55,45 +64,43 @@ function subirVideoArchivo($file_input) {
     return ['ok' => true, 'url' => 'uploads/videos/' . $filename];
 }
 
-// ── Helper: detectar tipo de fuente ──────────────────────────────────────────
-function resolverVideoUrl($accion_nombre) {
-    $fuente = $_POST['fuente'] ?? 'youtube'; // 'youtube' o 'local'
+// ── Helper: resolver URL del video ───────────────────────────────────────────
+function resolverVideoUrl(): array {
+    $fuente = $_POST['fuente'] ?? 'youtube';
 
     if ($fuente === 'local') {
         $result = subirVideoArchivo('video_file');
-        if (!$result['ok']) {
-            return ['ok' => false, 'error' => $result['error']];
-        }
-        return ['ok' => true, 'url' => $result['url']];
-    } else {
-        $url = trim($_POST['video_url'] ?? '');
-        if (empty($url)) {
-            return ['ok' => false, 'error' => 'La URL del video es obligatoria.'];
-        }
-        if (!filter_var($url, FILTER_VALIDATE_URL)) {
-            return ['ok' => false, 'error' => 'La URL no es válida.'];
-        }
-        return ['ok' => true, 'url' => $url];
+        return $result['ok']
+            ? ['ok' => true,  'url' => $result['url']]
+            : ['ok' => false, 'error' => $result['error']];
     }
+
+    $url = trim($_POST['video_url'] ?? '');
+    if (empty($url)) {
+        return ['ok' => false, 'error' => 'La URL del video es obligatoria.'];
+    }
+    if (!filter_var($url, FILTER_VALIDATE_URL)) {
+        return ['ok' => false, 'error' => 'La URL no es válida.'];
+    }
+    return ['ok' => true, 'url' => $url];
 }
 
+// ── Switch de acciones ────────────────────────────────────────────────────────
 switch ($accion) {
 
-    // ── CREAR ─────────────────────────────────────────────────────────────
+    // ── CREAR VIDEO ───────────────────────────────────────────────────────
     case 'crear_video':
         $titulo      = trim($_POST['titulo']      ?? '');
         $descripcion = trim($_POST['descripcion'] ?? '');
         $categoria   = trim($_POST['categoria']   ?? 'general');
 
         if (empty($titulo)) {
-            header('Location: ' . $redirect . '&error=' . urlencode('El título es obligatorio.'));
-            exit;
+            responder(false, 'El título es obligatorio.');
         }
 
-        $urlResult = resolverVideoUrl('crear_video');
+        $urlResult = resolverVideoUrl();
         if (!$urlResult['ok']) {
-            header('Location: ' . $redirect . '&error=' . urlencode($urlResult['error']));
-            exit;
+            responder(false, $urlResult['error']);
         }
 
         $video_url = $urlResult['url'];
@@ -101,16 +108,14 @@ switch ($accion) {
             INSERT INTO videos (titulo, descripcion, video_url, categoria, id_autor)
             VALUES (?, ?, ?, ?, ?)
         ");
-        $stmt->bind_param("ssssi", $titulo, $descripcion, $video_url, $categoria, $_SESSION['user_id']);
+        $stmt->bind_param("ssssi", $titulo, $descripcion, $video_url, $categoria, $id_autor);
 
-        if ($stmt->execute()) {
-            header('Location: ' . $redirect . '&ok=' . urlencode('✅ Video publicado correctamente.'));
-        } else {
-            header('Location: ' . $redirect . '&error=' . urlencode('Error al guardar el video: ' . $conn->error));
-        }
+        $stmt->execute()
+            ? responder(true,  '✅ Video publicado correctamente.')
+            : responder(false, 'Error al guardar el video: ' . $conn->error);
         break;
 
-    // ── ACTUALIZAR ────────────────────────────────────────────────────────
+    // ── ACTUALIZAR VIDEO ──────────────────────────────────────────────────
     case 'actualizar_video':
         $id          = (int)($_POST['id_video']   ?? 0);
         $titulo      = trim($_POST['titulo']      ?? '');
@@ -118,50 +123,44 @@ switch ($accion) {
         $categoria   = trim($_POST['categoria']   ?? 'general');
 
         if (empty($titulo)) {
-            header('Location: ' . $redirect . '&error=' . urlencode('El título es obligatorio.'));
-            exit;
+            responder(false, 'El título es obligatorio.');
         }
 
-        // Si sube archivo nuevo o cambia URL, actualizar; si no, conservar la actual
-        $fuente = $_POST['fuente'] ?? 'youtube';
-        $cambiarVideo = ($fuente === 'local' && isset($_FILES['video_file']) && $_FILES['video_file']['error'] === UPLOAD_ERR_OK)
+        $fuente       = $_POST['fuente'] ?? 'youtube';
+        $cambiarVideo = ($fuente === 'local'   && isset($_FILES['video_file']) && $_FILES['video_file']['error'] === UPLOAD_ERR_OK)
                      || ($fuente === 'youtube' && !empty(trim($_POST['video_url'] ?? '')));
 
         if ($cambiarVideo) {
-            $urlResult = resolverVideoUrl('actualizar_video');
+            $urlResult = resolverVideoUrl();
             if (!$urlResult['ok']) {
-                header('Location: ' . $redirect . '&error=' . urlencode($urlResult['error']));
-                exit;
+                responder(false, $urlResult['error']);
             }
             $video_url = $urlResult['url'];
             $stmt = $conn->prepare("
                 UPDATE videos SET titulo=?, descripcion=?, video_url=?, categoria=?
                 WHERE id=? AND id_autor=?
             ");
-            $stmt->bind_param("ssssii", $titulo, $descripcion, $video_url, $categoria, $id, $_SESSION['user_id']);
+            $stmt->bind_param("ssssii", $titulo, $descripcion, $video_url, $categoria, $id, $id_autor);
         } else {
-            // Solo actualizar metadatos
             $stmt = $conn->prepare("
                 UPDATE videos SET titulo=?, descripcion=?, categoria=?
                 WHERE id=? AND id_autor=?
             ");
-            $stmt->bind_param("sssii", $titulo, $descripcion, $categoria, $id, $_SESSION['user_id']);
+            $stmt->bind_param("sssii", $titulo, $descripcion, $categoria, $id, $id_autor);
         }
 
-        if ($stmt->execute()) {
-            header('Location: ' . $redirect . '&ok=' . urlencode('✅ Video actualizado correctamente.'));
-        } else {
-            header('Location: ' . $redirect . '&error=' . urlencode('Error al actualizar: ' . $conn->error));
-        }
+        $stmt->execute()
+            ? responder(true,  '✅ Video actualizado correctamente.')
+            : responder(false, 'Error al actualizar: ' . $conn->error);
         break;
 
-    // ── ELIMINAR ──────────────────────────────────────────────────────────
+    // ── ELIMINAR VIDEO ────────────────────────────────────────────────────
     case 'eliminar_video':
         $id = (int)($_POST['id_video'] ?? 0);
 
-        // Si es video local, eliminar el archivo físico
+        // Eliminar archivo físico si es local
         $check = $conn->prepare("SELECT video_url FROM videos WHERE id=? AND id_autor=?");
-        $check->bind_param("ii", $id, $_SESSION['user_id']);
+        $check->bind_param("ii", $id, $id_autor);
         $check->execute();
         $row = $check->get_result()->fetch_assoc();
 
@@ -173,19 +172,15 @@ switch ($accion) {
         }
 
         $stmt = $conn->prepare("DELETE FROM videos WHERE id=? AND id_autor=?");
-        $stmt->bind_param("ii", $id, $_SESSION['user_id']);
+        $stmt->bind_param("ii", $id, $id_autor);
 
-        if ($stmt->execute()) {
-            header('Location: ' . $redirect . '&ok=' . urlencode('✅ Video eliminado correctamente.'));
-        } else {
-            header('Location: ' . $redirect . '&error=' . urlencode('Error al eliminar.'));
-        }
+        $stmt->execute()
+            ? responder(true,  '✅ Video eliminado correctamente.')
+            : responder(false, 'Error al eliminar el video.');
         break;
 
     default:
-        header('Location: ' . $redirect);
-        break;
+        responder(false, 'Acción no reconocida.');
 }
 
 $conn->close();
-exit;
