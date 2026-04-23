@@ -2,13 +2,13 @@
 $carousel_images = [
     [
         'img'   => 'uploads/carrusel1.jpg',
-        'title' => 'Descubren nueva especie de coral en el Pacífico',
-        'desc'  => 'Científicos encuentran un arrecife prístino en las Islas Galápagos.'
+        'title' => 'Aumenta la población de lobos marinos en el Pacífico',
+        'desc'  => 'Científicos encuentran un población de lobos marinos, aumentando su presencia en la región.'
     ],
     [
         'img'   => 'uploads/carrusel2.jpg',
-        'title' => 'Ballenas jorobadas regresan al Ártico',
-        'desc'  => 'Avistan más de 50 ejemplares en su migración anual.'
+        'title' => 'El gigante gentil',
+        'desc'  => 'Los manatíes regresan a las costas protegidas.'
     ],
     [
         'img'   => 'uploads/carrusel3.jpg',
@@ -28,7 +28,7 @@ $carousel_images = [
             <span class="hy-hero-accent">ciencia y la sociedad</span>
         </h1>
         <p class="hy-hero-sub">
-            Descubre, aprende y actúa. HYDRON transforma el conocimiento científico oceánico en contenido accesible para todos.
+            Descubre, aprende y actúa. Life Below transforma el conocimiento científico oceánico en contenido accesible para todos.
         </p>
         <div class="hy-hero-actions">
             <a href="index.php?section=articulos" class="hy-cta-primary">Explorar artículos</a>
@@ -99,7 +99,7 @@ $carousel_images = [
 <!-- ══ EXPLORE GRID ══ -->
 <section class="hy-section">
     <div class="hy-section-header">
-        <h2 class="hy-section-title">Explora HYDRON</h2>
+        <h2 class="hy-section-title">Explora LIFE BELOW</h2>
     </div>
     <div class="hy-explore-grid">
         <a href="index.php?section=articulos" class="hy-explore-card" style="--c1:#0077be;--c2:#00b4d8;">

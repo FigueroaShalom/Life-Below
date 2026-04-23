@@ -23,7 +23,7 @@ if ($result->num_rows > 0) {
     if (password_verify($password, $fila['password'])) {
 
         // ✅ SESIONES COMPATIBLES CON TODO TU SISTEMA
-        $_SESSION['user_id'] = $fila['id']; // ID del usuario
+        $_SESSION['user_id'] = $fila['id'];
         $_SESSION['id'] = $fila['id'];
         $_SESSION['user'] = $fila['user'];
         $_SESSION['email'] = $fila['email'];
