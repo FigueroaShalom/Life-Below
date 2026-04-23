@@ -1,6 +1,14 @@
 <?php
 include("Conexion_base.php");
 
+function validarPassword($pass) {
+    $errores = [];
+    if (strlen($pass) < 8) $errores[] = "al menos 8 caracteres";
+    if (!preg_match('/[A-Z]/', $pass)) $errores[] = "una mayúscula";
+    if (!preg_match('/[0-9]/', $pass) && !preg_match('/[^a-zA-Z0-9]/', $pass)) $errores[] = "un número o símbolo especial";
+    return empty($errores) ? true : implode(", ", $errores);
+}
+
 $action = $_POST['action'] ?? '';
 
 // 🔍 VALIDAR USUARIO
@@ -38,6 +46,13 @@ elseif ($action === "registro") {
 
     if (empty($user) || empty($email) || empty($password)) {
         echo "vacio";
+        exit();
+    }
+
+    // 🔍 VALIDAR CONTRASEÑA
+    $passCheck = validarPassword($password);
+    if ($passCheck !== true) {
+        echo "password_weak: " . $passCheck;
         exit();
     }
 

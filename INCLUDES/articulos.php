@@ -54,11 +54,11 @@ if ($selected_id):
         <h2 class="post-title"><?php echo htmlspecialchars($post['titulo']); ?></h2>
 
         <div class="article-meta">
-            <span>👤 <?php echo htmlspecialchars($post['autor']); ?></span>
-            <span>📅 <?php echo date('d/m/Y', strtotime($post['fecha_creacion'])); ?></span>
-            <span>🏷️ <?php echo htmlspecialchars($post['categoria']); ?></span>
-            <span>❤️ <?php echo $post['total_likes']; ?> likes</span>
-            <span>💬 <?php echo $post['total_comentarios']; ?> comentarios</span>
+            <span><strong>Autor:</strong> <?php echo htmlspecialchars($post['autor']); ?></span>
+            <span><strong>Fecha:</strong> <?php echo date('d/m/Y', strtotime($post['fecha_creacion'])); ?></span>
+            <span><strong>Categoría:</strong> <?php echo htmlspecialchars($post['categoria']); ?></span>
+            <span><strong>Me gusta:</strong> <?php echo $post['total_likes']; ?></span>
+            <span><strong>Comentarios:</strong> <?php echo $post['total_comentarios']; ?></span>
         </div>
 
         <div class="article-content">
@@ -71,7 +71,7 @@ if ($selected_id):
                 <input type="hidden" name="id_publicacion" value="<?php echo $selected_id; ?>">
                 <input type="hidden" name="redirect" value="?section=articulos&post=<?php echo $selected_id; ?>">
                 <button type="submit" class="like-btn <?php echo $ya_dio_like ? 'liked' : ''; ?>">
-                    <?php echo $ya_dio_like ? '❤️ Quitar like' : '🤍 Me gusta'; ?>
+                    <?php echo $ya_dio_like ? 'Me gusta ✓' : 'Me gusta'; ?>
                     (<?php echo $post['total_likes']; ?>)
                 </button>
             </form>
@@ -98,7 +98,7 @@ if ($selected_id):
                 <?php foreach ($comentarios as $c): ?>
                     <div class="comment">
                         <div class="comment-header">
-                            <span class="comment-user">👤 <?php echo htmlspecialchars($c['user']); ?></span>
+                            <span class="comment-user"><strong><?php echo htmlspecialchars($c['user']); ?></strong></span>
                             <span class="comment-date"><?php echo date('d/m/Y H:i', strtotime($c['fecha'])); ?></span>
                         </div>
                         <p class="comment-text"><?php echo nl2br(htmlspecialchars($c['comentario'])); ?></p>
@@ -122,13 +122,24 @@ else:
         FROM publicaciones p
         JOIN usuarios u ON p.id_autor = u.id
     ";
+    
     if ($cat_filter) {
-        $cat_safe = $conn->real_escape_string($cat_filter);
-        $sql .= " WHERE p.categoria = '$cat_safe'";
+        $stmt = $conn->prepare("
+            SELECT p.id, p.titulo, p.contenido, p.categoria, p.imagen, p.fecha_creacion,
+                   u.user AS autor,
+                   (SELECT COUNT(*) FROM likes WHERE id_publicacion = p.id) AS total_likes
+            FROM publicaciones p
+            JOIN usuarios u ON p.id_autor = u.id
+            WHERE p.categoria = ?
+            ORDER BY p.fecha_creacion DESC
+        ");
+        $stmt->bind_param("s", $cat_filter);
+        $stmt->execute();
+        $posts = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+    } else {
+        $sql .= " ORDER BY p.fecha_creacion DESC";
+        $posts = $conn->query($sql)->fetch_all(MYSQLI_ASSOC);
     }
-    $sql .= " ORDER BY p.fecha_creacion DESC";
-
-    $posts = $conn->query($sql)->fetch_all(MYSQLI_ASSOC);
 
     $categorias = ['peces', 'mamiferos', 'moluscos', 'crustaceos', 'conservacion'];
 ?>
@@ -157,7 +168,7 @@ else:
                     <img src="<?php echo htmlspecialchars($post['imagen']); ?>"
                          alt="<?php echo htmlspecialchars($post['titulo']); ?>">
                 <?php else: ?>
-                    <div style="height:180px;background:linear-gradient(135deg,#e6f3ff,#b3e0ff);display:flex;align-items:center;justify-content:center;font-size:3rem;">🌊</div>
+                    <div style="height:180px;background:linear-gradient(135deg,#e6f3ff,#b3e0ff);display:flex;align-items:center;justify-content:center;font-size:1rem;color:#0077be;">Sin imagen</div>
                 <?php endif; ?>
                 <div class="post-content">
                     <span class="post-category"><?php echo htmlspecialchars($post['categoria']); ?></span>
@@ -166,9 +177,9 @@ else:
                         <?php echo substr(htmlspecialchars($post['contenido']), 0, 150) . '...'; ?>
                     </p>
                     <div class="post-meta">
-                        <span>👤 <?php echo htmlspecialchars($post['autor']); ?></span>
-                        <span>❤️ <?php echo $post['total_likes']; ?></span>
-                        <span>📅 <?php echo date('d/m/Y', strtotime($post['fecha_creacion'])); ?></span>
+                        <span><strong><?php echo htmlspecialchars($post['autor']); ?></strong></span>
+                        <span><?php echo $post['total_likes']; ?> me gusta</span>
+                        <span><?php echo date('d/m/Y', strtotime($post['fecha_creacion'])); ?></span>
                     </div>
                     <a href="?section=articulos&post=<?php echo $post['id']; ?>" class="read-more-btn">
                         Leer artículo →

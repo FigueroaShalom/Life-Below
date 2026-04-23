@@ -22,7 +22,7 @@ $carousel_images = [
 <section class="hy-hero">
     <div class="hy-hero-bg"></div>
     <div class="hy-hero-content">
-        <span class="hy-hero-tag">🌊 ODS 14 · Vida Submarina </span>
+        <span class="hy-hero-tag">Vida Submarina · Conocimiento & Ciencia</span>
         <h1 class="hy-hero-title">
             Un mar de ideas,<br>un punto entre la<br>
             <span class="hy-hero-accent">ciencia y la sociedad</span>
@@ -32,13 +32,13 @@ $carousel_images = [
         </p>
         <div class="hy-hero-actions">
             <a href="index.php?section=articulos" class="hy-cta-primary">Explorar artículos</a>
-            <a href="index.php?section=watch"     class="hy-cta-secondary">▶ Ver videos</a>
+            <a href="index.php?section=watch"     class="hy-cta-secondary">Ver videos</a>
         </div>
     </div>
     <div class="hy-hero-visual">
         <div class="hy-hero-img-wrap">
             <img src="uploads/carrusel_hero.jpg" alt="Vida marina">
-            <div class="hy-hero-img-badge"><span>🐢</span><p>Vida Submarina</p></div>
+            <div class="hy-hero-img-badge"><p>Vida Submarina</p></div>
         </div>
     </div>
 </section>
@@ -49,7 +49,7 @@ $carousel_images = [
         <div class="hy-stat"><div class="hy-stat-num">+500</div><div class="hy-stat-label">Especies documentadas</div></div>
         <div class="hy-stat"><div class="hy-stat-num">7</div><div class="hy-stat-label">Océanos y mares</div></div>
         <div class="hy-stat"><div class="hy-stat-num">71%</div><div class="hy-stat-label">Del planeta es agua</div></div>
-        <div class="hy-stat"><div class="hy-stat-num">ODS 14</div><div class="hy-stat-label">Vida Submarina</div></div>
+        <div class="hy-stat"><div class="hy-stat-num">∞</div><div class="hy-stat-label">Por descubrir</div></div>
     </div>
 </section>
 
@@ -88,8 +88,8 @@ $carousel_images = [
                 <?php endforeach; ?>
             </div>
             <div class="hy-carousel-arrows">
-                <button class="hy-arrow" id="carouselPrev">❮</button>
-                <button class="hy-arrow" id="carouselNext">❯</button>
+                <button class="hy-arrow" id="carouselPrev" aria-label="Anterior">‹</button>
+                <button class="hy-arrow" id="carouselNext" aria-label="Siguiente">›</button>
             </div>
         </div>
 
@@ -103,25 +103,25 @@ $carousel_images = [
     </div>
     <div class="hy-explore-grid">
         <a href="index.php?section=articulos" class="hy-explore-card" style="--c1:#0077be;--c2:#00b4d8;">
-            <div class="hy-explore-icon">📰</div>
+            <div class="hy-explore-icon">�</div>
             <h3>Artículos</h3>
             <p>Investigaciones y textos sobre conservación marina escritos por nuestra comunidad.</p>
             <span class="hy-explore-link">Leer artículos →</span>
         </a>
         <a href="index.php?section=watch" class="hy-explore-card" style="--c1:#005f9e;--c2:#0097c7;">
-            <div class="hy-explore-icon">🎬</div>
-            <h3>Watch</h3>
+            <div class="hy-explore-icon">▶</div>
+            <h3>Videos</h3>
             <p>Videos exclusivos sobre la vida submarina, ecosistemas y conservación oceánica.</p>
             <span class="hy-explore-link">Ver videos →</span>
         </a>
         <a href="index.php?section=galeria" class="hy-explore-card" style="--c1:#007a50;--c2:#00b47a;">
-            <div class="hy-explore-icon">🐠</div>
+            <div class="hy-explore-icon">■</div>
             <h3>Galería</h3>
             <p>Imágenes de especies marinas clasificadas por categoría y hábitat.</p>
             <span class="hy-explore-link">Ver galería →</span>
         </a>
         <a href="index.php?section=noticias" class="hy-explore-card" style="--c1:#6a0080;--c2:#9c27b0;">
-            <div class="hy-explore-icon">📡</div>
+            <div class="hy-explore-icon">◆</div>
             <h3>Noticias</h3>
             <p>Eventos, proyectos y noticias recientes sobre los océanos del mundo.</p>
             <span class="hy-explore-link">Ver noticias →</span>
