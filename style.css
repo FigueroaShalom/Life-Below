@@ -1,3 +1,11 @@
+/* ════════════════════════════════════════════════════════════
+   HYDRON — style.css
+   Inspirado en Ocean School (oceanschool.nfb.ca)
+   Fuente: Nunito | Paleta: azul océano + verde marino
+════════════════════════════════════════════════════════════ */
+
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap');
+
 /* ========== RESET & VARIABLES ========== */
 * {
     margin: 0;
@@ -288,4 +296,6 @@ body {
     .hy-footer-inner { grid-template-columns: 1fr; text-align: center; }
     .carousel-track { gap: 1rem; }
     .news-card { flex: 0 0 260px; }
+    .hero-card-glass { margin-top: 1rem; }
+    .hy-footer-bottom { flex-direction: column; text-align: center; }
 }
