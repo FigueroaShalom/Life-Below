@@ -179,7 +179,7 @@ if ($current_section === 'inicio') {
     if (file_exists($section_file)) {
         include $section_file;
     } else {
-        echo '<div class="hy-section"><h1>🌊 Sección en construcción</h1><p>Pronto más contenido sobre conservación marina.</p></div>';
+        echo '<div class="hy-section"><h1> Sección en construcción</h1><p>Pronto más contenido sobre conservación marina.</p></div>';
     }
 }
 
