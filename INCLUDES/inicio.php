@@ -18,27 +18,25 @@ $carousel_images = [
 ];
 ?>
 
-<!-- ══ HERO ══ -->
-<section class="hy-hero">
-    <div class="hy-hero-bg"></div>
-    <div class="hy-hero-content">
-        <span class="hy-hero-tag">Vida Submarina · Conocimiento & Ciencia</span>
-        <h1 class="hy-hero-title">
-            Un mar de ideas,<br>un punto entre la<br>
-            <span class="hy-hero-accent">ciencia y la sociedad</span>
-        </h1>
-        <p class="hy-hero-sub">
-            Descubre, aprende y actúa. Life Below transforma el conocimiento científico oceánico en contenido accesible para todos.
-        </p>
-        <div class="hy-hero-actions">
-            <a href="index.php?section=articulos" class="hy-cta-primary">Explorar artículos</a>
-            <a href="index.php?section=watch"     class="hy-cta-secondary">Ver videos</a>
+<!-- HERO (basado en diseño de imagen) -->
+<section class="hero">
+    <div class="hero-left">
+        <div class="hero-badge">
+            <i class="fas fa-water"></i> VIDA SUBMARINA · CONOCIMIENTO & CIENCIA
+        </div>
+        <h1>Un mar de ideas,<br> un punto entre la <span class="hero-accent">ciencia y la sociedad</span></h1>
+        <p class="hero-desc">Descubre, aprende y actúa. Life Below transforma el conocimiento científico oceánico en contenido accesible para todos.</p>
+        <div class="hero-buttons">
+            <a href="#" class="btn-primary"><i class="fas fa-newspaper"></i> Explorar artículos</a>
+            <a href="#" class="btn-secondary"><i class="fas fa-play-circle"></i> Ver videos</a>
         </div>
     </div>
-    <div class="hy-hero-visual">
-        <div class="hy-hero-img-wrap">
-            <img src="uploads/carrusel_hero.jpg" alt="Vida marina">
-            <div class="hy-hero-img-badge"><p>Vida Submarina</p></div>
+    <div class="hero-right">
+        <div class="hero-card">
+            <i class="fas fa-whale"></i>
+            <h3>ODS 14: Vida submarina</h3>
+            <p style="font-size:0.85rem; margin-top: 6px;">Conservación y uso sostenible de los océanos</p>
+            <div style="margin-top: 1rem;"><i class="fas fa-chart-line"></i> +1200 especies protegidas</div>
         </div>
     </div>
 </section>
@@ -53,48 +51,27 @@ $carousel_images = [
     </div>
 </section>
 
-<!-- ══ CARRUSEL ══ -->
-<section class="hy-section">
-    <div class="hy-section-header">
-        <h2 class="hy-section-title">Últimos descubrimientos</h2>
-        <a href="index.php?section=noticias" class="hy-link-more">Ver todos →</a>
+<!-- CARRUSEL DE NOTICIAS (API integrada: NEWS API / Gnews) -->
+<section class="news-section">
+    <div class="section-header">
+        <div>
+            <h2><i class="fas fa-newspaper"></i> Olas de ciencia | Noticias marinas</h2>
+            <p>Actualidad sobre conservación oceánica, biodiversidad y vida submarina</p>
+        </div>
     </div>
-
-    <div class="hy-carousel" id="mainCarousel">
-
-        <!-- Slides -->
-        <div class="hy-carousel-track">
-            <?php foreach ($carousel_images as $i => $slide): ?>
-            <div class="hy-carousel-slide <?php echo $i === 0 ? 'active' : ''; ?>" data-index="<?php echo $i; ?>">
-                <img src="<?php echo $slide['img']; ?>"
-                     alt="<?php echo htmlspecialchars($slide['title']); ?>"
-                     loading="<?php echo $i === 0 ? 'eager' : 'lazy'; ?>">
-                <div class="hy-carousel-caption">
-                    <h3><?php echo htmlspecialchars($slide['title']); ?></h3>
-                    <p><?php echo htmlspecialchars($slide['desc']); ?></p>
-                    <a href="index.php?section=noticias" class="hy-cta-white">Leer más →</a>
-                </div>
-            </div>
-            <?php endforeach; ?>
-        </div>
-
-        <!-- Controles -->
-        <div class="hy-carousel-controls">
-            <div class="hy-carousel-dots" id="carouselDots">
-                <?php foreach ($carousel_images as $i => $slide): ?>
-                    <button class="hy-dot <?php echo $i === 0 ? 'active' : ''; ?>"
-                            data-index="<?php echo $i; ?>"
-                            aria-label="Slide <?php echo $i+1; ?>"></button>
-                <?php endforeach; ?>
-            </div>
-            <div class="hy-carousel-arrows">
-                <button class="hy-arrow" id="carouselPrev" aria-label="Anterior">‹</button>
-                <button class="hy-arrow" id="carouselNext" aria-label="Siguiente">›</button>
+    <div class="carousel-container">
+        <div class="carousel-track" id="carouselTrack">
+            <div class="loading-placeholder" id="loadingNews">
+                <i class="fas fa-spinner fa-pulse"></i> Cargando noticias sobre océanos...
             </div>
         </div>
-
+        <div class="carousel-controls">
+            <button class="ctrl-btn" id="prevBtn"><i class="fas fa-chevron-left"></i></button>
+            <button class="ctrl-btn" id="nextBtn"><i class="fas fa-chevron-right"></i></button>
+        </div>
     </div>
 </section>
+
 
 <!-- ══ EXPLORE GRID ══ -->
 <section class="hy-section">
@@ -103,7 +80,7 @@ $carousel_images = [
     </div>
     <div class="hy-explore-grid">
         <a href="index.php?section=articulos" class="hy-explore-card" style="--c1:#0077be;--c2:#00b4d8;">
-            <div class="hy-explore-icon">�</div>
+            <div class="hy-explore-icon"></div>
             <h3>Artículos</h3>
             <p>Investigaciones y textos sobre conservación marina escritos por nuestra comunidad.</p>
             <span class="hy-explore-link">Leer artículos →</span>

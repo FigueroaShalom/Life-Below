@@ -52,7 +52,7 @@ $current_section = $_GET['section'] ?? 'inicio';
     <div class="hy-mobile-menu" id="hyMobileMenu">
         <a href="index.php?section=inicio">Inicio</a>
         <a href="index.php?section=watch">▶ Watch</a>
-        <a href="index.php?section=mapa_dinamico">🗺️ Mapa</a>
+        <a href="index.php?section=mapa_dinamico"> Mapa</a>
         <a href="index.php?section=galeria">Galería</a>
         <a href="index.php?section=noticias">Noticias</a>
         <a href="index.php?section=articulos">Artículos</a>

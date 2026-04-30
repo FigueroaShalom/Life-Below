@@ -7,7 +7,7 @@ header("X-Frame-Options: SAMEORIGIN");
 header("X-XSS-Protection: 1; mode=block");
 header("Referrer-Policy: strict-origin-when-cross-origin");
 
-define('SITE_NAME', 'HYDRON');
+define('SITE_NAME', 'LIFEBELOW');
 define('SITE_URL', 'http://localhost/HYDRON/');
 define('UPLOADS_DIR', __DIR__ . '/uploads/');
 define('ADMIN_USER', 'admin');
