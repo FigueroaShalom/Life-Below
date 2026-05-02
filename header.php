@@ -245,7 +245,7 @@ $current_section = $_GET['section'] ?? 'inicio';
         .news-content { padding: 1.2rem; }
         .news-source { font-size: 0.7rem; font-weight: 800; color: #1d6f8c; text-transform: uppercase; letter-spacing: 0.5px; }
         .news-title { font-size: 1rem; font-weight: 800; margin: 0.5rem 0; line-height: 1.3; color: #0a2b3b; }
-        .news-desc { font-size: 0.85rem; color: #2e5f70; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; line-height: 1.5; }
+        .news-desc { font-size: 0.85rem; color: #2e5f70; display: -webkit-box; -webkit-box-orient: vertical; overflow: hidden; line-height: 1.5; }
         .read-link { text-decoration: none; font-weight: 700; font-size: 0.8rem; color: #1f7f9c; transition: 0.2s; display: inline-flex; align-items: center; gap: 4px; }
         .read-link:hover { gap: 8px; color: #0f5a74; }
         .ctrl-btn {
