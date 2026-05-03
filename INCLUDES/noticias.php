@@ -59,8 +59,9 @@ function fetchNoticias($query = 'ocean marine life', $lang = 'es', $page = 1) {
 }
 
 // ── PARÁMETROS ─────────────────────────────────────────────
-$sub      = $_GET['sub']  ?? 'noticias';
-$page     = max(1, (int)($_GET['page'] ?? 1));
+$sub          = $_GET['sub']  ?? 'noticias';
+$page         = max(1, (int)($_GET['page'] ?? 1));
+$search_query = trim($_GET['q'] ?? '');
 
 $queries = [
     'noticias'  => 'ocean sea marine conservation',
@@ -68,10 +69,10 @@ $queries = [
     'proyectos' => 'ocean cleanup project conservation initiative',
 ];
 
-$query  = $queries[$sub] ?? $queries['noticias'];
+$query  = $search_query ?: ($queries[$sub] ?? $queries['noticias']);
 $data   = fetchNoticias($query, 'es', $page);
 
-// Si no hay resultados en español, buscar en inglés
+// Si no hay resultados, buscar en inglés como fallback
 if (empty($data['articles'])) {
     $data = fetchNoticias($query, 'en', $page);
 }
@@ -217,14 +218,26 @@ $has_error = !empty($data['error']) || isset($data['status']) && $data['status']
         <span class="hy-api-badge">Live · NewsAPI</span>
     </div>
 
-    <!-- Tabs -->
-    <div class="hy-news-tabs">
-        <a href="?section=noticias&sub=noticias"
-           class="hy-news-tab <?php echo $sub==='noticias'?'active':''; ?>">📰 Noticias</a>
-        <a href="?section=noticias&sub=eventos"
-           class="hy-news-tab <?php echo $sub==='eventos'?'active':''; ?>">📅 Eventos</a>
-        <a href="?section=noticias&sub=proyectos"
-           class="hy-news-tab <?php echo $sub==='proyectos'?'active':''; ?>">🌱 Proyectos</a>
+    <!-- Tabs + búsqueda -->
+    <div class="hy-news-tabs" style="align-items:center; justify-content:space-between; gap:1rem;">
+        <div style="display:flex;gap:.5rem;flex-wrap:wrap;">
+            <a href="?section=noticias&sub=noticias"
+               class="hy-news-tab <?php echo $sub==='noticias'?'active':''; ?>">📰 Noticias</a>
+            <a href="?section=noticias&sub=eventos"
+               class="hy-news-tab <?php echo $sub==='eventos'?'active':''; ?>">📅 Eventos</a>
+            <a href="?section=noticias&sub=proyectos"
+               class="hy-news-tab <?php echo $sub==='proyectos'?'active':''; ?>">🌱 Proyectos</a>
+        </div>
+        <form action="?section=noticias" method="GET" style="display:flex;gap:.5rem;flex-wrap:wrap;align-items:center;">
+            <input type="hidden" name="section" value="noticias">
+            <input type="text" name="q" value="<?php echo htmlspecialchars($search_query); ?>"
+                   placeholder="Buscar noticias relacionadas"
+                   style="padding:.75rem 1rem;border-radius:14px;border:1px solid rgba(0,0,0,.12);font-size:.95rem;min-width:210px;">
+            <button type="submit" class="hy-page-btn" style="border:none;">Buscar</button>
+            <?php if ($search_query): ?>
+                <a href="?section=noticias&sub=<?php echo htmlspecialchars($sub); ?>" class="hy-page-btn">Limpiar</a>
+            <?php endif; ?>
+        </form>
     </div>
 
     <?php if ($has_error): ?>

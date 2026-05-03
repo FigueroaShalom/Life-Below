@@ -2,7 +2,8 @@
 // Conexión
 require_once __DIR__ . '/../database/Conexion_base.php';
 
-$selected_id = isset($_GET['post']) ? (int)$_GET['post'] : 0;
+$selected_id   = isset($_GET['post']) ? (int)$_GET['post'] : 0;
+$search_query = trim($_GET['q'] ?? '');
 
 if ($selected_id):
     // ── DETALLE DEL ARTÍCULO ──────────────────────────────────────────────
@@ -61,9 +62,18 @@ if ($selected_id):
             <span>💬 <?php echo $post['total_comentarios']; ?> comentarios</span>
         </div>
 
-        <div class="article-content">
+        <div class="article-content" id="article-content">
             <?php echo nl2br(htmlspecialchars($post['contenido'])); ?>
         </div>
+
+        <?php if (!empty($_GET['scroll'])): ?>
+        <script>
+        window.addEventListener('load', function() {
+            const target = document.getElementById('article-content');
+            if (target) target.scrollIntoView({ behavior: 'smooth' });
+        });
+        </script>
+        <?php endif; ?>
 
         <!-- LIKES -->
         <?php if (isset($_SESSION['user_id'])): ?>
@@ -115,6 +125,21 @@ else:
     // ── LISTADO DE ARTÍCULOS ──────────────────────────────────────────────
     $cat_filter = $_GET['cat'] ?? '';
 
+    $where = [];
+    if ($cat_filter) {
+        $cat_safe = $conn->real_escape_string($cat_filter);
+        $where[] = "p.categoria = '$cat_safe'";
+    }
+    if ($search_query) {
+        $query_safe = $conn->real_escape_string($search_query);
+        $where[] = "(
+            p.titulo LIKE '%$query_safe%' OR
+            p.contenido LIKE '%$query_safe%' OR
+            p.categoria LIKE '%$query_safe%' OR
+            u.user LIKE '%$query_safe%'
+        )";
+    }
+
     $sql = "
         SELECT p.id, p.titulo, p.contenido, p.categoria, p.imagen, p.fecha_creacion,
                u.user AS autor,
@@ -122,9 +147,8 @@ else:
         FROM publicaciones p
         JOIN usuarios u ON p.id_autor = u.id
     ";
-    if ($cat_filter) {
-        $cat_safe = $conn->real_escape_string($cat_filter);
-        $sql .= " WHERE p.categoria = '$cat_safe'";
+    if (!empty($where)) {
+        $sql .= ' WHERE ' . implode(' AND ', $where);
     }
     $sql .= " ORDER BY p.fecha_creacion DESC";
 
@@ -135,12 +159,30 @@ else:
 
 <h1 class="section-title">Artículos sobre vida marina</h1>
 
+<form action="?section=articulos" method="GET" style="display:flex;justify-content:center;gap:.75rem;flex-wrap:wrap;margin-bottom:1rem;">
+    <input type="hidden" name="section" value="articulos">
+    <?php if ($cat_filter): ?><input type="hidden" name="cat" value="<?php echo htmlspecialchars($cat_filter); ?>"><?php endif; ?>
+    <input type="text" name="q" value="<?php echo htmlspecialchars($search_query); ?>"
+           placeholder="Buscar artículos relacionados"
+           style="min-width:240px;padding:.75rem 1rem;border-radius:14px;border:1px solid rgba(0,0,0,.12);font-size:.95rem;">
+    <button type="submit" class="btn">Buscar</button>
+    <?php if ($search_query): ?>
+        <a href="?section=articulos<?php echo $cat_filter ? '&cat='.urlencode($cat_filter) : ''; ?>" class="btn" style="background:#95a5a6;border:none;">Limpiar</a>
+    <?php endif; ?>
+</form>
+
+<?php if ($search_query): ?>
+    <p style="text-align:center;color:#5a7a9a;margin-bottom:1rem;">
+        Resultados para "<?php echo htmlspecialchars($search_query); ?>"
+    </p>
+<?php endif; ?>
+
 <!-- Filtro por categoría -->
 <div style="text-align:center; margin-bottom:1.5rem;">
-    <a href="?section=articulos"
+    <a href="?section=articulos<?php echo $search_query ? '&q='.urlencode($search_query) : ''; ?>"
        class="news-category-btn <?php echo !$cat_filter ? 'active' : ''; ?>">Todos</a>
     <?php foreach ($categorias as $cat): ?>
-        <a href="?section=articulos&cat=<?php echo $cat; ?>"
+        <a href="?section=articulos&cat=<?php echo $cat; ?><?php echo $search_query ? '&q='.urlencode($search_query) : ''; ?>"
            class="news-category-btn <?php echo $cat_filter === $cat ? 'active' : ''; ?>">
             <?php echo ucfirst($cat); ?>
         </a>
@@ -148,7 +190,14 @@ else:
 </div>
 
 <?php if (empty($posts)): ?>
-    <p style="text-align:center; padding:3rem;">No hay artículos publicados aún.</p>
+    <p style="text-align:center; padding:3rem;">
+        No se encontraron artículos.
+        <?php if ($search_query): ?>
+            <br>
+            <a href="?section=noticias&q=<?php echo urlencode($search_query); ?>"
+               style="color:#0077be; font-weight:700;">Buscar noticias relacionadas</a>
+        <?php endif; ?>
+    </p>
 <?php else: ?>
     <div class="posts-grid">
         <?php foreach ($posts as $post): ?>
