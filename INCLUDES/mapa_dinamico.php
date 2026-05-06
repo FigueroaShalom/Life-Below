@@ -200,7 +200,7 @@ $oceans_nav = [
     
     <!-- Controles Dinámicos Superiores -->
     <div class="map-ui-overlay">
-        <div class="map-ui-title">🌍 Explora:</div>
+        <div class="map-ui-title">Ocean Map:</div>
         <?php foreach ($oceans_nav as $key => $o): ?>
             <button class="ocean-btn" 
                     onclick="flyToOcean(<?php echo $o['lat']; ?>, <?php echo $o['lng']; ?>, <?php echo $o['zoom']; ?>, '<?php echo $key; ?>', this)">
@@ -225,8 +225,13 @@ $oceans_nav = [
     function initMap() {
         // Configuramos la vista global inicial
         // Leaflet.js está diseñado para NO tener los bugs de salir de pantalla o rendimiento
+        // Definimos los límites máximos del mundo para evitar que el usuario se pierda en el vacío
+        const bounds = L.latLngBounds(L.latLng(-89.5, -180), L.latLng(89.5, 180));
+
         map = L.map('leaflet-map', {
             zoomControl: false, // Ocultar +/- por defecto para no romper estética (lo añadiremos abajo estéticamente)
+            minZoom: 2, // Límite de desacercamiento para que no se vea muy pequeño
+            maxBounds: bounds, // Límite de movimiento
             maxBoundsViscosity: 1.0, // Que rebote suave en bordes
             worldCopyJump: true // Si viajas este-oeste infinito, mueve los puntos fluidamente
         }).setView([20, 0], 2); // (Lat, Lng), Zoom global
