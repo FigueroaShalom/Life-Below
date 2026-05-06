@@ -193,6 +193,7 @@
         <div id="registroMsg"></div>
 
         <form id="registroForm">
+            <input type="hidden" id="csrf_token_reg" value="<?php echo $_SESSION['csrf_token'] ?? ''; ?>">
             <div class="os-group">
                 <div class="os-input-wrap">
                     <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
@@ -330,6 +331,7 @@ document.getElementById("registroForm").addEventListener("submit", function(e) {
     const user  = document.getElementById("user").value.trim();
     const email = document.getElementById("email").value.trim();
     const pass  = document.getElementById("password").value.trim();
+    const csrf  = document.getElementById("csrf_token_reg").value;
     const msg   = document.getElementById("registroMsg");
     if (!user||!email||!pass) {
         msg.style.cssText="background:rgba(255,150,0,.15);color:#ffaa00;border:1px solid rgba(255,150,0,.3);";
@@ -343,7 +345,7 @@ document.getElementById("registroForm").addEventListener("submit", function(e) {
     msg.style.cssText="color:rgba(0,210,230,.7);"; msg.textContent="Registrando explorador...";
     fetch("database/validar_registro.php", {
         method:"POST", headers:{"Content-Type":"application/x-www-form-urlencoded"},
-        body:"action=registro&user="+encodeURIComponent(user)+"&email="+encodeURIComponent(email)+"&password="+encodeURIComponent(pass)
+        body:"action=registro&user="+encodeURIComponent(user)+"&email="+encodeURIComponent(email)+"&password="+encodeURIComponent(pass)+"&csrf_token="+encodeURIComponent(csrf)
     }).then(r=>r.text()).then(data=>{
         data=data.trim();
         if (data==="ok") {

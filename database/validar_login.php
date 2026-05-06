@@ -4,6 +4,12 @@ include("Conexion_base.php");
 
 $user = trim($_POST['username'] ?? '');
 $password = trim($_POST['password'] ?? '');
+$csrf = $_POST['csrf_token'] ?? '';
+
+if (empty($_SESSION['csrf_token']) || $csrf !== $_SESSION['csrf_token']) {
+    echo "error_csrf";
+    exit();
+}
 
 if (empty($user) || empty($password)) {
     echo "error_vacio";

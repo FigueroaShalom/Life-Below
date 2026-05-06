@@ -282,6 +282,7 @@ $has_error = !empty($data['error']) || isset($data['status']) && $data['status']
                         <img src="<?php echo htmlspecialchars($img); ?>"
                              alt="<?php echo htmlspecialchars($title); ?>"
                              class="hy-news-card-img"
+                             loading="lazy"
                              onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
                         <div class="hy-news-card-img-placeholder" style="display:none;">🌊</div>
                     <?php else: ?>

@@ -6,7 +6,12 @@ $current_section = $_GET['section'] ?? 'inicio';
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><?php echo SITE_NAME; ?> - Vida Marina</title>
+    <title><?php echo SITE_NAME; ?> - <?php echo ucfirst(str_replace('_', ' ', $current_section)); ?></title>
+    <meta name="description" content="Explora el océano con HYDRON: noticias, artículos, mapas dinámicos y galerías sobre conservación y vida marina.">
+    <meta property="og:title" content="<?php echo SITE_NAME; ?> - <?php echo ucfirst(str_replace('_', ' ', $current_section)); ?>">
+    <meta property="og:description" content="Explora el océano con HYDRON: conservación, mapas y vida marina.">
+    <meta property="og:image" content="<?php echo SITE_URL; ?>uploads/logo.svg">
+    <meta property="og:type" content="website">
     <link rel="stylesheet" href="style.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
