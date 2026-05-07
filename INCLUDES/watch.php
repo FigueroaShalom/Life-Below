@@ -66,11 +66,11 @@ $total = count($videos);
 
 if ($isKids) {
     $categorias = [
-        ['key' => 'general', 'text' => 'Todos', 'icon' => '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#00c4d8" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>'],
-        ['key' => 'peces', 'text' => 'Peces', 'icon' => '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#00c4d8" stroke-width="2"><path d="M12 2c-1 0-2 1-2 2v2c-2 0-4 2-4 4v4c0 2 2 4 4 4v2c0 1 1 2 2 2s2-1 2-2v-2c2 0 4-2 4-4v-4c0-2-2-4-4-4v-2c0-1-1-2-2-2z m0 4c1.1 0 2 .9 2 2s-.9 2-2 2-2-.9-2-2 .9-2 2-2z"/></svg>'],
-        ['key' => 'mamiferos', 'text' => 'Mamíferos', 'icon' => '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#00c4d8" stroke-width="2"><path d="M12 2c-1 0-2 1-2 2v2c-2 0-4 2-4 4v4c0 2 2 4 4 4v2c0 1 1 2 2 2s2-1 2-2v-2c2 0 4-2 4-4v-4c0-2-2-4-4-4v-2c0-1-1-2-2-2z m-2 8c0-1.1.9-2 2-2s2 .9 2 2-.9 2-2 2-2-.9-2-2z"/></svg>'],
-        ['key' => 'conservacion', 'text' => 'Cuidemos el mar', 'icon' => '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#00c4d8" stroke-width="2"><path d="M12 2l-1 1v2c-2 0-4 2-4 4v4c0 2 2 4 4 4v2l1 1 1-1v-2c2 0 4-2 4-4v-4c0-2-2-4-4-4v-2l-1-1z"/></svg>'],
-        ['key' => 'documental', 'text' => 'Historias', 'icon' => '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#00c4d8" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>'],
+        ['key' => 'general', 'text' => 'Todos', 'icon' => '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0077be" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>'],
+        ['key' => 'peces', 'text' => 'Peces', 'icon' => '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0077be" stroke-width="2"><path d="M12 2c-1 0-2 1-2 2v2c-2 0-4 2-4 4v4c0 2 2 4 4 4v2c0 1 1 2 2 2s2-1 2-2v-2c2 0 4-2 4-4v-4c0-2-2-4-4-4v-2c0-1-1-2-2-2z m0 4c1.1 0 2 .9 2 2s-.9 2-2 2-2-.9-2-2 .9-2 2-2z"/></svg>'],
+        ['key' => 'mamiferos', 'text' => 'Mamíferos', 'icon' => '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0077be" stroke-width="2"><path d="M12 2c-1 0-2 1-2 2v2c-2 0-4 2-4 4v4c0 2 2 4 4 4v2c0 1 1 2 2 2s2-1 2-2v-2c2 0 4-2 4-4v-4c0-2-2-4-4-4v-2c0-1-1-2-2-2z m-2 8c0-1.1.9-2 2-2s2 .9 2 2-.9 2-2 2-2-.9-2-2z"/></svg>'],
+        ['key' => 'conservacion', 'text' => 'Cuidemos el mar', 'icon' => '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0077be" stroke-width="2"><path d="M12 2l-1 1v2c-2 0-4 2-4 4v4c0 2 2 4 4 4v2l1 1 1-1v-2c2 0 4-2 4-4v-4c0-2-2-4-4-4v-2l-1-1z"/></svg>'],
+        ['key' => 'documental', 'text' => 'Historias', 'icon' => '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0077be" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>'],
     ];
 } else {
     $categorias = [
@@ -86,21 +86,40 @@ if ($isKids) {
 <script src="https://www.youtube.com/iframe_api"></script>
 
 <style>
+.watch-top-search {
+    background: #001828;
+    padding: 1.5rem 2rem;
+    border-bottom: 1px solid rgba(0,120,190,0.2);
+    display: flex;
+    justify-content: center;
+}
+.watch-top-search .watch-search {
+    max-width: 600px;
+    width: 100%;
+}
+</style>
+<style>
 .watch-page {
     display: flex;
-    background: #000d1a;
+    flex-direction: column;
+    background: #001828;
     min-height: calc(100vh - 70px);
+}
+
+.watch-main {
+    display: flex;
+    flex: 1;
 }
 
 /* ── SIDEBAR ── */
 .watch-sidebar {
-    width: 210px;
+    width: 300px;
     flex-shrink: 0;
-    padding: 2rem 1.2rem;
+    padding: 2.5rem 1.8rem;
     display: flex;
     flex-direction: column;
-    gap: 1.8rem;
-    border-right: 1px solid rgba(255,255,255,0.06);
+    gap: 2.2rem;
+    border-right: 1px solid rgba(0,120,190,0.2);
     position: sticky;
     top: 0;
     height: auto;
@@ -111,17 +130,17 @@ if ($isKids) {
 .watch-sidebar::-webkit-scrollbar { display: none; }
 .watch-sidebar-title {
     font-family: 'Nunito', sans-serif;
-    font-size: 1.4rem;
+    font-size: 2.4rem;
     font-weight: 900;
     color: #fff;
     letter-spacing: -0.5px;
 }
-.watch-sidebar-title span { color: #00c4d8; }
+.watch-sidebar-title span { color: #0077be; }
 .watch-sidebar-sub {
     font-family: 'Nunito', sans-serif;
-    font-size: .72rem;
+    font-size: 1rem;
     color: rgba(255,255,255,0.3);
-    margin-top: .2rem;
+    margin-top: .4rem;
 }
 .watch-counter-box {
     background: rgba(255,255,255,0.04);
@@ -132,9 +151,9 @@ if ($isKids) {
 }
 .watch-counter-num {
     font-family: 'Nunito', sans-serif;
-    font-size: 1.8rem;
+    font-size: 2.2rem;
     font-weight: 900;
-    color: #00c4d8;
+    color: #0077be;
     line-height: 1;
 }
 .watch-counter-label {
@@ -144,14 +163,15 @@ if ($isKids) {
     margin-top: .3rem;
 }
 .watch-search {
-    display: grid;
+    display: flex;
     gap: .6rem;
+    align-items: center;
 }
 .watch-search input {
-    width: 100%;
+    flex: 1;
     padding: .75rem 1rem;
     border-radius: 14px;
-    border: 1px solid rgba(255,255,255,0.12);
+    border: 1px solid rgba(0,120,190,0.2);
     background: rgba(255,255,255,0.04);
     color: #fff;
     font-family: 'Nunito', sans-serif;
@@ -175,7 +195,7 @@ if ($isKids) {
     border: none;
 }
 .watch-search button {
-    background: #00c4d8;
+    background: #0077be;
     color: #04121e;
     cursor: pointer;
 }
@@ -183,6 +203,42 @@ if ($isKids) {
     background: rgba(255,255,255,0.06);
     color: rgba(255,255,255,0.75);
     border: 1px solid rgba(255,255,255,0.1);
+}
+.watch-switch-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.9rem 1.4rem;
+    border-radius: 12px;
+    border: none;
+    font-family: 'Nunito', sans-serif;
+    font-size: 0.95rem;
+    font-weight: 800;
+    cursor: pointer;
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+.watch-switch-btn.normal {
+    background: linear-gradient(135deg, #0077be, #005a8d);
+    color: #fff;
+    border: 2px solid rgba(0,119,190,0.4);
+}
+.watch-switch-btn.normal:hover {
+    background: linear-gradient(135deg, #0088d4, #006ba3);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 16px rgba(0,119,190,0.3);
+}
+.watch-switch-btn.kids {
+    background: linear-gradient(135deg, #ff6b6b, #ff4757);
+    color: #fff;
+    border: 3px solid #ff8787;
+    box-shadow: 0 4px 12px rgba(255,107,107,0.3);
+}
+.watch-switch-btn.kids:hover {
+    background: linear-gradient(135deg, #ff7b7b, #ff6767);
+    transform: scale(1.05) translateY(-2px);
+    box-shadow: 0 8px 20px rgba(255,107,107,0.5);
 }
 .watch-filters { display: flex; flex-direction: column; gap: .35rem; }
 .watch-filters-label {
@@ -195,12 +251,12 @@ if ($isKids) {
     margin-bottom: .2rem;
 }
 .watch-filter-btn {
-    padding: 7px 12px;
+    padding: 9px 14px;
     border-radius: 9px;
     border: 1px solid rgba(255,255,255,0.07);
     color: rgba(255,255,255,0.45);
     font-weight: 700;
-    font-size: .78rem;
+    font-size: .85rem;
     text-decoration: none;
     background: transparent;
     transition: all .2s;
@@ -212,9 +268,9 @@ if ($isKids) {
     color: rgba(255,255,255,0.75);
 }
 .watch-filter-btn.active {
-    background: rgba(0,196,216,0.12);
-    color: #00c4d8;
-    border-color: rgba(0,196,216,0.25);
+    background: rgba(0,119,190,0.12);
+    color: #0077be;
+    border-color: rgba(0,119,190,0.25);
 }
 .watch-keyboard-hint { display: flex; flex-direction: column; gap: .45rem; }
 .watch-keyboard-hint-title {
@@ -263,7 +319,7 @@ if ($isKids) {
     position: relative;
     border-radius: 20px;
     overflow: hidden;
-    box-shadow: 0 0 60px rgba(0,196,216,0.1), 0 0 0 1px rgba(0,196,216,0.07);
+    box-shadow: 0 0 60px rgba(0,119,190,0.1), 0 0 0 1px rgba(0,119,190,0.07);
     background: #000;
 }
 
@@ -321,14 +377,16 @@ if ($isKids) {
 }
 
 /* Info y acciones: ocultas, visibles en hover o show-ui */
-.reel-info, .reel-actions {
+.reel-info, .reel-actions, .reel-progress {
     opacity: 0;
     transition: opacity .3s ease;
 }
 .reel-card.active:hover .reel-info,
 .reel-card.active:hover .reel-actions,
+.reel-card.active:hover .reel-progress,
 .reel-card.show-ui .reel-info,
-.reel-card.show-ui .reel-actions { opacity: 1; }
+.reel-card.show-ui .reel-actions,
+.reel-card.show-ui .reel-progress { opacity: 1; }
 
 .reel-info {
     position: absolute;
@@ -337,9 +395,9 @@ if ($isKids) {
 }
 .reel-cat-badge {
     display: inline-block;
-    background: rgba(0,196,216,0.15);
-    border: 1px solid rgba(0,196,216,0.3);
-    color: #00c4d8;
+    background: rgba(0,119,190,0.15);
+    border: 1px solid rgba(0,119,190,0.3);
+    color: #0077be;
     font-size: .58rem; font-weight: 800;
     letter-spacing: 1px; text-transform: uppercase;
     padding: 2px 8px; border-radius: 50px;
@@ -435,11 +493,26 @@ if ($isKids) {
 
 .reel-progress {
     position: absolute; bottom: 0; left: 0; right: 0;
-    height: 2px; background: rgba(255,255,255,.1); z-index: 6;
+    height: 32px; background: transparent; z-index: 6;
+    display: flex; align-items: center; padding: 0 12px;
+    cursor: pointer;
 }
+.reel-time-current, .reel-time-total {
+    font-family: 'Nunito', sans-serif;
+    font-size: .7rem; font-weight: 700;
+    color: rgba(255,255,255,.9);
+}
+.reel-time-current { margin-right: 10px; }
+.reel-time-total { margin-left: 10px; }
 .reel-progress-bar {
-    height: 100%; background: #00c4d8; width: 0%;
-    transition: width .1s linear;
+    flex: 1; height: 6px; background: rgba(255,255,255,.3); position: relative;
+    border-radius: 3px; overflow: hidden;
+}
+.reel-progress-bar::before {
+    content: '';
+    position: absolute; top: 0; left: 0; bottom: 0;
+    background: #0077be; width: var(--progress-width, 0%);
+    border-radius: 3px;
 }
 
 /* Navegación inferior */
@@ -492,35 +565,35 @@ if ($isKids) {
 
 <div class="watch-page">
 
+<div class="watch-top-search">
+    <form class="watch-search" action="?section=watch" method="GET">
+        <input type="hidden" name="section" value="watch">
+        <?php if ($cat_filter): ?><input type="hidden" name="cat" value="<?php echo htmlspecialchars($cat_filter); ?>"><?php endif; ?>
+        <input type="text" name="q" value="<?php echo htmlspecialchars($search_query); ?>"
+               placeholder="<?php echo $isKids ? 'Buscar temas divertidos...' : 'Buscar temas, categorías o autores...'; ?>">
+        <button type="submit">Buscar</button>
+        <?php if ($search_query): ?>
+            <a class="watch-search-clear" href="?section=watch<?php echo $cat_filter ? '&cat='.urlencode($cat_filter) : ''; ?>">Limpiar</a>
+        <?php endif; ?>
+    </form>
+</div>
+
+<div class="watch-main">
     <!-- SIDEBAR -->
     <div class="watch-sidebar">
         <div>
             <div class="watch-sidebar-title">▶ <span><?php echo $isKids ? 'W' : 'WATCH'; ?></span><?php if ($isKids): ?><span style="color: #ff6b6b; font-weight: bold;">KIDS</span><?php endif; ?></div>
             <div class="watch-sidebar-sub"><?php echo $isKids ? 'Vida marina para niños' : 'Vida marina en video'; ?></div>
-            <div style="margin-top: 1rem;">
-                <a href="?section=watch<?php echo $isKids ? '' : '&kids=1'; ?><?php echo $cat_filter ? '&cat='.urlencode($cat_filter) : ''; ?><?php echo $search_query ? '&q='.urlencode($search_query) : ''; ?>" style="color: #00c4d8; text-decoration: none; font-size: 0.8rem;">
-                    <?php echo $isKids ? '← Volver a Watch' : 'Ir a wKids'; ?>
+            <div style="margin-top: 1.5rem;">
+                <a href="?section=watch<?php echo $isKids ? '' : '&kids=1'; ?><?php echo $cat_filter ? '&cat='.urlencode($cat_filter) : ''; ?><?php echo $search_query ? '&q='.urlencode($search_query) : ''; ?>" class="watch-switch-btn <?php echo $isKids ? 'kids' : 'normal'; ?>">
+                    <?php if ($isKids): ?>
+                        🎮 Volver a Watch
+                    <?php else: ?>
+                        🌊 Ir a wKids
+                    <?php endif; ?>
                 </a>
             </div>
         </div>
-
-        <form class="watch-search" action="?section=watch" method="GET">
-            <input type="hidden" name="section" value="watch">
-            <?php if ($cat_filter): ?><input type="hidden" name="cat" value="<?php echo htmlspecialchars($cat_filter); ?>"><?php endif; ?>
-            <input type="text" name="q" value="<?php echo htmlspecialchars($search_query); ?>"
-                   placeholder="<?php echo $isKids ? 'Buscar temas divertidos...' : 'Buscar temas, categorías o autores...'; ?>">
-            <button type="submit">Buscar</button>
-            <?php if ($search_query): ?>
-                <a class="watch-search-clear" href="?section=watch<?php echo $cat_filter ? '&cat='.urlencode($cat_filter) : ''; ?>">Limpiar</a>
-            <?php endif; ?>
-        </form>
-
-        <?php if (!$isKids): ?>
-        <div class="watch-counter-box">
-            <div class="watch-counter-num" id="watchCounterCurrent">1</div>
-            <div class="watch-counter-label">de <?php echo $total; ?> videos</div>
-        </div>
-        <?php endif; ?>
 
         <div class="watch-filters">
             <div class="watch-filters-label"><?php echo $isKids ? '¡Elige tu aventura!' : 'Categorías'; ?></div>
@@ -582,7 +655,7 @@ if ($isKids) {
                 <?php else: ?>
                     <video class="reel-video-local"
                            src="<?php echo $localUrl; ?>"
-                           muted loop preload="metadata" playsinline autoplay></video>
+                           muted loop preload="metadata" playsinline></video>
                 <?php endif; ?>
 
                 <div class="reel-gradient"></div>
@@ -658,9 +731,11 @@ if ($isKids) {
                     </div>
                 </div>
 
-                <?php if (!$isYt): ?>
-                <div class="reel-progress"><div class="reel-progress-bar"></div></div>
-                <?php endif; ?>
+                <div class="reel-progress">
+                    <span class="reel-time-current">0:00</span>
+                    <div class="reel-progress-bar"></div>
+                    <span class="reel-time-total">0:00</span>
+                </div>
 
             </div>
             <?php endforeach; ?>
@@ -679,6 +754,7 @@ if ($isKids) {
         <?php endif; ?>
     </div>
 </div>
+</div>
 
 <script>
 (function () {
@@ -687,7 +763,7 @@ if ($isKids) {
     if (!total) return;
 
     let current     = 0;
-    let globalMuted = true; // estado global de mute, persiste entre videos
+    let globalMuted = false; // estado global de mute, persiste entre videos
 
     const ytPlayers = {};
     window._ytQueue = [];
@@ -728,6 +804,7 @@ if ($isKids) {
                         const thumb = document.getElementById('thumb-' + vidId);
                         if (thumb) thumb.style.opacity = '0';
                         syncSoundIcon(card);
+                        updateProgress(card);
                     }
                 }
             });
@@ -781,6 +858,7 @@ if ($isKids) {
                 vid.play().catch(() => {});
             }
             syncSoundIcon(next);
+            updateProgress(next);
         } else {
             createYTPlayer(next);
             // syncSoundIcon se llama en onReady
@@ -812,10 +890,14 @@ if ($isKids) {
     document.addEventListener('keydown', (e) => {
         if (['INPUT','TEXTAREA','SELECT'].includes(document.activeElement.tagName)) return;
         switch(e.key) {
-            case 'ArrowDown': case 'ArrowRight':
+            case 'ArrowDown':
                 e.preventDefault(); if (current < total - 1) goTo(current + 1); break;
-            case 'ArrowUp': case 'ArrowLeft':
+            case 'ArrowUp':
                 e.preventDefault(); if (current > 0) goTo(current - 1); break;
+            case 'ArrowRight':
+                e.preventDefault(); seekVideo(10); break; // Adelantar 10s
+            case 'ArrowLeft':
+                e.preventDefault(); seekVideo(-10); break; // Atrasar 10s
             case ' ': e.preventDefault(); togglePlayPause(); break;
             case 'm': case 'M': e.preventDefault(); toggleMute(); break;
         }
@@ -910,23 +992,114 @@ if ($isKids) {
         });
     });
 
+    // ── Formatear tiempo ──────────────────────────────────────────────────
+    function formatTime(seconds) {
+        const mins = Math.floor(seconds / 60);
+        const secs = Math.floor(seconds % 60);
+        return mins + ':' + (secs < 10 ? '0' : '') + secs;
+    }
+
+    // ── Actualizar progreso y tiempos ─────────────────────────────────────
+    function updateProgress(card) {
+        const bar = card.querySelector('.reel-progress-bar');
+        const currentEl = card.querySelector('.reel-time-current');
+        const totalEl = card.querySelector('.reel-time-total');
+        if (!bar || !currentEl || !totalEl) return;
+
+        let current = 0, duration = 0;
+        if (card.dataset.type === 'local') {
+            const vid = card.querySelector('.reel-video-local');
+            if (vid && vid.duration) {
+                current = vid.currentTime;
+                duration = vid.duration;
+            }
+        } else {
+            const player = ytPlayers[card.dataset.id];
+            if (player) {
+                current = player.getCurrentTime();
+                duration = player.getDuration();
+            }
+        }
+        if (duration > 0) {
+            const progress = current / duration;
+            bar.style.setProperty('--progress', progress);
+            bar.style.setProperty('--progress-width', (progress * 100) + '%');
+            currentEl.textContent = formatTime(current);
+            totalEl.textContent = formatTime(duration);
+        }
+    }
+
+    // ── Seek con flechas ──────────────────────────────────────────────────
+    function seekVideo(seconds) {
+        const card = cards[current];
+        if (card.dataset.type === 'local') {
+            const vid = card.querySelector('.reel-video-local');
+            if (vid && vid.duration) {
+                vid.currentTime = Math.max(0, Math.min(vid.duration, vid.currentTime + seconds));
+                updateProgress(card);
+            }
+        } else {
+            const player = ytPlayers[card.dataset.id];
+            if (player) {
+                const newTime = Math.max(0, Math.min(player.getDuration(), player.getCurrentTime() + seconds));
+                player.seekTo(newTime);
+                setTimeout(() => updateProgress(card), 100);
+            }
+        }
+    }
+    cards.forEach(card => {
+        const progress = card.querySelector('.reel-progress');
+        const progressBar = card.querySelector('.reel-progress-bar');
+        if (!progress || !progressBar) return;
+        progress.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const barRect = progressBar.getBoundingClientRect();
+            const pos = Math.max(0, Math.min(1, (e.clientX - barRect.left) / barRect.width));
+            let duration = 0;
+            if (card.dataset.type === 'local') {
+                const vid = card.querySelector('.reel-video-local');
+                if (vid && vid.duration) {
+                    duration = vid.duration;
+                    vid.currentTime = pos * duration;
+                }
+            } else {
+                const player = ytPlayers[card.dataset.id];
+                if (player) {
+                    duration = player.getDuration();
+                    player.seekTo(pos * duration);
+                    setTimeout(() => updateProgress(card), 100); // Delay for YouTube seek
+                }
+            }
+            updateProgress(card);
+        });
+    });
+
     // Progreso local
     cards.forEach(card => {
         if (card.dataset.type !== 'local') return;
         const vid = card.querySelector('.reel-video-local');
-        const bar = card.querySelector('.reel-progress-bar');
-        if (!vid || !bar) return;
-        vid.addEventListener('timeupdate', () => {
-            if (vid.duration) bar.style.width = (vid.currentTime / vid.duration * 100) + '%';
-        });
+        if (!vid) return;
+        vid.addEventListener('loadedmetadata', () => updateProgress(card));
+        vid.addEventListener('timeupdate', () => updateProgress(card));
     });
+
+    // Progreso YouTube - actualizar cada segundo
+    const ytProgressInterval = setInterval(() => {
+        const activeCard = cards[current];
+        if (activeCard && activeCard.dataset.type === 'youtube') {
+            updateProgress(activeCard);
+        }
+    }, 1000);
 
     // ── Arrancar primer video ─────────────────────────────────────────────
     window.addEventListener('load', () => {
         const first = cards[0];
         if (first.dataset.type === 'local') {
             const vid = first.querySelector('.reel-video-local');
-            if (vid) { vid.muted = globalMuted; }
+            if (vid) { 
+                vid.muted = globalMuted;
+                vid.play().catch(() => {}); // Intentar reproducir con sonido
+            }
             syncSoundIcon(first);
         } else {
             createYTPlayer(first);

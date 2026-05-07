@@ -21,7 +21,7 @@ $current_section = $_GET['section'] ?? 'inicio';
 
         <nav class="hy-nav">
             <a href="index.php?section=inicio"   class="hy-nav-link <?php echo $current_section==='inicio'   ? 'hy-active':'' ?>">Inicio</a>
-            <a href="index.php?section=watch"    class="hy-nav-link <?php echo $current_section==='watch'    ? 'hy-active':'' ?>">Videos</a>
+            <a href="index.php?section=watch"    class="hy-nav-link <?php echo $current_section==='watch'    ? 'hy-active':'' ?>">HydroWatch</a>
             <a href="index.php?section=mapa_dinamico" class="hy-nav-link <?php echo $current_section==='mapa_dinamico' ? 'hy-active':'' ?>">Ocean Map</a>
             <a href="index.php?section=galeria"  class="hy-nav-link <?php echo $current_section==='galeria'  ? 'hy-active':'' ?>">Galería</a>
             <a href="index.php?section=noticias" class="hy-nav-link <?php echo $current_section==='noticias' ? 'hy-active':'' ?>">Noticias</a>

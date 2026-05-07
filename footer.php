@@ -23,7 +23,7 @@
         <div class="hy-footer-col">
             <h4>Explorar</h4>
             <a href="index.php?section=articulos">Artículos</a>
-            <a href="index.php?section=watch">Videos</a>
+            <a href="index.php?section=watch">Watch</a>
             <a href="index.php?section=galeria">Galería</a>
             <a href="index.php?section=noticias">Noticias</a>
         </div>
