@@ -1,30 +1,31 @@
 <?php
-ini_set('memory_limit', '256M');
-// ── CONFIGURACIÓN ──────────────────────────────────────────
-// iNaturalist API — sin key, completamente gratis
-// Documentación: https://api.inaturalist.org/v1/docs/
+// ════════════════════════════════════════════════════════════
+// GALERÍA DE VIDA MARINA — Pexels API
+// ════════════════════════════════════════════════════════════
 
+$pexels_token = '1WF26Si56hRMDSEqmVbQkBr9fRpO87YbFAOmJE3L8OBgi9hIR52tQ9ic';
+
+$busqueda = trim($_GET['q'] ?? '');
 $categoria = $_GET['category'] ?? '';
-$busqueda  = trim($_GET['q'] ?? '');
-$page      = max(1, (int)($_GET['page'] ?? 1));
-$per_page  = 4;
+$page = max(1, (int)($_GET['page'] ?? 1));
+$per_page = 15;
 
-// Taxonomías de iNaturalist para vida marina
+// Categorías para Pexels
 $categorias = [
-    ''           => ['label' => 'Todas',        'icon' => '🌊', 'taxon_id' => 1],
-    'peces'      => ['label' => 'Peces',         'icon' => '🐟', 'taxon_id' => 47178],
-    'mamiferos'  => ['label' => 'Mamíferos',     'icon' => '🐬', 'taxon_id' => 40151],
-    'moluscos'   => ['label' => 'Moluscos',      'icon' => '🐙', 'taxon_id' => 47115],
-    'crustaceos' => ['label' => 'Crustáceos',    'icon' => '🦀', 'taxon_id' => 85493],
-    'corales'    => ['label' => 'Corales',       'icon' => '🪸', 'taxon_id' => 57774],
-    'tortugas'   => ['label' => 'Tortugas',      'icon' => '🐢', 'taxon_id' => 26487],
-    'tiburones'  => ['label' => 'Tiburones',     'icon' => '🦈', 'taxon_id' => 47273],
+    ''           => ['label' => 'Todas',        'icon' => '≈', 'query' => 'ocean life marine'],
+    'peces'      => ['label' => 'Peces',         'icon' => '•', 'query' => 'fish ocean underwater'],
+    'mamiferos'  => ['label' => 'Mamíferos',     'icon' => '◆', 'query' => 'whale dolphin seal marine mammal'],
+    'moluscos'   => ['label' => 'Moluscos',      'icon' => '⊗', 'query' => 'octopus squid mollusk ocean'],
+    'crustaceos' => ['label' => 'Crustáceos',    'icon' => '◈', 'query' => 'crab lobster crustacean ocean'],
+    'corales'    => ['label' => 'Corales',       'icon' => '❈', 'query' => 'coral reef underwater'],
+    'tortugas'   => ['label' => 'Tortugas',      'icon' => '◊', 'query' => 'sea turtle ocean'],
+    'tiburones'  => ['label' => 'Tiburones',     'icon' => '▶', 'query' => 'shark underwater'],
 ];
 
-// Función para llamar a iNaturalist
-function fetchINaturalist($params) {
+// Función para llamar a Pexels
+function fetchPexels($params, $token) {
     $cache_key  = md5(json_encode($params));
-    $cache_file = __DIR__ . '/../data/inaturalist_' . $cache_key . '.json';
+    $cache_file = __DIR__ . '/../data/pexels_' . $cache_key . '.json';
     $cache_ttl  = 3600;
 
     if (!file_exists(__DIR__ . '/../data')) {
@@ -37,21 +38,19 @@ function fetchINaturalist($params) {
         if ($cached) return json_decode($cached, true);
     }
 
-    $url = 'https://api.inaturalist.org/v1/observations?' . http_build_query($params);
+    $url = 'https://api.pexels.com/v1/search?' . http_build_query($params);
 
-    // Usar cURL con límite de tamaño
     if (!function_exists('curl_init')) {
-        return ['results' => [], 'total_results' => 0, 'error' => true];
+        return ['photos' => [], 'total_results' => 0, 'error' => true];
     }
 
     $ch = curl_init();
     curl_setopt_array($ch, [
         CURLOPT_URL            => $url,
         CURLOPT_RETURNTRANSFER => true,
+        CURLOPT_HTTPHEADER     => ['Authorization: ' . $token],
         CURLOPT_TIMEOUT        => 10,
         CURLOPT_USERAGENT      => 'HYDRON/1.0',
-        CURLOPT_BUFFERSIZE     => 1024 * 512, // 512KB buffer
-        CURLOPT_MAXFILESIZE    => 1024 * 1024 * 8, // máx 8MB
         CURLOPT_FOLLOWLOCATION => true,
         CURLOPT_SSL_VERIFYPEER => false,
     ]);
@@ -61,72 +60,42 @@ function fetchINaturalist($params) {
     curl_close($ch);
 
     if (!$response || $error) {
-        return ['results' => [], 'total_results' => 0, 'error' => true];
+        return ['photos' => [], 'total_results' => 0, 'error' => true];
     }
 
     $data = json_decode($response, true);
-    if (!$data) return ['results' => [], 'total_results' => 0, 'error' => true];
+    if (!$data) return ['photos' => [], 'total_results' => 0, 'error' => true];
 
-    // Guardar solo lo necesario en caché (no el objeto completo)
-    $slim = [
-        'total_results' => $data['total_results'] ?? 0,
-        'results'       => array_map(function($obs) {
-            return [
-                'id'            => $obs['id'] ?? '',
-                'quality_grade' => $obs['quality_grade'] ?? '',
-                'faves_count'   => $obs['faves_count'] ?? 0,
-                'place_guess'   => $obs['place_guess'] ?? '',
-                'photos'        => array_slice($obs['photos'] ?? [], 0, 1),
-                'taxon'         => [
-                    'name'                  => $obs['taxon']['name'] ?? '',
-                    'preferred_common_name' => $obs['taxon']['preferred_common_name'] ?? '',
-                ],
-            ];
-        }, $data['results'] ?? []),
-    ];
-
-    file_put_contents($cache_file, json_encode($slim));
-    return $slim;
+    file_put_contents($cache_file, json_encode($data));
+    return $data;
 }
 
-// Construir parámetros
+// Determinar el término de búsqueda final
+$final_query = $busqueda;
+if (!$final_query) {
+    $final_query = $categorias[$categoria]['query'] ?? $categorias['']['query'];
+}
+
 $params = [
-    'photos'        => 'true',
-    'photo_license' => 'cc-by,cc-by-nc,cc-by-sa,cc-by-nc-sa,cc0',
-    'quality_grade' => 'research',
-    'order'         => 'desc',
-    'order_by'      => 'votes',
-    'per_page'      => $per_page,
-    'page'          => $page,
-    'place_id'      => 97394,
-    'only_id'       => 'false',
-    'fields'        => 'id,quality_grade,faves_count,place_guess,photos,taxon',
+    'query'    => $final_query,
+    'per_page' => $per_page,
+    'page'     => $page,
 ];
 
-// Filtro por categoría
-if ($categoria && isset($categorias[$categoria])) {
-    $params['taxon_id'] = $categorias[$categoria]['taxon_id'];
-} else {
-    // Sin categoría: buscar en taxa marinos principales
-    $params['taxon_id'] = '47178,40151,47115,85493,57774,26487,47273';
-}
-
-// Búsqueda por texto
-if ($busqueda) {
-    $params['taxon_name'] = $busqueda;
-    unset($params['taxon_id']);
-    unset($params['place_id']);
-}
-
-$data      = fetchINaturalist($params);
-$resultados = $data['results']       ?? [];
-$total      = $data['total_results'] ?? 0;
-$has_error  = !empty($data['error']);
-$total_pages = ceil(min($total, 500) / $per_page); // iNaturalist max 500
+$data        = fetchPexels($params, $pexels_token);
+$resultados  = $data['photos'] ?? [];
+$total       = $data['total_results'] ?? 0;
+$has_error   = !empty($data['error']);
+$total_pages = ceil($total / $per_page);
 ?>
 
 <style>
-.hy-gallery-wrap { max-width: 1280px; margin: 0 auto; padding: 3rem 2rem; }
+.hy-gallery-wrap { 
+    width: 100%;
+    max-width: 100%;
+    margin: 0;
+    padding: 2rem 2rem;
+}
 
 /* Header */
 .hy-gallery-header {
@@ -183,86 +152,93 @@ $total_pages = ceil(min($total, 500) / $per_page); // iNaturalist max 500
 .hy-gallery-count {
     font-family: 'Nunito', sans-serif; font-size: .88rem; color: #5a7a9a;
 }
-.hy-inaturalist-badge {
+.hy-pexels-badge {
     display: inline-flex; align-items: center; gap: 6px;
-    background: rgba(116,195,101,0.12); border: 1px solid rgba(116,195,101,0.3);
-    color: #3a7a2a; font-size: .75rem; font-weight: 700;
+    background: rgba(5,160,129,0.12); border: 1px solid rgba(5,160,129,0.3);
+    color: #05a081; font-size: .75rem; font-weight: 700;
     padding: 4px 12px; border-radius: 50px; font-family: 'Nunito', sans-serif;
 }
-.hy-inaturalist-badge::before {
+.hy-pexels-badge::before {
     content: ''; width: 7px; height: 7px; border-radius: 50%;
-    background: #74c365; animation: pulse 1.5s ease-in-out infinite;
+    background: #05a081; animation: pulse 1.5s ease-in-out infinite;
 }
 @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.3} }
 
 /* Grid */
 .hy-gallery-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    gap: 1.2rem;
+    column-count: 5;
+    column-gap: 1rem;
+    width: 100%;
 }
+
+@media (max-width: 1400px) {
+    .hy-gallery-grid { column-count: 4; }
+}
+
+@media (max-width: 1100px) {
+    .hy-gallery-grid { column-count: 3; }
+}
+
+@media (max-width: 768px) {
+    .hy-gallery-grid { column-count: 2; }
+}
+
+@media (max-width: 500px) {
+    .hy-gallery-grid { column-count: 1; }
+}
+
 .hy-gallery-card {
-    background: #fff; border-radius: 16px; overflow: hidden;
-    box-shadow: 0 4px 20px rgba(0,40,80,0.1);
-    border: 1.5px solid rgba(0,120,190,0.08);
-    transition: transform .25s, box-shadow .25s;
-    position: relative;
+    display: inline-block;
+    width: 100%;
+    margin-bottom: 1rem;
+    break-inside: avoid;
+    transition: transform .3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
-.hy-gallery-card:hover { transform: translateY(-5px); box-shadow: 0 12px 40px rgba(0,40,80,0.16); }
+
+.hy-gallery-card:hover { transform: translateY(-8px); }
 
 .hy-gallery-card-img-wrap {
-    position: relative; height: 210px; overflow: hidden; background: #001828;
+    position: relative;
+    overflow: hidden;
+    border-radius: 16px;
+    background: #001828;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
 }
 .hy-gallery-card-img {
-    width: 100%; height: 100%; object-fit: cover;
-    transition: transform .4s ease;
+    width: 100%;
+    height: auto;
+    display: block;
+    object-fit: cover;
+    transition: transform .5s;
 }
-.hy-gallery-card:hover .hy-gallery-card-img { transform: scale(1.06); }
+.hy-gallery-card:hover .hy-gallery-card-img { transform: scale(1.08); }
 
 .hy-gallery-card-overlay {
     position: absolute; inset: 0;
-    background: linear-gradient(transparent 50%, rgba(0,10,30,0.75));
+    background: linear-gradient(transparent 40%, rgba(0,10,30,0.85));
     opacity: 0; transition: opacity .3s;
-    display: flex; align-items: flex-end; padding: 1rem;
+    display: flex; align-items: flex-end; padding: 1.2rem;
 }
 .hy-gallery-card:hover .hy-gallery-card-overlay { opacity: 1; }
 .hy-gallery-card-overlay a {
     color: #fff; font-family: 'Nunito', sans-serif; font-weight: 800;
     font-size: .82rem; text-decoration: none;
-    background: rgba(0,119,190,0.85); padding: 6px 14px; border-radius: 50px;
+    background: #05a081; padding: 7px 16px; border-radius: 50px;
+    box-shadow: 0 4px 12px rgba(5,160,129,0.3);
 }
 
-/* Badge de calidad */
-.hy-quality-badge {
-    position: absolute; top: 10px; right: 10px;
-    background: rgba(0,200,100,0.9); color: #fff;
-    font-size: .68rem; font-weight: 800; font-family: 'Nunito', sans-serif;
-    padding: 3px 9px; border-radius: 50px; letter-spacing: .5px;
-}
-
-.hy-gallery-card-body { padding: 1.1rem; }
+.hy-gallery-card-body { padding: 0.8rem 0.2rem; }
 .hy-gallery-card-name {
-    font-family: 'Nunito', sans-serif; font-weight: 900;
-    font-size: 1rem; color: #001828; margin-bottom: .2rem;
-    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-}
-.hy-gallery-card-sci {
-    font-family: 'Nunito', sans-serif; font-style: italic;
-    font-size: .82rem; color: #5a7a9a; margin-bottom: .6rem;
+    font-family: 'Nunito', sans-serif; font-weight: 800;
+    font-size: 0.95rem; color: #001828; margin-bottom: .2rem;
     white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
 }
 .hy-gallery-card-meta {
     display: flex; align-items: center; justify-content: space-between;
-    flex-wrap: wrap; gap: .4rem;
 }
 .hy-gallery-card-loc {
-    font-size: .75rem; color: #5a7a9a; font-family: 'Nunito', sans-serif;
+    font-size: .78rem; color: #5a7a9a; font-family: 'Nunito', sans-serif;
     display: flex; align-items: center; gap: 4px;
-    white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 160px;
-}
-.hy-gallery-card-votes {
-    font-size: .75rem; color: #0077be; font-family: 'Nunito', sans-serif;
-    font-weight: 700; display: flex; align-items: center; gap: 3px;
 }
 
 /* Placeholder */
@@ -277,7 +253,7 @@ $total_pages = ceil(min($total, 500) / $per_page); // iNaturalist max 500
     text-align: center; padding: 4rem 2rem;
     background: #fff; border-radius: 16px;
     border: 1.5px solid rgba(0,120,190,0.1);
-    grid-column: 1/-1;
+    grid-column: 1/-1; width: 100%;
 }
 .hy-gallery-empty h3 { font-family:'Nunito',sans-serif; font-size:1.3rem; color:#001828; margin-bottom:.5rem; }
 .hy-gallery-empty p  { font-family:'Nunito',sans-serif; color:#5a7a9a; }
@@ -305,9 +281,9 @@ $total_pages = ceil(min($total, 500) / $per_page); // iNaturalist max 500
     <div class="hy-gallery-header">
         <div>
             <h1>Galería de Vida Marina</h1>
-            <p>Observaciones verificadas por la comunidad científica global</p>
+            <p>Imágenes en alta resolución proporcionadas por Pexels</p>
         </div>
-        <span class="hy-inaturalist-badge">Live · iNaturalist</span>
+        <span class="hy-pexels-badge">Live · Pexels</span>
     </div>
 
     <!-- Buscador -->
@@ -318,7 +294,7 @@ $total_pages = ceil(min($total, 500) / $per_page); // iNaturalist max 500
         <?php endif; ?>
         <input type="text" name="q"
                value="<?php echo htmlspecialchars($busqueda); ?>"
-               placeholder="🔍 Buscar especie... (ej: Amphiprion, Tursiops)">
+               placeholder="🔍 Buscar imágenes... (ej: tortuga, arrecife, ballena)">
         <button type="submit">Buscar</button>
     </form>
 
@@ -338,7 +314,7 @@ $total_pages = ceil(min($total, 500) / $per_page); // iNaturalist max 500
             <?php if ($has_error): ?>
                 ⚠️ Error de conexión
             <?php else: ?>
-                <?php echo number_format($total); ?> observaciones encontradas
+                <?php echo number_format($total); ?> imágenes encontradas
                 — página <?php echo $page; ?> de <?php echo max(1, $total_pages); ?>
             <?php endif; ?>
         </span>
@@ -350,7 +326,7 @@ $total_pages = ceil(min($total, 500) / $per_page); // iNaturalist max 500
         <?php if ($has_error): ?>
             <div class="hy-gallery-empty">
                 <h3>⚠️ No se pudo conectar</h3>
-                <p>Verifica tu conexión a internet. iNaturalist puede estar temporalmente no disponible.</p>
+                <p>Verifica tu conexión a internet. La API de Pexels puede estar temporalmente no disponible.</p>
             </div>
 
         <?php elseif (empty($resultados)): ?>
@@ -360,21 +336,15 @@ $total_pages = ceil(min($total, 500) / $per_page); // iNaturalist max 500
             </div>
 
         <?php else: ?>
-            <?php foreach ($resultados as $obs):
-                $taxon    = $obs['taxon'] ?? [];
-                $photos   = $obs['photos'] ?? [];
-                $photo    = $photos[0] ?? null;
-                $img_url  = $photo ? str_replace('square', 'medium', $photo['url'] ?? '') : '';
-                $name     = $taxon['preferred_common_name'] ?? $taxon['name'] ?? 'Especie desconocida';
-                $sci_name = $taxon['name'] ?? '';
-                $place    = $obs['place_guess'] ?? '';
-                $votes    = $obs['quality_grade'] === 'research' ? '✓ Verificada' : '';
-                $faves    = $obs['faves_count'] ?? 0;
-                $obs_url  = 'https://www.inaturalist.org/observations/' . ($obs['id'] ?? '');
-                $attr     = $photo['attribution'] ?? '';
+            <?php foreach ($resultados as $photo):
+                $img_url  = $photo['src']['medium'] ?? '';
+                $name     = $photo['alt'] ?: 'Vida Marina';
+                $photographer = $photo['photographer'] ?? 'Anónimo';
+                $photo_url = $photo['url'] ?? '#';
+                $avg_color = $photo['avg_color'] ?? '#001828';
             ?>
             <div class="hy-gallery-card">
-                <div class="hy-gallery-card-img-wrap">
+                <div class="hy-gallery-card-img-wrap" style="background: <?php echo $avg_color; ?>;">
                     <?php if ($img_url): ?>
                         <img src="<?php echo htmlspecialchars($img_url); ?>"
                              alt="<?php echo htmlspecialchars($name); ?>"
@@ -385,28 +355,16 @@ $total_pages = ceil(min($total, 500) / $per_page); // iNaturalist max 500
                         <div class="hy-gallery-placeholder">🌊</div>
                     <?php endif; ?>
 
-                    <?php if ($votes): ?>
-                        <span class="hy-quality-badge">✓ Verificada</span>
-                    <?php endif; ?>
-
                     <div class="hy-gallery-card-overlay">
-                        <a href="<?php echo htmlspecialchars($obs_url); ?>"
-                           target="_blank" rel="noopener">Ver en iNaturalist →</a>
+                        <a href="<?php echo htmlspecialchars($photo_url); ?>"
+                           target="_blank" rel="noopener">Ver en Pexels →</a>
                     </div>
                 </div>
 
                 <div class="hy-gallery-card-body">
                     <div class="hy-gallery-card-name"><?php echo htmlspecialchars(ucfirst($name)); ?></div>
-                    <?php if ($sci_name && $sci_name !== $name): ?>
-                        <div class="hy-gallery-card-sci"><?php echo htmlspecialchars($sci_name); ?></div>
-                    <?php endif; ?>
                     <div class="hy-gallery-card-meta">
-                        <?php if ($place): ?>
-                            <span class="hy-gallery-card-loc">📍 <?php echo htmlspecialchars($place); ?></span>
-                        <?php endif; ?>
-                        <?php if ($faves > 0): ?>
-                            <span class="hy-gallery-card-votes">⭐ <?php echo $faves; ?></span>
-                        <?php endif; ?>
+                        <span class="hy-gallery-card-loc">📸 <?php echo htmlspecialchars($photographer); ?></span>
                     </div>
                 </div>
             </div>
@@ -418,23 +376,26 @@ $total_pages = ceil(min($total, 500) / $per_page); // iNaturalist max 500
     <!-- Paginación -->
     <?php if ($total_pages > 1 && !$has_error): ?>
     <div class="hy-pagination">
-        <a href="?section=galeria&category=<?php echo $categoria; ?>&q=<?php echo urlencode($busqueda); ?>&page=<?php echo max(1,$page-1); ?>"
+        <a href="?section=galeria&category=<?php echo urlencode($categoria); ?>&q=<?php echo urlencode($busqueda); ?>&page=<?php echo max(1,$page-1); ?>"
            class="hy-page-btn <?php echo $page<=1?'disabled':''; ?>">← Anterior</a>
 
-        <?php for ($i = max(1,$page-2); $i <= min($total_pages,$page+2); $i++): ?>
-            <a href="?section=galeria&category=<?php echo $categoria; ?>&q=<?php echo urlencode($busqueda); ?>&page=<?php echo $i; ?>"
+        <?php 
+        $start_page = max(1, $page - 2);
+        $end_page = min($total_pages, $page + 2);
+        for ($i = $start_page; $i <= $end_page; $i++): ?>
+            <a href="?section=galeria&category=<?php echo urlencode($categoria); ?>&q=<?php echo urlencode($busqueda); ?>&page=<?php echo $i; ?>"
                class="hy-page-btn <?php echo $i===$page?'active':''; ?>"><?php echo $i; ?></a>
         <?php endfor; ?>
 
-        <a href="?section=galeria&category=<?php echo $categoria; ?>&q=<?php echo urlencode($busqueda); ?>&page=<?php echo min($total_pages,$page+1); ?>"
+        <a href="?section=galeria&category=<?php echo urlencode($categoria); ?>&q=<?php echo urlencode($busqueda); ?>&page=<?php echo min($total_pages,$page+1); ?>"
            class="hy-page-btn <?php echo $page>=$total_pages?'disabled':''; ?>">Siguiente →</a>
     </div>
     <?php endif; ?>
 
     <!-- Créditos -->
     <p style="text-align:center;margin-top:2rem;font-family:'Nunito',sans-serif;font-size:.78rem;color:#5a7a9a;">
-        Datos de <a href="https://www.inaturalist.org" target="_blank" style="color:#0077be;">iNaturalist</a>
-        bajo licencias Creative Commons · Solo observaciones verificadas por la comunidad científica
+        Imágenes proporcionadas por <a href="https://www.pexels.com" target="_blank" style="color:#0077be;">Pexels</a>
+        bajo su licencia de uso gratuito.
     </p>
 
 </div>

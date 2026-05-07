@@ -144,7 +144,7 @@ $rol = $_SESSION['rol'];
 <div class="hy-menu">
 
 <?php if($rol == "administrador"){ ?>
-<button onclick="cargar('crear_Contenido')">Crear Contenido</button>
+<button onclick="cargar('crear_contenido')">Crear Contenido</button>
 <button onclick="cargar('mis_Publicaciones')">Mis Publicaciones</button>
 <button onclick="cargar('mis_borradores')">Mis Borradores</button>
 <button onclick="cargar('mis_publicacionePendientes')">Pendientes</button>
@@ -185,18 +185,44 @@ $rol = $_SESSION['rol'];
 </div>
 
 <script>
-function cargar(modulo){
-    fetch(modulo + ".php")
+// Módulos en ../includes/ — con soporte para ?params
+const rutasIncludes = {
+    'crear_contenido':   '../includes/crear_contenido.php',
+    'mis_publicaciones': '../includes/mis_Publicaciones.php',
+    'mis_borradores':    '../includes/mis_borradores.php',
+    'editar_contenido':  '../includes/editar_contenido.php',
+};
+
+function cargar(modulo) {
+    // Separar nombre del módulo de sus parámetros: 'editar_contenido?id=5'
+    const [nombre, params] = modulo.split('?');
+    const nombreLower = nombre.toLowerCase();
+
+    const base = rutasIncludes[nombreLower] ?? (nombre + '.php');
+    const ruta = params ? base + '?' + params : base;
+
+    fetch(ruta)
     .then(res => res.text())
     .then(data => {
-        document.getElementById("contenido").innerHTML = data;
-    });
+        const contenedor = document.getElementById("contenido");
+        contenedor.innerHTML = data;
+
+        // Ejecutar scripts del fragmento cargado
+        contenedor.querySelectorAll("script").forEach(oldScript => {
+            const newScript = document.createElement("script");
+            newScript.text = oldScript.text;
+            document.body.appendChild(newScript).parentNode.removeChild(newScript);
+        });
+    })
+    .catch(err => console.error('Error al cargar módulo:', err));
 }
 
-// anti botón atrás
-window.history.forward();
+
 window.onpageshow = function(e){
-    if(e.persisted) location.reload();
+    if(e.persisted) {
+        console.log('Página cargada desde cache, no recargamos');
+        // location.reload(); // <-- comenta esto mientras depuras
+    }
 };
 </script>
 

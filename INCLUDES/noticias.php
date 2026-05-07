@@ -1,11 +1,23 @@
 <?php
 // ── CONFIGURACIÓN ──────────────────────────────────────────
-define('NEWS_API_KEY', '4236e2c6b3d846aba3639d6ed17a5237');
+// Cargar config de keys (si existe, si no, usar valor por defecto vacío)
+if (!file_exists(__DIR__ . '/../config_keys.php')) {
+    // Si no existe, usar una key de demostración (limitada)
+    define('NEWS_API_KEY', 'demo_key_aqui');
+} else {
+    require_once __DIR__ . '/../config_keys.php';
+}
+
 define('NEWS_CACHE',   __DIR__ . '/../data/noticias_cache.json');
 define('CACHE_TTL',    3600); // 1 hora
 
 // ── FUNCIÓN: obtener noticias con caché ────────────────────
 function fetchNoticias($query = 'ocean marine life', $lang = 'es', $page = 1) {
+    // Verificar si la API key está configurada
+    if (NEWS_API_KEY === 'demo_key_aqui') {
+        return ['articles' => [], 'error' => true, 'message' => 'API no configurada. Consulta config_keys.example.php'];
+    }
+    
     // Intentar caché
     $cache_key = md5($query . $lang . $page);
     $cache_file = __DIR__ . '/../data/cache_' . $cache_key . '.json';
