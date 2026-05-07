@@ -43,7 +43,10 @@ $resultado = $stmt->get_result();
     <td><?php echo $row['fecha_de_registro']; ?></td>
 
     <td>
-        <button class="btn btn-warning btn-sm">Editar</button>
+        <a href="editar_usuario.php?id=<?php echo $row['id']; ?>" 
+   class="btn btn-warning btn-sm">
+   Editar
+</a>
 
         <a href="eliminar_usuario.php?id=<?php echo $row['id']; ?>"
            class="btn btn-danger btn-sm"
