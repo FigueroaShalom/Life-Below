@@ -4,7 +4,7 @@
     <div class="hy-footer-inner">
 
         <div class="hy-footer-brand">
-            <img src="uploads/logo.png" alt="HYDRON" class="hy-footer-logo">
+            <p>Life Below</p>
             <p>Explorando y protegiendo<br>nuestros océanos.</p>
             <div class="hy-footer-social">
                 <a href="#" title="Instagram">
@@ -36,18 +36,18 @@
         </div>
 
         <div class="hy-footer-col">
-            <h4>ODS 14</h4>
+            <h4>Sostenibilidad</h4>
             <p style="font-size:.85rem;color:rgba(255,255,255,0.55);line-height:1.6;">
-                HYDRON contribuye al Objetivo de Desarrollo Sostenible 14: Vida Submarina.
+                Contribuimos a la conservación marina a través de la educación y la ciencia.
             </p>
-            <span class="hy-ods-badge">🌊 Vida Submarina</span>
+            <span class="hy-ods-badge">Vida Submarina</span>
         </div>
 
     </div>
 
     <div class="hy-footer-bottom">
         <p>&copy; <?php echo date('Y'); ?> <?php echo SITE_NAME; ?> — Todos los derechos reservados</p>
-        <p>Hecho con 🌊 para el océano</p>
+        <p>Hecho con dedicación para los océanos</p>
     </div>
 </footer>
 

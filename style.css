@@ -79,7 +79,32 @@ a   { color: inherit; }
 .hy-nav-link:hover  { background: rgba(255,255,255,0.1); color: #fff; }
 .hy-nav-link.hy-active { background: rgba(0,180,220,0.2); color: var(--cyan); }
 
-.hy-nav-actions { display: flex; align-items: center; gap: .6rem; flex-shrink: 0; }
+.hy-nav-actions { display: flex; align-items: center; gap: .8rem; flex-shrink: 0; }
+
+.hy-user-profile {
+    display: flex; align-items: center; gap: .6rem;
+    background: rgba(0, 180, 220, 0.15);
+    border: 1px solid rgba(0, 200, 240, 0.3);
+    padding: 6px 14px; border-radius: 50px;
+    font-size: .85rem; font-weight: 700;
+}
+
+.hy-profile-icon {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 24px; height: 24px;
+    background: linear-gradient(135deg, #0077be, #00b4d8);
+    border-radius: 50%;
+    color: #fff; font-size: 1.2rem;
+}
+
+.hy-username {
+    color: rgba(255, 255, 255, 0.9);
+    font-weight: 700;
+    max-width: 120px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
 
 .hy-user-chip {
     font-size: .82rem; font-weight: 700;

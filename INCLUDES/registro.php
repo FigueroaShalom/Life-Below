@@ -218,6 +218,7 @@
                     </svg>
                     <input class="os-input" type="password" id="password" placeholder="Contraseña" required>
                 </div>
+                <small id="passwordMsg"></small>
             </div>
             <button type="submit" class="os-btn">Registrarse</button>
         </form>
@@ -279,6 +280,14 @@
 </div>
 
 <script>
+function validarPassword(pass) {
+    let errores = [];
+    if (pass.length < 8) errores.push("al menos 8 caracteres");
+    if (!/[A-Z]/.test(pass)) errores.push("una mayúscula");
+    if (!/[0-9]/.test(pass) && !/[^a-zA-Z0-9]/.test(pass)) errores.push("un número o símbolo especial");
+    return errores.length === 0 ? true : "Falta: " + errores.join(", ");
+}
+
 document.getElementById("user").addEventListener("keyup", function() {
     const msg = document.getElementById("userMsg");
     if (!this.value.trim()) { msg.textContent=''; return; }
@@ -303,6 +312,19 @@ document.getElementById("email").addEventListener("keyup", function() {
         msg.textContent  = d==="existe" ? "❌ Email ya registrado" : "✅ Disponible";
     });
 });
+document.getElementById("password").addEventListener("keyup", function() {
+    const msg = document.getElementById("passwordMsg");
+    const pass = this.value.trim();
+    if (!pass) { msg.textContent=''; return; }
+    const check = validarPassword(pass);
+    if (check === true) {
+        msg.style.color = "#00e676";
+        msg.textContent = "✅ Contraseña segura";
+    } else {
+        msg.style.color = "#ffaa00";
+        msg.textContent = "⚠️ " + check;
+    }
+});
 document.getElementById("registroForm").addEventListener("submit", function(e) {
     e.preventDefault();
     const user  = document.getElementById("user").value.trim();
@@ -312,6 +334,11 @@ document.getElementById("registroForm").addEventListener("submit", function(e) {
     if (!user||!email||!pass) {
         msg.style.cssText="background:rgba(255,150,0,.15);color:#ffaa00;border:1px solid rgba(255,150,0,.3);";
         msg.textContent="⚠️ Completa todos los campos"; return;
+    }
+    const passCheck = validarPassword(pass);
+    if (passCheck !== true) {
+        msg.style.cssText="background:rgba(255,150,0,.15);color:#ffaa00;border:1px solid rgba(255,150,0,.3);";
+        msg.textContent="⚠️ " + passCheck; return;
     }
     msg.style.cssText="color:rgba(0,210,230,.7);"; msg.textContent="Registrando explorador...";
     fetch("database/validar_registro.php", {
@@ -329,6 +356,9 @@ document.getElementById("registroForm").addEventListener("submit", function(e) {
         } else if (data==="email") {
             msg.style.cssText="background:rgba(255,60,60,.15);color:#ff6b6b;border:1px solid rgba(255,60,60,.3);";
             msg.textContent="❌ Email ya registrado";
+        } else if (data.startsWith("password_weak:")) {
+            msg.style.cssText="background:rgba(255,150,0,.15);color:#ffaa00;border:1px solid rgba(255,150,0,.3);";
+            msg.textContent="⚠️ Contraseña débil: " + data.substring(14);
         } else {
             msg.style.cssText="background:rgba(255,150,0,.15);color:#ffaa00;border:1px solid rgba(255,150,0,.3);";
             msg.textContent="⚠️ "+data;
