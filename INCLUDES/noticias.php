@@ -737,7 +737,7 @@ if ($sub === 'eventos') {
             </a>
         </div>
 
-        <!-- Búsqueda (solo en sección noticias) -->
+        <!-- Búsqueda  -->
         <?php if ($sub !== 'eventos'): ?>
         <form action="?section=noticias" method="GET" class="hy-search-form">
             <input type="hidden" name="section" value="noticias">
@@ -856,7 +856,7 @@ if ($sub === 'eventos') {
 
         <?php endif; ?>
 
-    <?php endif; /* fin noticias */ ?>
+    <?php endif;  ?>
 
 
     <!-- ════════════════════════════════════════════════ -->
@@ -899,7 +899,6 @@ if ($sub === 'eventos') {
             ?>
                 <div class="hy-event-card">
 
-                    <!-- Header de color con emoji -->
                     <div class="hy-event-card-header">
                         
                         <span class="hy-event-type-badge">
