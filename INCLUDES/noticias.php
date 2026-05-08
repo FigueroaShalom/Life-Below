@@ -882,7 +882,7 @@ if ($sub === 'eventos') {
                     $ev_loc   = $ev['location'];
                     $ev_url   = $ev['url'];
                     $ev_type  = $ev['type'];
-                    $ev_emoji = $ev['emoji'];
+                    
                 } else {
                     // Formato Ticketmaster
                     $ev_title = $ev['name']                                      ?? 'Evento marino';
@@ -901,7 +901,7 @@ if ($sub === 'eventos') {
 
                     <!-- Header de color con emoji -->
                     <div class="hy-event-card-header">
-                        <span class="hy-event-emoji"><?php echo $ev_emoji; ?></span>
+                        
                         <span class="hy-event-type-badge">
                             <?php echo htmlspecialchars($ev_type); ?>
                         </span>
@@ -968,6 +968,6 @@ if ($sub === 'eventos') {
 
         <?php endif; ?>
 
-    <?php endif; /* fin eventos */ ?>
+    <?php endif; ?>
 
 </div>
