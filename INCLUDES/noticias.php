@@ -109,7 +109,6 @@ function fetchEventosCurados($page = 1) {
             'location'    => 'Bahía Magdalena, Baja California Sur',
             'url'         => 'https://www.gob.mx/conanp',
             'type'        => 'Avistamiento · Conservación',
-            'emoji'       => '🐋',
         ],
         [
             'title'       => 'Limpieza de Playa · AIDA México',
@@ -118,7 +117,6 @@ function fetchEventosCurados($page = 1) {
             'location'    => 'Costas de Jalisco, Nayarit y Guerrero',
             'url'         => 'https://www.aida-americas.org',
             'type'        => 'Voluntariado · Playa',
-            'emoji'       => '🏖️',
         ],
         [
             'title'       => 'Semana del Océano · Cancún',
@@ -127,7 +125,7 @@ function fetchEventosCurados($page = 1) {
             'location'    => 'Cancún, Quintana Roo',
             'url'         => 'https://oceandecade.org',
             'type'        => 'Conferencia · Educación',
-            'emoji'       => '🌊',
+            
         ],
         [
             'title'       => 'Monitoreo de Tortugas · CONANP',
@@ -136,7 +134,7 @@ function fetchEventosCurados($page = 1) {
             'location'    => 'Playa Morro Ayuta, Oaxaca',
             'url'         => 'https://www.gob.mx/conanp',
             'type'        => 'Conservación · Voluntariado',
-            'emoji'       => '🐢',
+            
         ],
         [
             'title'       => 'Congreso Mexicano de Arrecifes de Coral',
@@ -145,7 +143,7 @@ function fetchEventosCurados($page = 1) {
             'location'    => 'Puerto Morelos, Quintana Roo',
             'url'         => 'https://www.coral.org',
             'type'        => 'Congreso · Ciencia',
-            'emoji'       => '🪸',
+            
         ],
         [
             'title'       => 'Festival Vive el Mar · Mazatlán',
@@ -154,7 +152,7 @@ function fetchEventosCurados($page = 1) {
             'location'    => 'Mazatlán, Sinaloa',
             'url'         => 'https://turismosinaloa.gob.mx',
             'type'        => 'Festival · Educación',
-            'emoji'       => '🐬',
+           
         ],
         [
             'title'       => 'Buceo Científico en el Golfo de California',
@@ -163,7 +161,7 @@ function fetchEventosCurados($page = 1) {
             'location'    => 'La Paz, Baja California Sur',
             'url'         => 'https://www.cobi.org.mx',
             'type'        => 'Expedición · Ciencia',
-            'emoji'       => '🤿',
+            
         ],
         [
             'title'       => 'Foro Nacional de Pesca Sustentable',
@@ -172,7 +170,7 @@ function fetchEventosCurados($page = 1) {
             'location'    => 'Mérida, Yucatán',
             'url'         => 'https://www.worldwildlife.org',
             'type'        => 'Foro · Política Pública',
-            'emoji'       => '🐟',
+          
         ],
         [
             'title'       => 'Maratón de Playa Limpia · ENDESU',
@@ -181,7 +179,7 @@ function fetchEventosCurados($page = 1) {
             'location'    => 'Nacional – múltiples sedes',
             'url'         => 'https://www.endesu.org.mx',
             'type'        => 'Voluntariado · Playa',
-            'emoji'       => '🌿',
+            
         ],
     ];
 
@@ -731,11 +729,11 @@ if ($sub === 'eventos') {
         <div class="hy-tabs">
             <a href="?section=noticias&sub=noticias"
                class="hy-tab <?php echo $sub === 'noticias' ? 'active' : ''; ?>">
-                📰 Noticias
+                 Noticias
             </a>
             <a href="?section=noticias&sub=eventos"
                class="hy-tab <?php echo $sub === 'eventos' ? 'active' : ''; ?>">
-                📅 Eventos en México
+                 Eventos en México
             </a>
         </div>
 
@@ -748,7 +746,7 @@ if ($sub === 'eventos') {
                 type="text"
                 name="q"
                 value="<?php echo htmlspecialchars($search_query); ?>"
-                placeholder="🔍 Buscar sobre vida marina..."
+                placeholder=" Buscar sobre vida marina..."
                 class="hy-search-input"
                 autocomplete="off"
             >
@@ -768,13 +766,13 @@ if ($sub === 'eventos') {
 
         <?php if ($has_error): ?>
             <div class="hy-empty">
-                <h3>⚠️ No se pudo conectar a GNews</h3>
+                <h3> No se pudo conectar a GNews!</h3>
                 <p>Verifica que tu API Key de GNews esté configurada en <code>config_keys.php</code> o intenta más tarde.</p>
             </div>
 
         <?php elseif (empty($articles)): ?>
             <div class="hy-empty">
-                <h3>🌊 No hay noticias disponibles</h3>
+                <h3>No hay noticias disponibles</h3>
                 <p>Intenta con otro término de búsqueda o vuelve más tarde.</p>
             </div>
 
@@ -803,7 +801,7 @@ if ($sub === 'eventos') {
                                  class="hy-news-card-img"
                                  onerror="this.parentElement.innerHTML='<div class=\'hy-news-card-img-placeholder\'>🌊</div>';">
                         <?php else: ?>
-                            <div class="hy-news-card-img-placeholder">🌊</div>
+                            <div class="hy-news-card-img-placeholder"></div>
                         <?php endif; ?>
 
                         <!-- Badge de idioma -->
@@ -826,7 +824,7 @@ if ($sub === 'eventos') {
                             </div>
                         <?php endif; ?>
                         <div class="hy-news-card-footer">
-                            <span class="hy-news-card-date">📅 <?php echo $date; ?></span>
+                            <span class="hy-news-card-date"> <?php echo $date; ?></span>
                             <a href="<?php echo htmlspecialchars($url_art); ?>"
                                target="_blank"
                                rel="noopener noreferrer"
@@ -868,7 +866,7 @@ if ($sub === 'eventos') {
 
         <?php if (empty($eventos)): ?>
             <div class="hy-empty">
-                <h3>🌊 No hay eventos disponibles</h3>
+                <h3>No hay eventos disponibles</h3>
                 <p>Pronto se agregarán nuevos eventos. ¡Vuelve pronto!</p>
             </div>
         <?php else: ?>
@@ -897,7 +895,6 @@ if ($sub === 'eventos') {
                               . $ev['_embedded']['venues'][0]['city']['name'] ?? 'México';
                     $ev_url   = $ev['url']                                       ?? '#';
                     $ev_type  = $ev['classifications'][0]['segment']['name']     ?? 'Evento';
-                    $ev_emoji = '🌊';
                 }
             ?>
                 <div class="hy-event-card">
@@ -924,7 +921,7 @@ if ($sub === 'eventos') {
                         <!-- Meta: fecha y lugar -->
                         <div class="hy-event-meta">
                             <div class="hy-event-meta-item">
-                                <span class="hy-event-meta-icon">📅</span>
+                                <span class="hy-event-meta-icon"></span>
                                 <span><?php echo htmlspecialchars($ev_date); ?></span>
                             </div>
                             <div class="hy-event-meta-item">
