@@ -34,7 +34,6 @@ function findRelatedArticle($conn, $title, $description, $category) {
     return null;
 }
 
-$isKids = isset($_GET['kids']);
 $cat_filter   = $_GET['cat'] ?? '';
 $search_query = trim($_GET['q'] ?? '');
 $sql = "
@@ -64,23 +63,13 @@ $sql .= " ORDER BY v.fecha_publicacion DESC";
 $videos = $conn->query($sql)->fetch_all(MYSQLI_ASSOC);
 $total = count($videos);
 
-if ($isKids) {
-    $categorias = [
-        ['key' => 'general', 'text' => 'Todos', 'icon' => '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0077be" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>'],
-        ['key' => 'peces', 'text' => 'Peces', 'icon' => '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0077be" stroke-width="2"><path d="M12 2c-1 0-2 1-2 2v2c-2 0-4 2-4 4v4c0 2 2 4 4 4v2c0 1 1 2 2 2s2-1 2-2v-2c2 0 4-2 4-4v-4c0-2-2-4-4-4v-2c0-1-1-2-2-2z m0 4c1.1 0 2 .9 2 2s-.9 2-2 2-2-.9-2-2 .9-2 2-2z"/></svg>'],
-        ['key' => 'mamiferos', 'text' => 'Mamíferos', 'icon' => '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0077be" stroke-width="2"><path d="M12 2c-1 0-2 1-2 2v2c-2 0-4 2-4 4v4c0 2 2 4 4 4v2c0 1 1 2 2 2s2-1 2-2v-2c2 0 4-2 4-4v-4c0-2-2-4-4-4v-2c0-1-1-2-2-2z m-2 8c0-1.1.9-2 2-2s2 .9 2 2-.9 2-2 2-2-.9-2-2z"/></svg>'],
-        ['key' => 'conservacion', 'text' => 'Cuidemos el mar', 'icon' => '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0077be" stroke-width="2"><path d="M12 2l-1 1v2c-2 0-4 2-4 4v4c0 2 2 4 4 4v2l1 1 1-1v-2c2 0 4-2 4-4v-4c0-2-2-4-4-4v-2l-1-1z"/></svg>'],
-        ['key' => 'documental', 'text' => 'Historias', 'icon' => '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0077be" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>'],
-    ];
-} else {
-    $categorias = [
-        ['key' => 'general', 'text' => 'Todos', 'icon' => ''],
-        ['key' => 'peces', 'text' => 'Peces', 'icon' => ''],
-        ['key' => 'mamiferos', 'text' => 'Mamíferos', 'icon' => ''],
-        ['key' => 'conservacion', 'text' => 'Conservación', 'icon' => ''],
-        ['key' => 'documental', 'text' => 'Documental', 'icon' => ''],
-    ];
-}
+$categorias = [
+    ['key' => 'general', 'text' => 'Todos', 'icon' => ''],
+    ['key' => 'peces', 'text' => 'Peces', 'icon' => ''],
+    ['key' => 'mamiferos', 'text' => 'Mamíferos', 'icon' => ''],
+    ['key' => 'conservacion', 'text' => 'Conservación', 'icon' => ''],
+    ['key' => 'documental', 'text' => 'Documental', 'icon' => ''],
+];
 ?>
 
 <script src="https://www.youtube.com/iframe_api"></script>
@@ -203,42 +192,6 @@ if ($isKids) {
     background: rgba(255,255,255,0.06);
     color: rgba(255,255,255,0.75);
     border: 1px solid rgba(255,255,255,0.1);
-}
-.watch-switch-btn {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0.5rem;
-    padding: 0.9rem 1.4rem;
-    border-radius: 12px;
-    border: none;
-    font-family: 'Nunito', sans-serif;
-    font-size: 0.95rem;
-    font-weight: 800;
-    cursor: pointer;
-    text-decoration: none;
-    transition: all 0.3s ease;
-}
-.watch-switch-btn.normal {
-    background: linear-gradient(135deg, #0077be, #005a8d);
-    color: #fff;
-    border: 2px solid rgba(0,119,190,0.4);
-}
-.watch-switch-btn.normal:hover {
-    background: linear-gradient(135deg, #0088d4, #006ba3);
-    transform: translateY(-2px);
-    box-shadow: 0 8px 16px rgba(0,119,190,0.3);
-}
-.watch-switch-btn.kids {
-    background: linear-gradient(135deg, #ff6b6b, #ff4757);
-    color: #fff;
-    border: 3px solid #ff8787;
-    box-shadow: 0 4px 12px rgba(255,107,107,0.3);
-}
-.watch-switch-btn.kids:hover {
-    background: linear-gradient(135deg, #ff7b7b, #ff6767);
-    transform: scale(1.05) translateY(-2px);
-    box-shadow: 0 8px 20px rgba(255,107,107,0.5);
 }
 .watch-filters { display: flex; flex-direction: column; gap: .35rem; }
 .watch-filters-label {
@@ -570,7 +523,7 @@ if ($isKids) {
         <input type="hidden" name="section" value="watch">
         <?php if ($cat_filter): ?><input type="hidden" name="cat" value="<?php echo htmlspecialchars($cat_filter); ?>"><?php endif; ?>
         <input type="text" name="q" value="<?php echo htmlspecialchars($search_query); ?>"
-               placeholder="<?php echo $isKids ? 'Buscar temas divertidos...' : 'Buscar temas, categorías o autores...'; ?>">
+               placeholder="Buscar temas, categorías o autores...">
         <button type="submit">Buscar</button>
         <?php if ($search_query): ?>
             <a class="watch-search-clear" href="?section=watch<?php echo $cat_filter ? '&cat='.urlencode($cat_filter) : ''; ?>">Limpiar</a>
@@ -582,25 +535,16 @@ if ($isKids) {
     <!-- SIDEBAR -->
     <div class="watch-sidebar">
         <div>
-            <div class="watch-sidebar-title">▶ <span><?php echo $isKids ? 'W' : 'WATCH'; ?></span><?php if ($isKids): ?><span style="color: #ff6b6b; font-weight: bold;">KIDS</span><?php endif; ?></div>
-            <div class="watch-sidebar-sub"><?php echo $isKids ? 'Vida marina para niños' : 'Vida marina en video'; ?></div>
-            <div style="margin-top: 1.5rem;">
-                <a href="?section=watch<?php echo $isKids ? '' : '&kids=1'; ?><?php echo $cat_filter ? '&cat='.urlencode($cat_filter) : ''; ?><?php echo $search_query ? '&q='.urlencode($search_query) : ''; ?>" class="watch-switch-btn <?php echo $isKids ? 'kids' : 'normal'; ?>">
-                    <?php if ($isKids): ?>
-                        🎮 Volver a Watch
-                    <?php else: ?>
-                        🌊 Ir a wKids
-                    <?php endif; ?>
-                </a>
-            </div>
+            <div class="watch-sidebar-title">▶ <span>WATCH</span></div>
+            <div class="watch-sidebar-sub">Vida marina en video</div>
         </div>
 
         <div class="watch-filters">
-            <div class="watch-filters-label"><?php echo $isKids ? '¡Elige tu aventura!' : 'Categorías'; ?></div>
-            <a href="?section=watch<?php echo $isKids ? '&kids=1' : ''; ?><?php echo $search_query ? '&q='.urlencode($search_query) : ''; ?>"
+            <div class="watch-filters-label">Categorías</div>
+            <a href="?section=watch<?php echo $search_query ? '&q='.urlencode($search_query) : ''; ?>"
                class="watch-filter-btn <?php echo !$cat_filter ? 'active' : ''; ?>"><?php echo $categorias[0]['icon']; ?> <?php echo $categorias[0]['text']; ?></a>
             <?php foreach (array_slice($categorias, 1) as $cat): ?>
-                <a href="?section=watch<?php echo $isKids ? '&kids=1' : ''; ?>&cat=<?php echo $cat['key']; ?><?php echo $search_query ? '&q='.urlencode($search_query) : ''; ?>"
+                <a href="?section=watch&cat=<?php echo $cat['key']; ?><?php echo $search_query ? '&q='.urlencode($search_query) : ''; ?>"
                    class="watch-filter-btn <?php echo $cat_filter === $cat['key'] ? 'active' : ''; ?>">
                     <?php echo $cat['icon']; ?> <?php echo $cat['text']; ?>
                 </a>
@@ -614,8 +558,8 @@ if ($isKids) {
         <?php if (empty($videos)): ?>
             <div class="watch-empty">
                 <div style="font-size:3rem;margin-bottom:1rem;">🌊</div>
-                <h3><?php echo $isKids ? '¡No hay aventuras aún!' : 'No hay videos aún'; ?></h3>
-                <p><?php echo $isKids ? 'Pronto tendremos historias divertidas.' : 'Publica desde tu dashboard.'; ?></p>
+                <h3>No hay videos aún</h3>
+                <p>Publica desde tu dashboard.</p>
             </div>
         <?php else: ?>
         <div class="reel-viewport" id="reelViewport">
