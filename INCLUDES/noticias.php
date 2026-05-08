@@ -29,7 +29,7 @@ function fetchNoticias($query, $lang = 'es', $page = 1) {
     }
 
     // GNews permite max 10 por request en plan gratuito
-    $max     = 9;
+    $max     = 10;
     $offset  = ($page - 1) * $max;
 
     $url = 'https://gnews.io/api/v4/search?' . http_build_query([
@@ -109,6 +109,7 @@ function fetchEventosCurados($page = 1) {
             'location'    => 'Bahía Magdalena, Baja California Sur',
             'url'         => 'https://www.gob.mx/conanp',
             'type'        => 'Avistamiento · Conservación',
+            'emoji'       => '🐋',
         ],
         [
             'title'       => 'Limpieza de Playa · AIDA México',
@@ -117,7 +118,7 @@ function fetchEventosCurados($page = 1) {
             'location'    => 'Costas de Jalisco, Nayarit y Guerrero',
             'url'         => 'https://www.aida-americas.org',
             'type'        => 'Voluntariado · Playa',
-            
+            'emoji'       => '🏖️',
         ],
         [
             'title'       => 'Semana del Océano · Cancún',
@@ -126,7 +127,7 @@ function fetchEventosCurados($page = 1) {
             'location'    => 'Cancún, Quintana Roo',
             'url'         => 'https://oceandecade.org',
             'type'        => 'Conferencia · Educación',
-           
+            'emoji'       => '🌊',
         ],
         [
             'title'       => 'Monitoreo de Tortugas · CONANP',
@@ -135,7 +136,7 @@ function fetchEventosCurados($page = 1) {
             'location'    => 'Playa Morro Ayuta, Oaxaca',
             'url'         => 'https://www.gob.mx/conanp',
             'type'        => 'Conservación · Voluntariado',
-            
+            'emoji'       => '🐢',
         ],
         [
             'title'       => 'Congreso Mexicano de Arrecifes de Coral',
@@ -144,7 +145,7 @@ function fetchEventosCurados($page = 1) {
             'location'    => 'Puerto Morelos, Quintana Roo',
             'url'         => 'https://www.coral.org',
             'type'        => 'Congreso · Ciencia',
-            
+            'emoji'       => '🪸',
         ],
         [
             'title'       => 'Festival Vive el Mar · Mazatlán',
@@ -153,7 +154,7 @@ function fetchEventosCurados($page = 1) {
             'location'    => 'Mazatlán, Sinaloa',
             'url'         => 'https://turismosinaloa.gob.mx',
             'type'        => 'Festival · Educación',
-            
+            'emoji'       => '🐬',
         ],
         [
             'title'       => 'Buceo Científico en el Golfo de California',
@@ -162,6 +163,7 @@ function fetchEventosCurados($page = 1) {
             'location'    => 'La Paz, Baja California Sur',
             'url'         => 'https://www.cobi.org.mx',
             'type'        => 'Expedición · Ciencia',
+            'emoji'       => '🤿',
         ],
         [
             'title'       => 'Foro Nacional de Pesca Sustentable',
@@ -170,6 +172,7 @@ function fetchEventosCurados($page = 1) {
             'location'    => 'Mérida, Yucatán',
             'url'         => 'https://www.worldwildlife.org',
             'type'        => 'Foro · Política Pública',
+            'emoji'       => '🐟',
         ],
         [
             'title'       => 'Maratón de Playa Limpia · ENDESU',
@@ -178,6 +181,7 @@ function fetchEventosCurados($page = 1) {
             'location'    => 'Nacional – múltiples sedes',
             'url'         => 'https://www.endesu.org.mx',
             'type'        => 'Voluntariado · Playa',
+            'emoji'       => '🌿',
         ],
     ];
 
@@ -225,7 +229,7 @@ if ($sub === 'eventos') {
 
     // Complementar con inglés si hay pocos resultados (términos técnicos en inglés)
     $arts_en = [];
-    if (count($arts_es) < 5) {
+    if (count($arts_es) < 8) {
         $query_en = $search_query ?: 'marine life ocean conservation';
         $data_en  = fetchNoticias($query_en, 'en', $page);
         $arts_en  = array_filter($data_en['articles'] ?? [], fn($a) =>
@@ -233,9 +237,9 @@ if ($sub === 'eventos') {
         );
     }
 
-    // Mezclar: primero en español, luego en inglés, máximo 9
+    // Mezclar: primero en español, luego en inglés, máximo 10
     $merged   = array_merge(array_values($arts_es), array_values($arts_en));
-    $articles = array_slice($merged, 0, 9);
+    $articles = array_slice($merged, 0, 10);
 
     $has_error = empty($articles) && (!empty($data_es['error']) || empty($data_es['articles']));
 }
@@ -716,7 +720,7 @@ if ($sub === 'eventos') {
                 <?php endif; ?>
             </p>
         </div>
-        <span class="hy-api-badge">
+        <span class="hy-api-badge" style="display:none;">
             <?php echo $sub === 'eventos' ? 'Curado · México' : 'Live · GNews'; ?>
         </span>
     </div>
@@ -775,12 +779,6 @@ if ($sub === 'eventos') {
             </div>
 
         <?php else: ?>
-
-            <?php if ($search_query): ?>
-            <div class="hy-curated-note">
-                🔍 Mostrando resultados para: <strong><?php echo htmlspecialchars($search_query); ?></strong>
-            </div>
-            <?php endif; ?>
 
             <div class="hy-news-grid">
             <?php foreach ($articles as $article):
@@ -867,12 +865,6 @@ if ($sub === 'eventos') {
     <!-- SECCIÓN: EVENTOS EN MÉXICO                        -->
     <!-- ════════════════════════════════════════════════ -->
     <?php if ($sub === 'eventos'): ?>
-
-        <!-- Nota informativa -->
-        <div class="hy-curated-note">
-            🇲🇽 &nbsp;Eventos marinos, de playa y conservación que se realizan en México.
-            Fuentes: CONANP, AIDA, COBI, ENDESU y organizaciones aliadas.
-        </div>
 
         <?php if (empty($eventos)): ?>
             <div class="hy-empty">
