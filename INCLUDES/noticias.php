@@ -109,7 +109,6 @@ function fetchEventosCurados($page = 1) {
             'location'    => 'Bahía Magdalena, Baja California Sur',
             'url'         => 'https://www.gob.mx/conanp',
             'type'        => 'Avistamiento · Conservación',
-            'emoji'       => '🐋',
         ],
         [
             'title'       => 'Limpieza de Playa · AIDA México',
@@ -118,7 +117,7 @@ function fetchEventosCurados($page = 1) {
             'location'    => 'Costas de Jalisco, Nayarit y Guerrero',
             'url'         => 'https://www.aida-americas.org',
             'type'        => 'Voluntariado · Playa',
-            'emoji'       => '🏖️',
+            
         ],
         [
             'title'       => 'Semana del Océano · Cancún',
@@ -127,7 +126,7 @@ function fetchEventosCurados($page = 1) {
             'location'    => 'Cancún, Quintana Roo',
             'url'         => 'https://oceandecade.org',
             'type'        => 'Conferencia · Educación',
-            'emoji'       => '🌊',
+           
         ],
         [
             'title'       => 'Monitoreo de Tortugas · CONANP',
@@ -136,7 +135,7 @@ function fetchEventosCurados($page = 1) {
             'location'    => 'Playa Morro Ayuta, Oaxaca',
             'url'         => 'https://www.gob.mx/conanp',
             'type'        => 'Conservación · Voluntariado',
-            'emoji'       => '🐢',
+            
         ],
         [
             'title'       => 'Congreso Mexicano de Arrecifes de Coral',
@@ -145,7 +144,7 @@ function fetchEventosCurados($page = 1) {
             'location'    => 'Puerto Morelos, Quintana Roo',
             'url'         => 'https://www.coral.org',
             'type'        => 'Congreso · Ciencia',
-            'emoji'       => '🪸',
+            
         ],
         [
             'title'       => 'Festival Vive el Mar · Mazatlán',
@@ -154,7 +153,7 @@ function fetchEventosCurados($page = 1) {
             'location'    => 'Mazatlán, Sinaloa',
             'url'         => 'https://turismosinaloa.gob.mx',
             'type'        => 'Festival · Educación',
-            'emoji'       => '🐬',
+            
         ],
         [
             'title'       => 'Buceo Científico en el Golfo de California',
@@ -163,7 +162,6 @@ function fetchEventosCurados($page = 1) {
             'location'    => 'La Paz, Baja California Sur',
             'url'         => 'https://www.cobi.org.mx',
             'type'        => 'Expedición · Ciencia',
-            'emoji'       => '🤿',
         ],
         [
             'title'       => 'Foro Nacional de Pesca Sustentable',
@@ -172,7 +170,6 @@ function fetchEventosCurados($page = 1) {
             'location'    => 'Mérida, Yucatán',
             'url'         => 'https://www.worldwildlife.org',
             'type'        => 'Foro · Política Pública',
-            'emoji'       => '🐟',
         ],
         [
             'title'       => 'Maratón de Playa Limpia · ENDESU',
@@ -181,7 +178,6 @@ function fetchEventosCurados($page = 1) {
             'location'    => 'Nacional – múltiples sedes',
             'url'         => 'https://www.endesu.org.mx',
             'type'        => 'Voluntariado · Playa',
-            'emoji'       => '🌿',
         ],
     ];
 
