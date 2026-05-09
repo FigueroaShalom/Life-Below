@@ -95,36 +95,36 @@ function fetchEventosCurados($page = 1) {
             'description' => 'Avistamiento de ballenas grises en su ruta de migración por el Pacífico mexicano. Kayak, snorkel y talleres de conservación marina.',
             'date'        => 'Enero – Marzo (anual)',
             'location'    => 'Bahía Magdalena, Baja California Sur',
-            'url'         => 'https://www.tudominio.com/evento-ballenas', // <-- CAMBIA ESTE LINK
+            'url'         => 'https://es.golapaz.com/que-hacer/atracciones-y-tours/avistamiento-de-ballenas/',
             'type'        => 'Avistamiento · Conservación',
-            'img'         => 'https://images.unsplash.com/photo-1568430462989-44163eb1752f?w=600&q=80', // <-- CAMBIA ESTA IMAGEN
+            'img'         => 'https://assets.simpleviewinc.com/simpleview/image/upload/c_fill,f_jpg,h_709,q_65,w_1260/v1/clients/lapazmexico/tour_ballena_gris_fitupaz_9__1c43e243-c6ac-4917-ab24-cff18395c3a5.jpg', // <-- CAMBIA ESTA IMAGEN
         ],
         [
             'title'       => 'Limpieza de Playa · Costa Pacífico',
             'description' => 'Jornadas comunitarias de limpieza costera en playas de Jalisco, Nayarit y Guerrero coordinadas por organizaciones ambientales.',
             'date'        => 'Cada trimestre',
             'location'    => 'Costas de Jalisco, Nayarit y Guerrero',
-            'url'         => 'https://www.tudominio.com/limpieza', // <-- CAMBIA ESTE LINK
+            'url'         => 'https://mejoratuplaya.com/', 
             'type'        => 'Voluntariado · Playa',
-            'img'         => 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=600&q=80',
+            'img'         => 'https://mejoratuplaya.com/cdn/shop/files/limpieza-playa-la-pesca-tochito-fest-mejora-tu-playa-2025_37.jpg?v=1751651250&width=2048',
         ],
         [
             'title'       => 'Semana del Océano · Cancún',
             'description' => 'Conferencias, talleres de buceo científico y exposición fotográfica submarina en el Caribe mexicano.',
             'date'        => 'Junio (Día Mundial del Océano)',
             'location'    => 'Cancún, Quintana Roo',
-            'url'         => 'https://www.tudominio.com/semana-oceano', // <-- CAMBIA ESTE LINK
+            'url'         => 'https://www.festivaldelosoceanos.org.mx/', 
             'type'        => 'Conferencia · Educación',
-            'img'         => 'https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=600&q=80',
+            'img'         => 'https://static.wixstatic.com/media/e15f4b_49e3aad001df46b093b7db7f300d5c34~mv2.jpg/v1/fill/w_1131,h_1002,al_c,q_85,usm_0.66_1.00_0.01,enc_avif,quality_auto/e15f4b_49e3aad001df46b093b7db7f300d5c34~mv2.jpg',
         ],
         [
             'title'       => 'Monitoreo y Liberación de Tortugas',
-            'description' => 'Programa de liberación de tortugas lora y carey con participación ciudadana supervisada por biólogos marinos de CONANP.',
+            'description' => 'En Manzanillo, la conservación y liberación de tortugas marinas se gestiona principalmente a través del Tortugario Manzanillo (ubicado en Playa Azul) y el Centro Ecológico El Tortugario (en Cuyutlán, Armería), en colaboración con la Universidad de Colima y la Secretaría de Marina..',
             'date'        => 'Mayo – Octubre (temporada de anidación)',
-            'location'    => 'Playa Morro Ayuta, Oaxaca',
-            'url'         => 'https://www.tudominio.com/tortugas', // <-- CAMBIA ESTE LINK
+            'location'    => 'Playa Azul, Manzanillo, Colima',
+            'url'         => 'https://www.entornoturistico.com/2-tortugarios-en-colima-para-liberar-tortugas/', 
             'type'        => 'Conservación · Voluntariado',
-            'img'         => 'https://images.unsplash.com/photo-1591025207163-942350e47db2?w=600&q=80',
+            'img'         => 'https://programadestinosmexico.com/wp-content/uploads/2023/11/Liberacion-de-tortugas-en-Manzanillo1.jpg',
         ],
         [
             'title'       => 'Congreso Mexicano de Arrecifes de Coral',
