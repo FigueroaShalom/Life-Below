@@ -192,12 +192,12 @@ if ($sub === 'eventos') {
     $eventos_data = fetchEventos($page);
     $eventos      = $eventos_data['events'] ?? [];
 } else {
-    // filtrito
+    // ── LÓGICA PARA QUE EL USUARIO NO SE SALGA DEL TEMA ──
     if ($search_query !== '') {
-        
-        $base_query = '(' . $search_query . ') AND ("vida marina" OR "biología marina" OR "especies marinas" OR "arrecifes")';
+        // Forzamos a que su búsqueda TENGA que incluir palabras acuáticas
+        $base_query = '(' . $search_query . ') AND (mar OR océano OR marina OR submarino)';
     } else {
-        
+        // Noticias por defecto: súper estrictas
         $base_query = '"vida marina" OR "biología marina" OR "arrecifes de coral" OR "especies marinas"';
     }
 
