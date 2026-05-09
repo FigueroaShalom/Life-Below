@@ -1,12 +1,12 @@
 <?php
-// ── CONFIGURACIÓN ──────────────────────────────────────────
+// confi para la API 
 if (!file_exists(__DIR__ . '/../config_keys.php')) {
     define('GNEWS_API_KEY', 'd5b5320a0accff00272ab27733ba94ce');
 } else {
     require_once __DIR__ . '/../config_keys.php';
 }
 
-define('CACHE_TTL', 3600); // 1 hora
+define('CACHE_TTL', 3600); 
 
 
 function fetchNoticias($query, $page = 1) {
@@ -25,10 +25,11 @@ function fetchNoticias($query, $page = 1) {
         mkdir(__DIR__ . '/../data', 0777, true);
     }
 
+
     $url = 'https://gnews.io/api/v4/search?' . http_build_query([
         'q' => $query,
-        'lang'   => 'es', // <-- CANDADO 1: Solo español (adiós portugués)
-        'in'     => 'title,description', // <-- CANDADO 2: Solo busca en el título o resumen
+        'lang'   => 'es', 
+        'in'     => 'title,description', 
          'sortby' => 'publishedAt',
          'max' => 10,
          'from' => date('Y-m-d', strtotime('-60 days')),
@@ -52,7 +53,7 @@ function fetchNoticias($query, $page = 1) {
     return $data;
 }
 
-// ── FUNCIÓN: eventos marinos en México ────────────────────
+//eventos chavales
 function fetchEventos($page = 1) {
     if (defined('TICKETMASTER_API_KEY') && TICKETMASTER_API_KEY !== 'TU_TICKETMASTER_KEY_AQUI') {
         $cache_key  = 'eventos_mx_' . $page;
@@ -177,12 +178,12 @@ function fetchEventosCurados($page = 1) {
     ];
 }
 
-// ── PARÁMETROS ─────────────────────────────────────────────
+
 $sub          = $_GET['sub']  ?? 'noticias';
 $page         = max(1, (int)($_GET['page'] ?? 1));
 $search_query = trim($_GET['q'] ?? '');
 
-// ── LÓGICA ─────────────────────────────────────────────────
+
 $articles     = [];
 $eventos      = [];
 $has_error    = false;
@@ -192,12 +193,12 @@ if ($sub === 'eventos') {
     $eventos_data = fetchEventos($page);
     $eventos      = $eventos_data['events'] ?? [];
 } else {
-    // ── LÓGICA PARA QUE EL USUARIO NO SE SALGA DEL TEMA ──
+   //mas confi para noticias 
     if ($search_query !== '') {
-        // Forzamos a que su búsqueda TENGA que incluir palabras acuáticas
+        
         $base_query = '(' . $search_query . ') AND (mar OR océano OR marina OR submarino)';
     } else {
-        // Noticias por defecto: súper estrictas
+       
         $base_query = '"vida marina" OR "biología marina" OR "arrecifes de coral" OR "especies marinas"';
     }
 
@@ -286,7 +287,7 @@ if ($sub === 'eventos') {
 .hy-btn-primary { background: var(--ocean-blue); color: #fff; border-color: var(--ocean-blue); }
 .hy-btn-primary:hover { background: var(--ocean-teal); border-color: var(--ocean-teal); }
 
-/* ── Noticias ─────────────────────────────────────────── */
+
 .hy-news-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
@@ -360,7 +361,7 @@ if ($sub === 'eventos') {
 }
 .hy-news-card-link:hover { background: var(--ocean-teal); transform: translateX(2px); }
 
-/* ── Eventos ──────────────────────────────────────────── */
+
 .hy-events-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(310px, 1fr));
@@ -429,7 +430,6 @@ if ($sub === 'eventos') {
 }
 .hy-event-link:hover { background: var(--ocean-teal); }
 
-/* ── Paginación ───────────────────────────────────────── */
 .hy-pagination {
     display: flex; justify-content: center;
     gap: .5rem; margin-top: 3rem; flex-wrap: wrap;
@@ -445,7 +445,6 @@ if ($sub === 'eventos') {
     background: var(--ocean-blue); color: #fff; border-color: var(--ocean-blue);
 }
 
-/* ── Vacío / Error ────────────────────────────────────── */
 .hy-empty {
     text-align: center; padding: 4rem 2rem; background: #fff;
     border-radius: var(--radius-card); border: 1.5px solid var(--border-soft);
