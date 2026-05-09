@@ -8,9 +8,7 @@ if (!file_exists(__DIR__ . '/../config_keys.php')) {
 
 define('CACHE_TTL', 3600); // 1 hora
 
-// ── FUNCIÓN: obtener noticias desde GNews ──────────────────
-// UNA sola llamada sin filtro de idioma → GNews devuelve hasta 10
-// artículos mezclando ES + EN sin consumir 2 requests del plan gratuito
+
 function fetchNoticias($query, $page = 1) {
     if (!defined('GNEWS_API_KEY') || GNEWS_API_KEY === 'TU_GNEWS_API_KEY_AQUI') {
         return ['articles' => [], 'error' => true, 'message' => 'API GNews no configurada.'];
@@ -28,12 +26,14 @@ function fetchNoticias($query, $page = 1) {
     }
 
     $url = 'https://gnews.io/api/v4/search?' . http_build_query([
-        'q'      => $query,
-        'sortby' => 'publishedAt',
-        'max'    => 10,
-        'from'   => date('Y-m-d', strtotime('-60 days')),
-        'apikey' => GNEWS_API_KEY,
-    ]);
+        'q' => $query,
+        'lang'   => 'es', // <-- CANDADO 1: Solo español (adiós portugués)
+        'in'     => 'title,description', // <-- CANDADO 2: Solo busca en el título o resumen
+         'sortby' => 'publishedAt',
+         'max' => 10,
+         'from' => date('Y-m-d', strtotime('-60 days')),
+         'apikey' => GNEWS_API_KEY,
+]);
 
     $ctx = stream_context_create(['http' => [
         'timeout' => 12,
@@ -192,19 +192,23 @@ if ($sub === 'eventos') {
     $eventos_data = fetchEventos($page);
     $eventos      = $eventos_data['events'] ?? [];
 } else {
-    // ── NUEVO FILTRO ESTRICTO PARA GNEWS ──
-    $filtro_obligatorio = ' AND ("vida marina" OR océano OR mar OR "ocean conservation" OR arrecifes)';
-
+    // filtrito
     if ($search_query !== '') {
-        // Si el usuario buscó algo (ej. "plastico"), forzamos a que tenga relación marina
-        $base_query = '"' . $search_query . '"' . $filtro_obligatorio;
+        
+        $base_query = '(' . $search_query . ') AND ("vida marina" OR "biología marina" OR "especies marinas" OR "arrecifes")';
     } else {
-        // Si el buscador está vacío, mostramos noticias marinas en general
-        $base_query = '"vida marina" OR "ocean conservation"';
-    }
+        
+        $base_query = '"vida marina" OR "biología marina" OR "arrecifes de coral" OR "especies marinas"';
     }
 
- $data = fetchNoticias($base_query, $page);
+    $data     = fetchNoticias($base_query, $page);
+    $raw      = $data['articles'] ?? [];
+    $articles = array_values(array_filter($raw, fn($a) =>
+        !empty($a['title']) && $a['title'] !== '[Removed]'
+    ));
+
+    $has_error = empty($articles) && !empty($data['error']);
+}
 ?>
 
 <style>
