@@ -13,6 +13,9 @@ header("X-Content-Type-Options: nosniff");
 header("X-Frame-Options: SAMEORIGIN");
 header("X-XSS-Protection: 1; mode=block");
 header("Referrer-Policy: strict-origin-when-cross-origin");
+header("Cache-Control: no-store, no-cache, must-revalidate, max-age=0");
+header("Cache-Control: post-check=0, pre-check=0", false);
+header("Pragma: no-cache");
 
 // Generar token CSRF si no existe
 if (empty($_SESSION['csrf_token'])) {

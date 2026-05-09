@@ -1,4 +1,5 @@
 <?php
+session_start();
 include("Conexion_base.php");
 
 function validarPassword($pass) {

@@ -12,7 +12,10 @@ $current_section = $_GET['section'] ?? 'inicio';
     <meta property="og:description" content="Explora el océano con HYDRON: conservación, mapas y vida marina.">
     <meta property="og:image" content="<?php echo SITE_URL; ?>uploads/logo.svg">
     <meta property="og:type" content="website">
-    <link rel="stylesheet" href="style.css">
+    <?php if ($current_section === 'dashboard'): ?>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <?php endif; ?>
+    <link rel="stylesheet" href="style.css?v=1.1">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
 </head>
@@ -34,13 +37,27 @@ $current_section = $_GET['section'] ?? 'inicio';
         </nav>
 
         <div class="hy-nav-actions">
-            <?php if (isset($_SESSION['user'])): ?>
-                <div class="hy-user-profile">
-                    <span class="hy-profile-icon">●</span>
-                    <span class="hy-username"><?php echo htmlspecialchars($_SESSION['user']); ?></span>
+            <?php if (isset($_SESSION['user'])): 
+                require_once __DIR__ . '/database/Conexion_base.php';
+                $stmt_head = $conn->prepare("SELECT foto FROM usuarios WHERE id = ?");
+                $stmt_head->bind_param("i", $_SESSION['id']);
+                $stmt_head->execute();
+                $res_head = $stmt_head->get_result()->fetch_assoc();
+                $foto_head = (!empty($res_head['foto'])) ? $res_head['foto'] : 'https://cdn-icons-png.flaticon.com/512/149/149071.png';
+            ?>
+                <div class="hy-profile-dropdown">
+                    <button class="hy-profile-trigger" id="profileTrigger" title="Mi Cuenta">
+                        <img src="<?php echo htmlspecialchars($foto_head); ?>" alt="Perfil" style="width:40px; height:40px; border-radius:50%; object-fit:cover; border:2px solid #eee;">
+                    </button>
+                    <div class="hy-dropdown-menu" id="profileMenu">
+                        <div class="hy-dropdown-header">
+                            <strong><?php echo htmlspecialchars($_SESSION['user']); ?></strong>
+                        </div>
+                        <a href="index.php?section=dashboard">⚙️ Mi Perfil</a>
+                        <hr>
+                        <a href="index.php?logout=1" class="logout">Logout</a>
+                    </div>
                 </div>
-                <a href="Perfil(dashboard)/perfil.php" class="hy-btn-outline <?php echo $current_section==='dashboard'?'hy-active':'' ?>">Perfil</a>
-                <a href="index.php?logout=1" class="hy-btn-solid">Salir</a>
             <?php else: ?>
                 <a href="index.php?section=login"    class="hy-btn-outline">Iniciar sesión</a>
                 <a href="index.php?section=registro" class="hy-btn-solid">Regístrate</a>
