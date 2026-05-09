@@ -8,6 +8,27 @@ if (!isset($_SESSION['id']) || $_SESSION['rol'] != "administrador") {
     exit();
 }
 
+// ── Procesar POST (Edición) ──────────────────────────────────────────────────
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['accion']) && $_POST['accion'] === 'editar_usuario') {
+    $id_edit = $_POST['id_usuario'];
+    $nuevo_user = $_POST['user'];
+    $nuevo_email = $_POST['email'];
+    $nuevo_rol = $_POST['rol'];
+    $nueva_pass = $_POST['nueva_password'];
+
+    if (!empty($nueva_pass)) {
+        $hash = password_hash($nueva_pass, PASSWORD_DEFAULT);
+        $stmt = $conn->prepare("UPDATE usuarios SET user = ?, email = ?, rol = ?, password = ? WHERE id = ?");
+        $stmt->bind_param("ssssi", $nuevo_user, $nuevo_email, $nuevo_rol, $hash, $id_edit);
+    } else {
+        $stmt = $conn->prepare("UPDATE usuarios SET user = ?, email = ?, rol = ? WHERE id = ?");
+        $stmt->bind_param("sssi", $nuevo_user, $nuevo_email, $nuevo_rol, $id_edit);
+    }
+    $stmt->execute();
+    $stmt->close();
+    // Continuamos para recargar la lista
+}
+
 // ── Listar usuarios ───────────────────────────────────────────────────────────
 $idActual = $_SESSION['id'];
 $stmt = $conn->prepare("SELECT id, user, email, rol, fecha_de_registro FROM usuarios WHERE id != ? ORDER BY fecha_de_registro DESC");
@@ -21,7 +42,7 @@ $stmt->close();
 
 <div id="msg-admin"></div>
 
-<table class="table table-bordered table-hover bg-white">
+<table class="table table-bordered table-hover bg-white shadow-sm">
 <thead class="table-dark">
 <tr>
     <th>ID</th><th>Usuario</th><th>Email</th><th>Rol</th><th>Registro</th><th>Acciones</th>
@@ -42,25 +63,17 @@ $stmt->close();
             default         => 'background:rgba(108,117,125,.15);color:#495057'
         };
         ?>
-        <span style="<?php echo $rolColor; ?>;padding:3px 12px;border-radius:50px;font-size:.8rem;font-weight:700;">
+        <span style="<?php echo $rolColor; ?>;padding:4px 14px;border-radius:50px;font-size:.8rem;font-weight:700;">
             <?php echo ucfirst(htmlspecialchars($row['rol'] ?: 'sin rol')); ?>
         </span>
     </td>
-    <td><?php echo htmlspecialchars($row['fecha_de_registro']); ?></td>
+    <td><small><?php echo htmlspecialchars($row['fecha_de_registro']); ?></small></td>
     <td>
-        <button class="btn btn-warning btn-sm"
-                onclick="abrirModalEditar(
-                    <?php echo $row['id']; ?>,
-                    '<?php echo htmlspecialchars(addslashes($row['user'])); ?>',
-                    '<?php echo htmlspecialchars(addslashes($row['email'])); ?>',
-                    '<?php echo htmlspecialchars($row['rol']); ?>'
-                )">
-            Editar
-        </button>
-        <button class="btn btn-danger btn-sm"
-                onclick="eliminarUsuario(<?php echo $row['id']; ?>, '<?php echo htmlspecialchars(addslashes($row['user'])); ?>')">
-            Eliminar
-        </button>
+        <button onclick="abrirModalEditar(<?php echo $row['id']; ?>, '<?php echo addslashes($row['user']); ?>', '<?php echo addslashes($row['email']); ?>', '<?php echo $row['rol']; ?>')" 
+                class="btn btn-warning btn-sm fw-bold">Editar</button>
+
+        <button onclick="eliminarUsuario(<?php echo $row['id']; ?>, '<?php echo addslashes($row['user']); ?>')"
+                class="btn btn-danger btn-sm fw-bold">Eliminar</button>
     </td>
 </tr>
 <?php endforeach; ?>
@@ -155,7 +168,7 @@ document.getElementById('form-editar-usuario').addEventListener('submit', functi
     const formData = new FormData(this);
 
     // Ruta al procesador PHP — ajusta si tu carpeta se llama diferente
-    fetch('../Perfil(dashboard)/administrar_Usuarios.php', {
+    fetch('./Perfil(dashboard)/administrar_Usuarios.php', {
         method: 'POST',
         body: formData
     })
@@ -187,7 +200,7 @@ function eliminarUsuario(id, nombre) {
     const formData = new FormData();
     formData.append('id', id);
 
-    fetch('../Perfil(dashboard)/eliminar_usuario.php?id=' + id)
+    fetch('./Perfil(dashboard)/eliminar_usuario.php?id=' + id)
     .then(res => res.text())
     .then(() => {
         // Quitar la fila de la tabla sin recargar

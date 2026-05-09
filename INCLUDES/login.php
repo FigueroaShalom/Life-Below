@@ -301,6 +301,7 @@
         <div id="loginMsg"></div>
 
         <form id="loginForm">
+            <input type="hidden" id="csrf_token" value="<?php echo $_SESSION['csrf_token'] ?? ''; ?>">
             <div class="os-group">
                 <div class="os-input-wrap">
                     <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
@@ -333,6 +334,7 @@ document.getElementById("loginForm").addEventListener("submit", function(e) {
     e.preventDefault();
     const user = document.getElementById("username").value.trim();
     const pass = document.getElementById("password").value.trim();
+    const csrf = document.getElementById("csrf_token").value;
     const msg  = document.getElementById("loginMsg");
     if (!user || !pass) {
         msg.style.cssText = "background:rgba(255,150,0,.15);color:#ffaa00;border:1px solid rgba(255,150,0,.3);";
@@ -342,7 +344,7 @@ document.getElementById("loginForm").addEventListener("submit", function(e) {
     fetch("database/validar_login.php", {
         method: "POST",
         headers: { "Content-Type": "application/x-www-form-urlencoded" },
-        body: "username=" + encodeURIComponent(user) + "&password=" + encodeURIComponent(pass)
+        body: "username=" + encodeURIComponent(user) + "&password=" + encodeURIComponent(pass) + "&csrf_token=" + encodeURIComponent(csrf)
     })
     .then(r => r.text()).then(data => {
         data = data.trim();
