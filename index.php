@@ -1,14 +1,6 @@
 <?php
+// index.php
 require_once 'config.php';
-
-// Manejo de login
-if (isset($_POST['login'])) {
-    if ($_POST['username'] === ADMIN_USER && $_POST['password'] === ADMIN_PASS) {
-        $_SESSION['user'] = ADMIN_USER;
-        header('Location: index.php?section=inicio');
-        exit;
-    }
-}
 
 // Manejo de logout
 if (isset($_GET['logout'])) {
@@ -43,7 +35,6 @@ if ($current_section === '404') {
 } elseif (file_exists($section_file)) {
     include $section_file;
 } else {
-    // Fallback si el archivo fue borrado a pesar de estar en el whitelist
     echo '<h1 style="text-align:center; padding: 5rem;">Error interno: archivo no encontrado</h1>';
 }
 

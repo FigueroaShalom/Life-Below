@@ -24,7 +24,7 @@ $current_section = $_GET['section'] ?? 'inicio';
 <header class="hy-header">
     <div class="hy-nav-inner">
         <a href="index.php?section=inicio" class="hy-logo">
-            <img src="uploads/logo.svg" alt="<?php echo SITE_NAME; ?>" class="hy-logo-img">
+            <img src="uploads/logooo.jpg" alt="<?php echo SITE_NAME; ?>" class="hy-logo-img">
         </a>
 
         <nav class="hy-nav">
