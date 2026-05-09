@@ -87,7 +87,7 @@ function fetchEventos($page = 1) {
     return fetchEventosCurados($page);
 }
 
-// ── Eventos curados con imágenes reales ─────────
+
 function fetchEventosCurados($page = 1) {
     $eventos = [
         [
@@ -192,18 +192,19 @@ if ($sub === 'eventos') {
     $eventos_data = fetchEventos($page);
     $eventos      = $eventos_data['events'] ?? [];
 } else {
-    // CORRECCIÓN: Búsqueda menos estricta para que GNews sí encuentre resultados
-    $default_query = '"vida marina" OR "ocean conservation"';
-    $base_query    = $search_query ?: $default_query;
+    // ── NUEVO FILTRO ESTRICTO PARA GNEWS ──
+    $filtro_obligatorio = ' AND ("vida marina" OR océano OR mar OR "ocean conservation" OR arrecifes)';
 
-    $data     = fetchNoticias($base_query, $page);
-    $raw      = $data['articles'] ?? [];
-    $articles = array_values(array_filter($raw, fn($a) =>
-        !empty($a['title']) && $a['title'] !== '[Removed]'
-    ));
+    if ($search_query !== '') {
+        // Si el usuario buscó algo (ej. "plastico"), forzamos a que tenga relación marina
+        $base_query = '"' . $search_query . '"' . $filtro_obligatorio;
+    } else {
+        // Si el buscador está vacío, mostramos noticias marinas en general
+        $base_query = '"vida marina" OR "ocean conservation"';
+    }
+    }
 
-    $has_error = empty($articles) && !empty($data['error']);
-}
+ $data = fetchNoticias($base_query, $page);
 ?>
 
 <style>
