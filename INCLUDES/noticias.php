@@ -131,7 +131,7 @@ function fetchEventosCurados($page = 1) {
             'description' => 'Encuentro científico anual para investigadores, gestores de Áreas Naturales Protegidas y sociedad civil sobre el estado de los arrecifes mesoamericanos.',
             'date'        => 'Agosto (anual)',
             'location'    => 'Puerto Morelos, Quintana Roo',
-            'url'         => 'https://www.tudominio.com/congreso-arrecifes', // <-- CAMBIA ESTE LINK
+            'url'         => 'https://somac.org.mx/', 
             'type'        => 'Congreso · Ciencia',
             'img'         => 'https://images.unsplash.com/photo-1546026423-cc4642628d2b?w=600&q=80', // <-- ¡ADIÓS PUG! Imagen de arrecife
         ],
@@ -140,7 +140,7 @@ function fetchEventosCurados($page = 1) {
             'description' => 'Feria de educación ambiental marina con exhibiciones, charlas y actividades para niños y familias en el puerto de Mazatlán.',
             'date'        => 'Octubre',
             'location'    => 'Mazatlán, Sinaloa',
-            'url'         => 'https://www.tudominio.com/vive-el-mar', // <-- CAMBIA ESTE LINK
+            'url'         => 'https://granacuario.com/actividades/fiestas', 
             'type'        => 'Festival · Educación',
             'img'         => 'https://images.unsplash.com/photo-1439405326854-014607f694d7?w=600&q=80',
         ],
