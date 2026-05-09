@@ -22,6 +22,31 @@ $carousel_images = [
     /* Convertir textos blancos a oscuros */
     .hy-hero-title, .hy-hero-sub { color: var(--navy) !important; }
     
+    /* --- NUEVOS ESTILOS: AZUL CLARO --- */
+    /* 1. Letras "ciencia y la sociedad" */
+    .hy-hero-accent {
+        background: none !important;
+        -webkit-text-fill-color: initial !important;
+        color: #4DA8DA !important; /* Azul claro vibrante */
+        text-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+    }
+
+    /* 2. Botones primarios (Explorar artículos y Crear cuenta) */
+    .hy-cta-primary {
+        background-color: #4DA8DA !important;
+        color: #ffffff !important;
+        border: none !important;
+        box-shadow: 0 4px 15px rgba(77, 168, 218, 0.4) !important;
+        transition: all 0.3s ease !important;
+    }
+
+    .hy-cta-primary:hover {
+        background-color: #3892c2 !important; /* Un poco más oscuro al pasar el mouse */
+        transform: translateY(-2px) !important;
+        color: #ffffff !important;
+    }
+    /* --------------------------------- */
+
     /* Convertir barra de estadísticas en cápsula de cristal */
     .hy-stats {
         background: rgba(255, 255, 255, 0.2) !important;

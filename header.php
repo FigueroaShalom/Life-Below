@@ -20,6 +20,36 @@ $current_section = $_GET['section'] ?? 'inicio';
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
     
     <style>
+        /* --- NUEVO ESTILO DE LA BARRA (Glassmorphism Azul Claro) --- */
+        .hy-header {
+            background: rgba(135, 206, 235, 0.15) !important; 
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.3) !important;
+            transition: all 0.3s ease;
+        }
+        
+        .hy-header.scrolled {
+            background: rgba(135, 206, 235, 0.5) !important; 
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.5) !important;
+            box-shadow: 0 4px 30px rgba(0, 40, 80, 0.05);
+        }
+
+        /* Cambiar el color de los enlaces del menú principal a azul marino para que contrasten */
+        .hy-nav-link, .hy-btn-outline {
+            color: var(--navy) !important; 
+        }
+        .hy-btn-outline {
+            border-color: var(--navy) !important;
+        }
+        .hy-btn-outline:hover {
+            background: var(--navy) !important;
+            color: #fff !important;
+        }
+
+        /* --- Estilos de los menús desplegables que ya tenías --- */
         .hy-dropdown-menu, .hy-mobile-menu {
             background: rgba(255, 255, 255, 0.25) !important;
             backdrop-filter: blur(16px);
