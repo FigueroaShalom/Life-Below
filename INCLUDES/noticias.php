@@ -133,44 +133,36 @@ function fetchEventosCurados($page = 1) {
             'location'    => 'Puerto Morelos, Quintana Roo',
             'url'         => 'https://somac.org.mx/', 
             'type'        => 'Congreso · Ciencia',
-            'img'         => 'https://images.unsplash.com/photo-1546026423-cc4642628d2b?w=600&q=80', // <-- ¡ADIÓS PUG! Imagen de arrecife
+            'img'         => 'https://images.unsplash.com/photo-1546026423-cc4642628d2b?w=600&q=80', 
         ],
         [
             'title'       => 'Festival Vive el Mar · Mazatlán',
             'description' => 'Feria de educación ambiental marina con exhibiciones, charlas y actividades para niños y familias en el puerto de Mazatlán.',
             'date'        => 'Octubre',
             'location'    => 'Mazatlán, Sinaloa',
-            'url'         => 'https://granacuario.com/actividades/fiestas', 
+            'url'         => 'https://punto.mx/2026/04/22/mazatlan-alza-velas-regata-abre-camino-al-festival-del-mar/', 
             'type'        => 'Festival · Educación',
-            'img'         => 'https://images.unsplash.com/photo-1439405326854-014607f694d7?w=600&q=80',
+            'img'         => 'https://ba8a95d4aa7b000bdb27-a4e6f9e1710496f0fd0180f011e6f4e2.ssl.cf1.rackcdn.com/responsive/Native/1200px/u/blogs-assets/Mazatlan_City_9-X2.jpg',
         ],
         [
             'title'       => 'Expedición de Buceo Científico',
             'description' => 'Expedición de documentación submarina en el "acuario del mundo". Cupos limitados para buceadores certificados con enfoque en biodiversidad.',
             'date'        => 'Noviembre',
             'location'    => 'La Paz, Baja California Sur',
-            'url'         => 'https://www.tudominio.com/expedicion', // <-- CAMBIA ESTE LINK
+            'url'         => 'https://mexicotraveladventure.com/es/aventura/buceo-la-paz/', 
             'type'        => 'Expedición · Ciencia',
-            'img'         => 'https://images.unsplash.com/photo-1583212292454-1fe6229603b7?w=600&q=80',
+            'img'         => 'https://mexicotraveladventure.com/wp-content/uploads/2025/11/semana-de-buceo-en-la-paz-y-cabo-pulmo-2048x1365.webp',
         ],
         [
-            'title'       => 'Foro Nacional de Pesca Sustentable',
-            'description' => 'Diálogo entre pescadores artesanales, ONGs y gobierno para construir políticas pesqueras que conserven la biodiversidad marina de México.',
-            'date'        => 'Septiembre',
-            'location'    => 'Mérida, Yucatán',
-            'url'         => 'https://www.tudominio.com/foro-pesca', // <-- CAMBIA ESTE LINK
-            'type'        => 'Foro · Política Pública',
-            'img'         => 'https://images.unsplash.com/photo-1464925257126-6450e871c667?w=600&q=80',
+            'title'       => 'Festival Costero del Papalote: el cielo de Manzanillo cobra vida',
+            'description' => 'En Manzanillo, el cielo también es parte del paisaje. Cada año, este puerto colimense se convierte en el escenario del Festival Costero del Papalote, una celebración que llena de color, movimiento y alegría la costa del Pacífico.',
+            'date'        => 'Mayo-Junio',
+            'location'    => 'Playa Azul, Manzanillo, Colima',
+            'url'         => 'https://visitmanzanillo.mx/festival-costero-del-papalote-el-cielo-de-manzanillo-cobra-vida/', 
+            'type'        => 'Festival · turismo Sostenible',
+            'img'         => 'https://visitmanzanillo.mx/wp-content/uploads/2025/07/Papalote-dron-Domingo-10.jpg',
         ],
-        [
-            'title'       => 'Maratón de Playa Limpia Nacional',
-            'description' => 'Limpieza simultánea en más de 20 playas mexicanas del Atlántico y Pacífico. Registro voluntario en línea abierto al público.',
-            'date'        => 'Septiembre (Día Mundial de los Océanos)',
-            'location'    => 'Nacional – múltiples sedes',
-            'url'         => 'https://www.tudominio.com/maraton-limpieza', // <-- CAMBIA ESTE LINK
-            'type'        => 'Voluntariado · Playa',
-            'img'         => 'https://images.unsplash.com/photo-1621451537084-482c73073a0f?w=600&q=80',
-        ],
+        
     ];
 
     $per_page = 6;
