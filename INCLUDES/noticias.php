@@ -24,10 +24,16 @@ function fetchNoticias($query, $page = 1) {
         mkdir(__DIR__ . '/../data', 0777, true);
     }
 
+    // Si no hay búsqueda, priorizar México
+    $final_query = $query;
+    if (empty(trim($query)) || $query === '"vida marina" OR "biología marina" OR "arrecifes de coral"') {
+        $final_query = '(ocean OR "vida marina" OR conservacion) AND Mexico';
+    }
+
     $url = 'https://gnews.io/api/v4/search?' . http_build_query([
-        'q' => $query,
+        'q' => $final_query,
         'lang'   => 'es', 
-        'max' => 10,
+        'max' => 12,
         'token' => GNEWS_API_KEY,
     ]);
 
@@ -103,22 +109,42 @@ if ($sub === 'eventos') {
 ?>
 
 <style>
-.hy-tab { padding: 9px 22px; border-radius: 50px; border: 1.5px solid rgba(0,120,190,0.1); color: #0077be; font-weight: 800; text-decoration: none; background: #fff; transition: all .2s; }
-.hy-tab.active { background: #0077be; color: #fff; border-color: #0077be; }
-.hy-news-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1.5rem; }
-.hy-news-card { background: #fff; border-radius: 18px; overflow: hidden; box-shadow: 0 4px 20px rgba(0,0,0,0.08); border: 1.5px solid rgba(0,120,190,0.1); display: flex; flex-direction: column; }
-.hy-news-card-img { width: 100%; height: 190px; object-fit: cover; background: #001828; }
-.hy-news-card-body { padding: 1.3rem; flex: 1; display: flex; flex-direction: column; }
-.hy-news-card-title { font-size: 1rem; font-weight: 900; color: #001828; line-height: 1.4; margin-bottom: .6rem; }
-.hy-news-card-link { display: inline-block; padding: 7px 18px; background: #0077be; color: #fff; border-radius: 50px; font-size: .78rem; font-weight: 900; text-decoration: none; }
+.hy-news-header { background: linear-gradient(135deg, var(--navy), #004466); padding: 4rem 2rem; color: #fff; text-align: center; border-radius: 0 0 40px 40px; margin-bottom: 3rem; }
+.hy-search-container { max-width: 600px; margin: 1.5rem auto 0; position: relative; }
+.hy-search-input { width: 100%; padding: 14px 24px; padding-right: 60px; border-radius: 50px; border: none; font-size: 1rem; font-family: var(--font); box-shadow: 0 10px 25px rgba(0,0,0,0.2); }
+.hy-search-btn { position: absolute; right: 8px; top: 8px; background: var(--ocean); color: #fff; border: none; width: 42px; height: 42px; border-radius: 50%; cursor: pointer; transition: background 0.2s; }
+.hy-search-btn:hover { background: var(--teal); }
+
+.hy-tab-nav { display: flex; justify-content: center; gap: .8rem; margin-bottom: 2.5rem; }
+.hy-tab { padding: 10px 24px; border-radius: 50px; border: 1.5px solid var(--border); color: var(--ocean); font-weight: 800; text-decoration: none; background: #fff; transition: all .2s; }
+.hy-tab.active { background: var(--ocean); color: #fff; border-color: var(--ocean); }
+
+.hy-news-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 2rem; }
+.hy-news-card { background: #fff; border-radius: 20px; overflow: hidden; box-shadow: var(--shadow); border: 1.5px solid var(--border); display: flex; flex-direction: column; transition: transform 0.3s; }
+.hy-news-card:hover { transform: translateY(-5px); }
+.hy-news-card-img { width: 100%; height: 200px; object-fit: cover; background: #eee; }
+.hy-news-card-body { padding: 1.5rem; flex: 1; display: flex; flex-direction: column; }
+.hy-news-card-source { font-size: .75rem; color: var(--ocean); font-weight: 800; text-transform: uppercase; margin-bottom: .5rem; }
+.hy-news-card-title { font-size: 1.1rem; font-weight: 900; color: var(--navy); line-height: 1.4; margin-bottom: .8rem; }
+.hy-news-card-desc { font-size: .9rem; color: var(--muted); line-height: 1.6; margin-bottom: 1.2rem; }
+.hy-news-card-link { margin-top: auto; display: inline-block; padding: 8px 20px; background: var(--navy); color: #fff; border-radius: 50px; font-size: .85rem; font-weight: 700; text-decoration: none; align-self: flex-start; }
 </style>
 
-<div style="max-width:1280px; margin:0 auto; padding:3rem 2rem;">
-    <h1 style="font-family:'Nunito',sans-serif;font-weight:900;font-size:2rem;color:#001828;margin-bottom:1.5rem;">
-        <?php echo $sub === 'eventos' ? 'Eventos Marinos' : 'Noticias del Océano'; ?>
-    </h1>
+<div class="hy-news-header">
+    <h1 style="font-size: 2.5rem; font-weight: 900;"><?php echo $sub === 'eventos' ? 'Eventos Marinos' : 'Noticias del Océano'; ?></h1>
+    <p style="opacity: 0.8; margin-top: 0.5rem;">Explora los últimos acontecimientos de la conservación marina<?php echo empty($search_query) ? ' en México' : ''; ?>.</p>
+    
+    <?php if ($sub !== 'eventos'): ?>
+    <form action="index.php" method="GET" class="hy-search-container">
+        <input type="hidden" name="section" value="noticias">
+        <input type="text" name="q" class="hy-search-input" placeholder="Buscar noticias (ej: arrecifes, tiburones...)" value="<?php echo htmlspecialchars($search_query); ?>">
+        <button type="submit" class="hy-search-btn"><i class="fas fa-search"></i></button>
+    </form>
+    <?php endif; ?>
+</div>
 
-    <div style="display:flex; gap:.5rem; margin-bottom:2rem;">
+<div style="max-width:1280px; margin:0 auto; padding:0 2rem 4rem;">
+    <div class="hy-tab-nav">
         <a href="?section=noticias&sub=noticias" class="hy-tab <?php echo $sub==='noticias'?'active':''; ?>">Noticias</a>
         <a href="?section=noticias&sub=eventos" class="hy-tab <?php echo $sub==='eventos'?'active':''; ?>">Eventos</a>
     </div>
@@ -127,31 +153,46 @@ if ($sub === 'eventos') {
         <div class="hy-news-grid">
             <?php foreach ($eventos as $ev): ?>
                 <div class="hy-news-card">
-                    <img src="<?php echo $ev['img']; ?>" class="hy-news-card-img">
+                    <img src="<?php echo $ev['img']; ?>" class="hy-news-card-img" alt="<?php echo $ev['title']; ?>">
                     <div class="hy-news-card-body">
-                        <span style="font-size:.7rem; color:#0077be; font-weight:900; text-transform:uppercase;"><?php echo $ev['type']; ?></span>
+                        <span class="hy-news-card-source"><?php echo $ev['type']; ?></span>
                         <h3 class="hy-news-card-title"><?php echo $ev['title']; ?></h3>
-                        <p style="font-size:.85rem; color:#5a7a9a;"><?php echo $ev['description']; ?></p>
-                        <div style="margin-top:auto; font-size:.8rem; color:#001828;">📍 <?php echo $ev['location']; ?> | 📅 <?php echo $ev['date']; ?></div>
+                        <p class="hy-news-card-desc"><?php echo $ev['description']; ?></p>
+                        <div style="margin-top:auto; font-size:.85rem; color:var(--navy); font-weight: 700;">
+                            <span>📍 <?php echo $ev['location']; ?></span><br>
+                            <span>📅 <?php echo $ev['date']; ?></span>
+                        </div>
                     </div>
                 </div>
             <?php endforeach; ?>
         </div>
     <?php else: ?>
-        <div class="hy-news-grid">
-            <?php foreach ($articles as $art): ?>
-                <div class="hy-news-card">
-                    <?php if(!empty($art['image'])): ?>
-                        <img src="<?php echo $art['image']; ?>" class="hy-news-card-img">
-                    <?php endif; ?>
-                    <div class="hy-news-card-body">
-                        <span style="font-size:.7rem; color:#0077be; font-weight:900;"><?php echo $art['source']['name']; ?></span>
-                        <h3 class="hy-news-card-title"><?php echo $art['title']; ?></h3>
-                        <p style="font-size:.85rem; color:#5a7a9a;"><?php echo $art['description']; ?></p>
-                        <a href="<?php echo $art['url']; ?>" target="_blank" class="hy-news-card-link">Leer más →</a>
+        <?php if ($has_error): ?>
+            <div style="text-align:center; padding:3rem; background:#fff; border-radius:20px; border:1.5px solid var(--border);">
+                <i class="fas fa-exclamation-circle" style="font-size:3rem; color:var(--ocean); margin-bottom:1rem;"></i>
+                <h3>No pudimos encontrar noticias</h3>
+                <p>Intenta con otros términos de búsqueda o revisa tu conexión.</p>
+            </div>
+        <?php else: ?>
+            <div class="hy-news-grid">
+                <?php foreach ($articles as $art): ?>
+                    <div class="hy-news-card">
+                        <?php if(!empty($art['image'])): ?>
+                            <img src="<?php echo $art['image']; ?>" class="hy-news-card-img" alt="Noticia">
+                        <?php else: ?>
+                            <div class="hy-news-card-img" style="display:flex; align-items:center; justify-content:center; background:#f0f8ff; color:var(--ocean);">
+                                <i class="fas fa-water fa-3x"></i>
+                            </div>
+                        <?php endif; ?>
+                        <div class="hy-news-card-body">
+                            <span class="hy-news-card-source"><?php echo $art['source']['name'] ?? 'Fuente'; ?></span>
+                            <h3 class="hy-news-card-title"><?php echo $art['title']; ?></h3>
+                            <p class="hy-news-card-desc"><?php echo $art['description']; ?></p>
+                            <a href="<?php echo $art['url']; ?>" target="_blank" class="hy-news-card-link">Leer noticia →</a>
+                        </div>
                     </div>
-                </div>
-            <?php endforeach; ?>
-        </div>
+                <?php endforeach; ?>
+            </div>
+        <?php endif; ?>
     <?php endif; ?>
 </div>
