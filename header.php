@@ -15,10 +15,26 @@ $current_section = $_GET['section'] ?? 'inicio';
     <?php if ($current_section === 'dashboard'): ?>
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <?php endif; ?>
-    <link rel="stylesheet" href="style.css?v=1.1">
+    <link rel="stylesheet" href="style.css?v=<?php echo time(); ?>">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
-</head><link rel="stylesheet" href="style.css?v=<?php echo time(); ?>">
+    
+    <style>
+        .hy-dropdown-menu, .hy-mobile-menu {
+            background: rgba(255, 255, 255, 0.25) !important;
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            box-shadow: 0 8px 32px rgba(0, 40, 80, 0.1);
+        }
+        .hy-mobile-menu a, .hy-dropdown-header, .hy-dropdown-menu a {
+            color: var(--navy) !important;
+        }
+        .hy-hamburger span {
+            background: var(--navy) !important; /* Rayitas del menú hamburguesa oscuras */
+        }
+    </style>
+</head>
 <body>
 
 <header class="hy-header">
@@ -46,15 +62,15 @@ $current_section = $_GET['section'] ?? 'inicio';
                 $foto_head = (!empty($res_head['foto'])) ? $res_head['foto'] : 'https://cdn-icons-png.flaticon.com/512/149/149071.png';
             ?>
                 <div class="hy-profile-dropdown">
-                    <button class="hy-profile-trigger" id="profileTrigger" title="Mi Cuenta">
-                        <img src="<?php echo htmlspecialchars($foto_head); ?>" alt="Perfil" style="width:40px; height:40px; border-radius:50%; object-fit:cover; border:2px solid #eee;">
+                    <button class="hy-profile-trigger" id="profileTrigger" title="Mi Cuenta" style="background: transparent; border: none; cursor: pointer;">
+                        <img src="<?php echo htmlspecialchars($foto_head); ?>" alt="Perfil" style="width:40px; height:40px; border-radius:50%; object-fit:cover; border:2px solid rgba(255,255,255,0.8);">
                     </button>
                     <div class="hy-dropdown-menu" id="profileMenu">
                         <div class="hy-dropdown-header">
                             <strong><?php echo htmlspecialchars($_SESSION['user']); ?></strong>
                         </div>
                         <a href="index.php?section=dashboard">⚙️ Mi Perfil</a>
-                        <hr>
+                        <hr style="border-color: rgba(0,0,0,0.1);">
                         <a href="index.php?logout=1" class="logout">Logout</a>
                     </div>
                 </div>
@@ -64,13 +80,11 @@ $current_section = $_GET['section'] ?? 'inicio';
             <?php endif; ?>
         </div>
 
-        <!-- Hamburger mobile -->
         <button class="hy-hamburger" id="hyHamburger" aria-label="Menú">
             <span></span><span></span><span></span>
         </button>
     </div>
 
-    <!-- Mobile menu -->
     <div class="hy-mobile-menu" id="hyMobileMenu">
         <a href="index.php?section=inicio">Inicio</a>
         <a href="index.php?section=watch">▶ Watch</a>
