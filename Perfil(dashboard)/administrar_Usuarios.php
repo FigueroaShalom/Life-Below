@@ -48,19 +48,16 @@ $stmt->close();
     </td>
     <td><?php echo htmlspecialchars($row['fecha_de_registro']); ?></td>
     <td>
-        <button class="btn btn-warning btn-sm"
-                onclick="abrirModalEditar(
-                    <?php echo $row['id']; ?>,
-                    '<?php echo htmlspecialchars(addslashes($row['user'])); ?>',
-                    '<?php echo htmlspecialchars(addslashes($row['email'])); ?>',
-                    '<?php echo htmlspecialchars($row['rol']); ?>'
-                )">
-            Editar
-        </button>
-        <button class="btn btn-danger btn-sm"
-                onclick="eliminarUsuario(<?php echo $row['id']; ?>, '<?php echo htmlspecialchars(addslashes($row['user'])); ?>')">
-            Eliminar
-        </button>
+        <a href="editar_usuario.php?id=<?php echo $row['id']; ?>" 
+   class="btn btn-warning btn-sm">
+   Editar
+</a>
+
+        <a href="eliminar_usuario.php?id=<?php echo $row['id']; ?>"
+           class="btn btn-danger btn-sm"
+           onclick="return confirm('¿Seguro que deseas eliminar esta cuenta?')">
+           Eliminar
+        </a>
     </td>
 </tr>
 <?php endforeach; ?>
