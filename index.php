@@ -20,10 +20,8 @@ if (isset($_GET['logout'])) {
 $current_section = $_GET['section'] ?? 'inicio';
 include 'header.php';
 
-// Si es la sección de inicio, mostramos el layout completo con carrusel
 if ($current_section === 'inicio') {
 ?>
-    <!-- Hero Section moderno -->
     <section class="hero">
         <div class="hero-content">
             <div class="hero-badge">VIDA SUBMARINA · CONOCIMIENTO & CIENCIA</div>
@@ -44,7 +42,7 @@ if ($current_section === 'inicio') {
         </div>
     </section>
 
-    <!-- CARRUSEL DE NOTICIAS CON API REAL -->
+   
     <section class="news-section">
         <div class="section-header">
             <div>
@@ -80,14 +78,9 @@ if ($current_section === 'inicio') {
     </section>
 
     <script>
-        // ============================================================
-        // INTEGRACIÓN DE API REAL: GNEWS
-        // IMPORTANTE: Reemplaza 'TU_API_KEY_AQUI' con tu API Key
-        // Obtén una gratis en: https://gnews.io/
-        // ============================================================
+       
         (function() {
-            // ⚠️ COLOQUE SU API KEY DE GNEWS AQUÍ ⚠️
-            const API_KEY = 'TU_API_KEY_AQUI'; 
+            const API_KEY = 'd5b5320a0accff00272ab27733ba94ce'; 
             
             const query = '(marine life OR ocean conservation OR "vida marina" OR "conservación oceánica" OR biodiversidad marina)';
             const url = `https://gnews.io/api/v4/search?q=${encodeURIComponent(query)}&lang=es&country=es&max=12&token=${API_KEY}`;

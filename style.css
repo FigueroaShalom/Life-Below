@@ -1072,3 +1072,206 @@ body { overflow-x: hidden; }
     .hy-carousel-slide { height: 260px; }
     .hy-hero-content { padding: 2rem 1.2rem; }
 }
+/* ── SECCIÓN HERO (INICIO) ── */
+.hero {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 4rem 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+    gap: 2rem;
+    min-height: 70vh;
+}
+
+.hero-content {
+    flex: 1;
+}
+
+.hero-badge {
+    background-color: #e0f2fe;
+    color: #0284c7;
+    padding: 0.5rem 1rem;
+    border-radius: 50px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    display: inline-block;
+    margin-bottom: 1.5rem;
+}
+
+.hero h1 {
+    font-size: 3.5rem;
+    line-height: 1.2;
+    color: #0f172a;
+    margin-bottom: 1rem;
+}
+
+.text-gradient {
+    background: linear-gradient(to right, #0284c7, #06b6d4);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.hero-buttons {
+    margin-top: 2rem;
+    display: flex;
+    gap: 1rem;
+}
+
+.btn-primary, .btn-secondary {
+    padding: 0.8rem 1.5rem;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.btn-primary {
+    background-color: #0284c7;
+    color: white;
+}
+
+.btn-primary:hover {
+    background-color: #0369a1;
+}
+
+.btn-secondary {
+    background-color: transparent;
+    color: #0284c7;
+    border: 2px solid #0284c7;
+}
+
+.btn-secondary:hover {
+    background-color: #f0f9ff;
+}
+
+/* ── TARJETA DE CRISTAL (HERO VISUAL) ── */
+.hero-visual {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+}
+
+.hero-card-glass {
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    padding: 2.5rem;
+    border-radius: 20px;
+    box-shadow: 0 20px 40px rgba(2, 132, 199, 0.1);
+    max-width: 350px;
+}
+
+.hero-card-glass h3 {
+    color: #0369a1;
+    margin: 1rem 0;
+}
+
+.hero-card-glass .stat {
+    margin-top: 1.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid #e2e8f0;
+    font-weight: bold;
+    color: #0f172a;
+}
+
+/* ── SECCIÓN DE EXPLORACIÓN (GRID) ── */
+.explore-section {
+    padding: 4rem 2rem;
+    background-color: #f8fafc;
+}
+
+.explore-section .section-header {
+    text-align: center;
+    margin-bottom: 3rem;
+}
+
+.explore-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.explore-card {
+    background: white;
+    padding: 2rem;
+    border-radius: 12px;
+    text-align: center;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+    transition: transform 0.3s ease;
+}
+
+.explore-card:hover {
+    transform: translateY(-5px);
+}
+
+.explore-card h3 {
+    color: #0f172a;
+    margin: 1rem 0 0.5rem;
+}
+
+.explore-card p {
+    color: #64748b;
+}
+
+/* ── SECCIÓN DE NOTICIAS (CARRUSEL) ── */
+.news-section {
+    padding: 4rem 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.carousel-container {
+    position: relative;
+    margin-top: 2rem;
+}
+
+.carousel-track {
+    display: flex;
+    overflow-x: auto;
+    gap: 1.5rem;
+    scroll-behavior: smooth;
+    padding-bottom: 1rem;
+}
+
+.carousel-track::-webkit-scrollbar {
+    display: none;
+}
+
+.news-card {
+    min-width: 300px;
+    background: white;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+}
+
+.news-img {
+    height: 200px;
+    background-size: cover;
+    background-position: center;
+}
+
+.news-content {
+    padding: 1.5rem;
+}
+
+.news-title {
+    font-size: 1.25rem;
+    margin-bottom: 0.5rem;
+    color: #0f172a;
+}
+
+.news-desc {
+    color: #64748b;
+    font-size: 0.9rem;
+    margin-bottom: 1rem;
+}
+
+.read-link {
+    color: #0284c7;
+    text-decoration: none;
+    font-weight: bold;
+}

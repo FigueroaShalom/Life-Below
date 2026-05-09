@@ -10,7 +10,7 @@ $current_section = $_GET['section'] ?? 'inicio';
     <link rel="stylesheet" href="style.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
-</head>
+</head><link rel="stylesheet" href="style.css?v=<?php echo time(); ?>">
 <body>
 
 <header class="hy-header">
