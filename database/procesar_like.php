@@ -17,6 +17,22 @@ if ($id_pub <= 0) {
     exit;
 }
 
+// Aceptar tanto likes sobre publicaciones como likes desde la vista de videos.
+$checkPub = $conn->prepare("SELECT id FROM publicaciones WHERE id = ?");
+$checkPub->bind_param("i", $id_pub);
+$checkPub->execute();
+if ($checkPub->get_result()->num_rows === 0) {
+    $checkVid = $conn->prepare("SELECT related_publicacion_id FROM videos WHERE id = ?");
+    $checkVid->bind_param("i", $id_pub);
+    $checkVid->execute();
+    $videoRow = $checkVid->get_result()->fetch_assoc();
+    if (!$videoRow || empty($videoRow['related_publicacion_id'])) {
+        header('Location: ' . $redirect);
+        exit;
+    }
+    $id_pub = (int)$videoRow['related_publicacion_id'];
+}
+
 // ¿Ya existe el like?
 $check = $conn->prepare("SELECT id FROM likes WHERE id_publicacion = ? AND id_usuario = ?");
 $check->bind_param("ii", $id_pub, $id_user);

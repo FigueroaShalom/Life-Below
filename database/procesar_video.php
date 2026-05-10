@@ -17,8 +17,9 @@ if (!isset($_SESSION['id'])) {
     responder(false, 'Sesión no válida. Inicia sesión nuevamente.');
 }
 
-$accion    = $_POST['accion'] ?? '';
-$id_autor  = (int)$_SESSION['id'];
+$accion                 = $_POST['accion'] ?? '';
+$id_autor               = (int)$_SESSION['id'];
+$related_publicacion_id = isset($_POST['related_publicacion_id']) ? (int)$_POST['related_publicacion_id'] : 0;
 
 // ── Helper: subir archivo de video ────────────────────────────────────────────
 function subirVideoArchivo(string $file_input): array {
@@ -92,10 +93,27 @@ switch ($accion) {
     case 'crear_video':
         $titulo      = trim($_POST['titulo']      ?? '');
         $descripcion = trim($_POST['descripcion'] ?? '');
-        $categoria   = trim($_POST['categoria']   ?? 'general');
+        $categorias  = $_POST['categorias'] ?? [];
 
         if (empty($titulo)) {
             responder(false, 'El título es obligatorio.');
+        }
+
+        if (!is_array($categorias)) $categorias = [];
+        $categorias = array_map('trim', array_filter($categorias));
+        if (count($categorias) < 1 || count($categorias) > 4) {
+            responder(false, 'Selecciona entre 1 y 4 categorías.');
+        }
+
+        if ($related_publicacion_id <= 0) {
+            $related_publicacion_id = null;
+        } else {
+            $checkRel = $conn->prepare("SELECT id FROM publicaciones WHERE id = ? AND id_autor = ?");
+            $checkRel->bind_param("ii", $related_publicacion_id, $id_autor);
+            $checkRel->execute();
+            if (!$checkRel->get_result()->fetch_assoc()) {
+                responder(false, 'El artículo o noticia seleccionado no es válido.');
+            }
         }
 
         $urlResult = resolverVideoUrl();
@@ -105,14 +123,22 @@ switch ($accion) {
 
         $video_url = $urlResult['url'];
         $stmt = $conn->prepare("
-            INSERT INTO videos (titulo, descripcion, video_url, categoria, id_autor)
+            INSERT INTO videos (titulo, descripcion, video_url, id_autor, related_publicacion_id)
             VALUES (?, ?, ?, ?, ?)
         ");
-        $stmt->bind_param("ssssi", $titulo, $descripcion, $video_url, $categoria, $id_autor);
+        $stmt->bind_param("sssii", $titulo, $descripcion, $video_url, $id_autor, $related_publicacion_id);
 
-        $stmt->execute()
-            ? responder(true,  '✅ Video publicado correctamente.')
-            : responder(false, 'Error al guardar el video: ' . $conn->error);
+        if ($stmt->execute()) {
+            $video_id = $conn->insert_id;
+            foreach ($categorias as $cat) {
+                $insCat = $conn->prepare("INSERT INTO video_categorias (video_id, categoria) VALUES (?, ?)");
+                $insCat->bind_param("is", $video_id, $cat);
+                $insCat->execute();
+            }
+            responder(true, '✅ Video publicado correctamente.');
+        } else {
+            responder(false, 'Error al guardar el video: ' . $conn->error);
+        }
         break;
 
     // ── ACTUALIZAR VIDEO ──────────────────────────────────────────────────
@@ -120,15 +146,33 @@ switch ($accion) {
         $id          = (int)($_POST['id_video']   ?? 0);
         $titulo      = trim($_POST['titulo']      ?? '');
         $descripcion = trim($_POST['descripcion'] ?? '');
-        $categoria   = trim($_POST['categoria']   ?? 'general');
+        $categorias  = $_POST['categorias'] ?? [];
 
         if (empty($titulo)) {
             responder(false, 'El título es obligatorio.');
         }
 
+        if (!is_array($categorias)) $categorias = [];
+        $categorias = array_map('trim', array_filter($categorias));
+        if (count($categorias) < 1 || count($categorias) > 4) {
+            responder(false, 'Selecciona entre 1 y 4 categorías.');
+        }
+
         $fuente       = $_POST['fuente'] ?? 'youtube';
         $cambiarVideo = ($fuente === 'local'   && isset($_FILES['video_file']) && $_FILES['video_file']['error'] === UPLOAD_ERR_OK)
                      || ($fuente === 'youtube' && !empty(trim($_POST['video_url'] ?? '')));
+
+        $related_publicacion_id = isset($_POST['related_publicacion_id']) ? (int)$_POST['related_publicacion_id'] : 0;
+        if ($related_publicacion_id <= 0) {
+            $related_publicacion_id = null;
+        } else {
+            $checkRel = $conn->prepare("SELECT id FROM publicaciones WHERE id = ? AND id_autor = ?");
+            $checkRel->bind_param("ii", $related_publicacion_id, $id_autor);
+            $checkRel->execute();
+            if (!$checkRel->get_result()->fetch_assoc()) {
+                responder(false, 'El artículo o noticia seleccionado no es válido.');
+            }
+        }
 
         if ($cambiarVideo) {
             $urlResult = resolverVideoUrl();
@@ -136,22 +180,30 @@ switch ($accion) {
                 responder(false, $urlResult['error']);
             }
             $video_url = $urlResult['url'];
-            $stmt = $conn->prepare("
-                UPDATE videos SET titulo=?, descripcion=?, video_url=?, categoria=?
-                WHERE id=? AND id_autor=?
+            $stmt = $conn->prepare("\
+                UPDATE videos SET titulo=?, descripcion=?, video_url=?, related_publicacion_id=?\
+                WHERE id=? AND id_autor=?\
             ");
-            $stmt->bind_param("ssssii", $titulo, $descripcion, $video_url, $categoria, $id, $id_autor);
+            $stmt->bind_param("sssiii", $titulo, $descripcion, $video_url, $related_publicacion_id, $id, $id_autor);
         } else {
-            $stmt = $conn->prepare("
-                UPDATE videos SET titulo=?, descripcion=?, categoria=?
-                WHERE id=? AND id_autor=?
+            $stmt = $conn->prepare("\
+                UPDATE videos SET titulo=?, descripcion=?, related_publicacion_id=?\
+                WHERE id=? AND id_autor=?\
             ");
-            $stmt->bind_param("sssii", $titulo, $descripcion, $categoria, $id, $id_autor);
+            $stmt->bind_param("ssiii", $titulo, $descripcion, $related_publicacion_id, $id, $id_autor);
         }
 
-        $stmt->execute()
-            ? responder(true,  '✅ Video actualizado correctamente.')
-            : responder(false, 'Error al actualizar: ' . $conn->error);
+        if ($stmt->execute()) {
+            $conn->query("DELETE FROM video_categorias WHERE video_id = $id");
+            foreach ($categorias as $cat) {
+                $insCat = $conn->prepare("INSERT INTO video_categorias (video_id, categoria) VALUES (?, ?)");
+                $insCat->bind_param("is", $id, $cat);
+                $insCat->execute();
+            }
+            responder(true, '✅ Video actualizado correctamente.');
+        } else {
+            responder(false, 'Error al actualizar: ' . $conn->error);
+        }
         break;
 
     // ── ELIMINAR VIDEO ────────────────────────────────────────────────────

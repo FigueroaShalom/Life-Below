@@ -1,4 +1,5 @@
 <?php
+if (session_status() === PHP_SESSION_NONE) session_start();
 require_once __DIR__ . '/../database/Conexion_base.php';
 
 function isYoutube($url) {
@@ -36,30 +37,36 @@ function findRelatedArticle($conn, $title, $description, $category) {
 
 $cat_filter   = $_GET['cat'] ?? '';
 $search_query = trim($_GET['q'] ?? '');
+$user_id = isset($_SESSION['user_id']) ? (int)$_SESSION['user_id'] : 0;
+
 $sql = "
-    SELECT v.id, v.titulo, v.descripcion, v.video_url, v.categoria, v.fecha_publicacion,
+    SELECT v.id, v.titulo, v.descripcion, v.video_url, v.fecha_publicacion,
+           v.related_publicacion_id,
+           GROUP_CONCAT(vc.categoria) AS categorias,
            u.user AS autor,
-           (SELECT COUNT(*) FROM likes WHERE id_publicacion = v.id) AS total_likes
+           (SELECT COUNT(*) FROM likes WHERE id_publicacion = v.related_publicacion_id) AS total_likes,
+           " . ($user_id ? "(SELECT COUNT(*) FROM video_views WHERE user_id = $user_id AND video_id = v.id AND viewed_at > DATE_SUB(NOW(), INTERVAL 30 DAY)) * 10 + RAND() AS score" : "RAND() AS score") . "
     FROM videos v JOIN usuarios u ON v.id_autor = u.id
+    LEFT JOIN video_categorias vc ON v.id = vc.video_id
 ";
 $where = [];
 if ($cat_filter) {
     $cat_safe = $conn->real_escape_string($cat_filter);
-    $where[] = "v.categoria = '$cat_safe'";
+    $where[] = "EXISTS (SELECT 1 FROM video_categorias vc WHERE vc.video_id = v.id AND vc.categoria = '$cat_safe')";
 }
 if ($search_query) {
     $query_safe = $conn->real_escape_string($search_query);
     $where[] = "(
         v.titulo LIKE '%$query_safe%' OR
         v.descripcion LIKE '%$query_safe%' OR
-        v.categoria LIKE '%$query_safe%' OR
+        EXISTS (SELECT 1 FROM video_categorias vc WHERE vc.video_id = v.id AND vc.categoria LIKE '%$query_safe%') OR
         u.user LIKE '%$query_safe%'
     )";
 }
 if (!empty($where)) {
     $sql .= ' WHERE ' . implode(' AND ', $where);
 }
-$sql .= " ORDER BY v.fecha_publicacion DESC";
+$sql .= " GROUP BY v.id, v.titulo, v.descripcion, v.video_url, v.fecha_publicacion, v.related_publicacion_id, u.user ORDER BY score DESC";
 $videos = $conn->query($sql)->fetch_all(MYSQLI_ASSOC);
 $total = count($videos);
 
@@ -346,15 +353,18 @@ $categorias = [
     bottom: 68px; left: 14px; right: 58px;
     z-index: 4; color: #fff;
 }
-.reel-cat-badge {
+.reel-hashtags {
+    margin-bottom: .35rem;
+}
+.reel-hashtag {
     display: inline-block;
     background: rgba(0,119,190,0.15);
     border: 1px solid rgba(0,119,190,0.3);
     color: #0077be;
-    font-size: .58rem; font-weight: 800;
-    letter-spacing: 1px; text-transform: uppercase;
-    padding: 2px 8px; border-radius: 50px;
-    font-family: 'Nunito', sans-serif; margin-bottom: .35rem;
+    font-size: .55rem; font-weight: 800;
+    letter-spacing: 1px; text-transform: capitalize;
+    padding: 1px 6px; border-radius: 50px;
+    font-family: 'Nunito', sans-serif; margin-right: 4px; margin-bottom: 2px;
 }
 .reel-autor {
     font-size: .68rem; font-weight: 800;
@@ -502,6 +512,121 @@ $categorias = [
     color: rgba(255,255,255,.5); margin-bottom: .4rem;
 }
 
+/* ── MODAL DE COMENTARIOS ── */
+.comments-modal {
+    display: none;
+    position: fixed; inset: 0; z-index: 1000;
+    background: rgba(0,0,0,0.7);
+    backdrop-filter: blur(4px);
+    justify-content: center; align-items: center;
+    animation: fadeIn .3s ease;
+}
+.comments-modal.open {
+    display: flex;
+}
+.comments-modal-content {
+    background: #001828;
+    border: 1px solid rgba(0,119,190,0.3);
+    border-radius: 16px;
+    width: 90%;
+    max-width: 500px;
+    max-height: 80vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+.comments-modal-header {
+    padding: 1.5rem;
+    border-bottom: 1px solid rgba(0,119,190,0.2);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.comments-modal-header h3 {
+    margin: 0;
+    color: #fff;
+    font-family: 'Nunito', sans-serif;
+    font-size: 1.2rem;
+    font-weight: 800;
+}
+.comments-modal-close {
+    background: none;
+    border: none;
+    color: rgba(255,255,255,0.5);
+    cursor: pointer;
+    font-size: 1.5rem;
+    transition: color .2s;
+}
+.comments-modal-close:hover {
+    color: #fff;
+}
+.comments-modal-body {
+    flex: 1;
+    overflow-y: auto;
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+.comment-item {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(0,119,190,0.15);
+    border-radius: 12px;
+    padding: 1rem;
+}
+.comment-author {
+    font-weight: 700;
+    color: #0077be;
+    font-size: 0.9rem;
+    margin-bottom: 0.3rem;
+}
+.comment-text {
+    color: rgba(255,255,255,0.8);
+    font-size: 0.9rem;
+    line-height: 1.4;
+}
+.comment-time {
+    font-size: 0.75rem;
+    color: rgba(255,255,255,0.35);
+    margin-top: 0.5rem;
+}
+.comments-modal-footer {
+    padding: 1.5rem;
+    border-top: 1px solid rgba(0,119,190,0.2);
+    display: flex;
+    gap: 0.5rem;
+}
+.comments-modal-footer input {
+    flex: 1;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(0,119,190,0.2);
+    border-radius: 12px;
+    padding: 0.7rem;
+    color: #fff;
+    font-family: 'Nunito', sans-serif;
+    font-size: 0.9rem;
+}
+.comments-modal-footer input::placeholder {
+    color: rgba(255,255,255,0.3);
+}
+.comments-modal-footer button {
+    background: #0077be;
+    border: none;
+    border-radius: 12px;
+    color: #fff;
+    padding: 0.7rem 1rem;
+    cursor: pointer;
+    font-weight: 700;
+    transition: background .2s;
+}
+.comments-modal-footer button:hover {
+    background: #005a94;
+}
+.comments-loading {
+    text-align: center;
+    color: rgba(255,255,255,0.5);
+}
+
 @media (max-width: 768px) {
     .watch-sidebar { display: none; }
     .watch-center { padding: .5rem; }
@@ -569,22 +694,14 @@ $categorias = [
                 $ytId  = $isYt ? getYoutubeId($v['video_url']) : null;
                 $thumb = $isYt ? getYoutubeThumbnail($v['video_url']) : null;
                 $localUrl = !$isYt ? htmlspecialchars($v['video_url']) : null;
-                $relatedArticleId = findRelatedArticle($conn, $v['titulo'], $v['descripcion'], $v['categoria']);
-                $relatedQuery     = rawurlencode(trim($v['titulo'] . ' ' . $v['categoria']));
+                $relatedArticleId = $v['related_publicacion_id'] ? $v['related_publicacion_id'] : findRelatedArticle($conn, $v['titulo'], $v['descripcion'], $v['categorias']);
+                $relatedQuery     = rawurlencode(trim($v['titulo'] . ' ' . ($v['categorias'] ?? '')));
             ?>
             <div class="reel-card <?php echo $i === 0 ? 'active' : ''; ?>"
                  data-index="<?php echo $i; ?>"
                  data-id="<?php echo $v['id']; ?>"
                  data-type="<?php echo $isYt ? 'youtube' : 'local'; ?>"
                  data-ytid="<?php echo $ytId ?? ''; ?>">
-
-                <div class="reel-type-badge <?php echo $isYt ? 'youtube' : 'local'; ?>">
-                    <?php if ($isYt): ?>
-                        <svg width="9" height="9" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>YouTube
-                    <?php else: ?>
-                        <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>Local
-                    <?php endif; ?>
-                </div>
 
                 <?php if ($isYt): ?>
                     <?php if ($thumb): ?>
@@ -605,7 +722,6 @@ $categorias = [
                 <div class="reel-gradient"></div>
 
                 <div class="reel-info">
-                    <span class="reel-cat-badge"><?php echo htmlspecialchars($v['categoria'] ?? 'general'); ?></span>
                     <div class="reel-autor">
                         <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
                         <?php echo htmlspecialchars($v['autor']); ?>
@@ -614,20 +730,36 @@ $categorias = [
                     <?php if (!empty($v['descripcion'])): ?>
                         <div class="reel-desc"><?php echo htmlspecialchars($v['descripcion']); ?></div>
                     <?php endif; ?>
+                    <div class="reel-hashtags">
+                        <?php $cats = array_filter(array_map('trim', explode(',', $v['categorias']))); foreach ($cats as $cat): ?>
+                            <?php if ($cat !== ''): ?>
+                                <span class="reel-hashtag">#<?php echo htmlspecialchars($cat); ?></span>
+                            <?php endif; ?>
+                        <?php endforeach; ?>
+                    </div>
                 </div>
 
                 <div class="reel-actions">
                     <?php if (isset($_SESSION['user_id'])): ?>
-                    <form method="POST" action="database/procesar_like.php">
-                        <input type="hidden" name="id_publicacion" value="<?php echo $v['id']; ?>">
-                        <input type="hidden" name="redirect" value="?section=watch<?php echo $cat_filter ? '&cat='.$cat_filter : ''; ?>">
-                        <button type="submit" class="reel-action-btn" title="Like">
-                            <div class="reel-action-icon">
-                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>
-                            </div>
-                            <span class="reel-action-label"><?php echo $v['total_likes']; ?></span>
-                        </button>
-                    </form>
+                        <?php if (!empty($v['related_publicacion_id'])): ?>
+                            <form method="POST" action="database/procesar_like.php">
+                                <input type="hidden" name="id_publicacion" value="<?php echo $v['related_publicacion_id']; ?>">
+                                <input type="hidden" name="redirect" value="?section=watch<?php echo $cat_filter ? '&cat='.$cat_filter : ''; ?>">
+                                <button type="submit" class="reel-action-btn" title="Like">
+                                    <div class="reel-action-icon">
+                                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>
+                                    </div>
+                                    <span class="reel-action-label"><?php echo $v['total_likes']; ?></span>
+                                </button>
+                            </form>
+                        <?php else: ?>
+                            <button type="button" class="reel-action-btn" title="Relaciona este video con un artículo para dar like" disabled>
+                                <div class="reel-action-icon">
+                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>
+                                </div>
+                                <span class="reel-action-label"><?php echo $v['total_likes']; ?></span>
+                            </button>
+                        <?php endif; ?>
                     <?php else: ?>
                     <a href="?section=login" class="reel-action-btn" title="Like">
                         <div class="reel-action-icon">
@@ -644,12 +776,16 @@ $categorias = [
                         </div>
                         <span class="reel-action-label">Aprender</span>
                     </a>
-                    <a href="?section=noticias&q=<?php echo $relatedQuery; ?>" class="reel-action-btn" title="Noticias relacionadas">
+
+                    <button type="button" class="reel-action-btn reel-comments-btn" 
+                            title="Comentarios"
+                            data-video-id="<?php echo $v['id']; ?>"
+                            data-video-title="<?php echo htmlspecialchars($v['titulo']); ?>">
                         <div class="reel-action-icon">
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
                         </div>
-                        <span class="reel-action-label">Noticias</span>
-                    </a>
+                        <span class="reel-action-label">Comentarios</span>
+                    </button>
 
                     <button class="reel-action-btn reel-sound-btn" title="Sonido">
                         <div class="reel-action-icon">
@@ -684,23 +820,140 @@ $categorias = [
             </div>
             <?php endforeach; ?>
 
-            <div class="watch-nav">
-                <button class="watch-nav-btn" id="btnPrev" disabled>
-                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="18 15 12 9 6 15"/></svg>
-                </button>
-                <span class="watch-nav-indicator" id="navIndicator">1 / <?php echo $total; ?></span>
-                <button class="watch-nav-btn" id="btnNext" <?php echo $total <= 1 ? 'disabled' : ''; ?>>
-                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
-                </button>
-            </div>
-
         </div>
         <?php endif; ?>
     </div>
 </div>
 </div>
 
+<!-- MODAL DE COMENTARIOS -->
+<div class="comments-modal" id="commentsModal">
+    <div class="comments-modal-content">
+        <div class="comments-modal-header">
+            <h3 id="commentsModalTitle">Comentarios</h3>
+            <button type="button" class="comments-modal-close" onclick="closeCommentsModal()">×</button>
+        </div>
+        <div class="comments-modal-body" id="commentsList">
+            <div class="comments-loading">Cargando comentarios...</div>
+        </div>
+        <?php if (isset($_SESSION['user_id'])): ?>
+        <div class="comments-modal-footer">
+            <input type="text" id="commentInput" placeholder="Escribe un comentario..." maxlength="500">
+            <button type="button" onclick="submitComment()">Enviar</button>
+        </div>
+        <?php else: ?>
+        <div class="comments-modal-footer">
+            <p style="color: rgba(255,255,255,0.5); margin: 0; width: 100%; text-align: center;">
+                <a href="?section=login" style="color: #0077be; text-decoration: none;">Inicia sesión</a> para comentar
+            </p>
+        </div>
+        <?php endif; ?>
+    </div>
+</div>
+
 <script>
+// ── FUNCIONES DE COMENTARIOS ──────────────────────────────────────────
+let currentVideoIdForComments = null;
+
+function openCommentsModal(videoId, videoTitle) {
+    currentVideoIdForComments = videoId;
+    document.getElementById('commentsModal').classList.add('open');
+    document.getElementById('commentsModalTitle').textContent = 'Comentarios: ' + videoTitle;
+    loadComments(videoId);
+}
+
+function closeCommentsModal() {
+    document.getElementById('commentsModal').classList.remove('open');
+    currentVideoIdForComments = null;
+}
+
+function loadComments(videoId) {
+    const commentsList = document.getElementById('commentsList');
+    commentsList.innerHTML = '<div class="comments-loading">Cargando comentarios...</div>';
+    
+    fetch('database/obtener_comentarios_video.php?video_id=' + encodeURIComponent(videoId))
+        .then(r => r.json())
+        .then(data => {
+            if (!data.ok) {
+                commentsList.innerHTML = '<div class="comments-loading">Error al cargar comentarios</div>';
+                return;
+            }
+            
+            if (data.comentarios.length === 0) {
+                commentsList.innerHTML = '<div class="comments-loading">No hay comentarios aún. ¡Sé el primero!</div>';
+                return;
+            }
+            
+            commentsList.innerHTML = '';
+            data.comentarios.forEach(comment => {
+                const commentEl = document.createElement('div');
+                commentEl.className = 'comment-item';
+                commentEl.innerHTML = `
+                    <div class="comment-author">${escapeHtml(comment.autor)}</div>
+                    <div class="comment-text">${escapeHtml(comment.contenido)}</div>
+                    <div class="comment-time">${comment.fecha}</div>
+                `;
+                commentsList.appendChild(commentEl);
+            });
+        })
+        .catch(() => {
+            commentsList.innerHTML = '<div class="comments-loading">Error al cargar comentarios</div>';
+        });
+}
+
+function submitComment() {
+    const input = document.getElementById('commentInput');
+    const contenido = input.value.trim();
+    
+    if (!contenido) {
+        alert('Escribe un comentario');
+        return;
+    }
+    
+    if (!currentVideoIdForComments) {
+        alert('Error: video no seleccionado');
+        return;
+    }
+    
+    const fd = new FormData();
+    fd.append('video_id', currentVideoIdForComments);
+    fd.append('contenido', contenido);
+    
+    fetch('database/procesar_comentario_video.php', { method: 'POST', body: fd })
+        .then(r => r.json())
+        .then(data => {
+            if (data.ok) {
+                input.value = '';
+                loadComments(currentVideoIdForComments);
+            } else {
+                alert(data.mensaje || 'Error al enviar comentario');
+            }
+        })
+        .catch(() => alert('Error de conexión'));
+}
+
+function escapeHtml(text) {
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+}
+
+// Evento: botón de comentarios
+document.addEventListener('DOMContentLoaded', () => {
+    document.querySelectorAll('.reel-comments-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            openCommentsModal(btn.dataset.videoId, btn.dataset.videoTitle);
+        });
+    });
+    
+    // Cerrar modal al hacer clic fuera
+    document.getElementById('commentsModal').addEventListener('click', (e) => {
+        if (e.target.id === 'commentsModal') {
+            closeCommentsModal();
+        }
+    });
+});
+
 (function () {
     const cards = [...document.querySelectorAll('.reel-card')];
     const total = cards.length;
@@ -777,6 +1030,15 @@ $categorias = [
         btn.querySelector('.icon-sound').style.display = !globalMuted ? '' : 'none';
     }
 
+    // ── Registrar vista ──────────────────────────────────────────────────
+    function registerView(videoId) {
+        fetch('database/procesar_vista.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: 'video_id=' + encodeURIComponent(videoId)
+        }).catch(() => {}); // Ignorar errores
+    }
+
     // ── Cambiar video activo ──────────────────────────────────────────────
     function goTo(index) {
         const prev = cards[current];
@@ -808,6 +1070,7 @@ $categorias = [
             // syncSoundIcon se llama en onReady
         }
 
+        registerView(next.dataset.id);
         updateNav();
         showUIBriefly(next);
     }
@@ -820,16 +1083,11 @@ $categorias = [
     }
 
     function updateNav() {
-        document.getElementById('navIndicator').textContent = (current + 1) + ' / ' + total;
         const counterEl = document.getElementById('watchCounterCurrent');
         if (counterEl) counterEl.textContent = current + 1;
-        document.getElementById('btnPrev').disabled = current === 0;
-        document.getElementById('btnNext').disabled = current === total - 1;
     }
 
     // ── Navegación ────────────────────────────────────────────────────────
-    document.getElementById('btnPrev').addEventListener('click', () => { if (current > 0) goTo(current - 1); });
-    document.getElementById('btnNext').addEventListener('click', () => { if (current < total - 1) goTo(current + 1); });
 
     document.addEventListener('keydown', (e) => {
         if (['INPUT','TEXTAREA','SELECT'].includes(document.activeElement.tagName)) return;
@@ -1048,6 +1306,7 @@ $categorias = [
         } else {
             createYTPlayer(first);
         }
+        registerView(first.dataset.id);
         updateNav();
         showUIBriefly(first);
     });
