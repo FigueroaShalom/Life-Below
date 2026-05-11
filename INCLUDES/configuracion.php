@@ -116,7 +116,7 @@ document.getElementById('form-foto').onsubmit = function(e) {
     const formData = new FormData(this);
     formData.append('accion', 'subir_foto');
 
-    fetch('./database/procesar_configuracion.php', {
+    fetch('database/procesar_configuracion.php', {
         method: 'POST',
         body: formData
     })
@@ -153,7 +153,7 @@ function solicitarCodigo() {
     btn.disabled = true;
     btn.innerText = 'Enviando...';
 
-    fetch('./database/procesar_configuracion.php', {
+    fetch('database/procesar_configuracion.php', {
         method: 'POST',
         headers: {'Content-Type': 'application/x-www-form-urlencoded'},
         body: 'accion=solicitar_codigo'
@@ -187,7 +187,7 @@ function cambiarPassword() {
         return;
     }
 
-    fetch('./database/procesar_configuracion.php', {
+    fetch('database/procesar_configuracion.php', {
         method: 'POST',
         headers: {'Content-Type': 'application/x-www-form-urlencoded'},
         body: `accion=cambiar_password&codigo=${code}&password=${pass}`

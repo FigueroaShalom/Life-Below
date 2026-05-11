@@ -275,7 +275,7 @@ document.getElementById('form-crear-contenido').addEventListener('submit', funct
     const fd = new FormData(this);
     fd.append('categoria', fd.get('category')); // el PHP espera 'categoria'
 
-    fetch('../database/procesar_crear_contenido.php', { method:'POST', body:fd })
+    fetch('database/procesar_crear_contenido.php', { method:'POST', body:fd })
     .then(r => r.text())
     .then(data => {
         if (data.trim() === 'success') {
@@ -346,7 +346,7 @@ document.getElementById('form-crear-video').addEventListener('submit', function(
 
     // ── YouTube → fetch normal ────────────────────────────
     } else {
-        fetch('../database/procesar_video.php', { method:'POST', body:fd })
+        fetch('database/procesar_video.php', { method:'POST', body:fd })
         .then(r => r.text())
         .then(data => procesarRespuestaVideo(data))
         .catch(() => mostrarAlerta('alerta-video', false, 'Error de conexión.'))

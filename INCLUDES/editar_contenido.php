@@ -81,7 +81,7 @@ document.getElementById('form-editar-contenido').addEventListener('submit', func
 
     const formData = new FormData(this);
 
-    fetch('../database/procesar_crear_contenido.php', {
+    fetch('database/procesar_crear_contenido.php', {
         method: 'POST',
         body: formData
     })

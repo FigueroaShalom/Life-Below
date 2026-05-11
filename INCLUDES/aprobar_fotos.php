@@ -55,7 +55,7 @@ $pendientes = $stmt->get_result();
 function procesarFoto(userId, accion) {
     if(!confirm(`¿Estás seguro de ${accion} esta foto?`)) return;
 
-    fetch('./database/procesar_aprobacion_foto.php', {
+    fetch('database/procesar_aprobacion_foto.php', {
         method: 'POST',
         headers: {'Content-Type': 'application/x-www-form-urlencoded'},
         body: `id_usuario=${userId}&accion=${accion}`

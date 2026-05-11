@@ -194,7 +194,9 @@ switch ($accion) {
         }
 
         if ($stmt->execute()) {
-            $conn->query("DELETE FROM video_categorias WHERE video_id = $id");
+            $delCat = $conn->prepare("DELETE FROM video_categorias WHERE video_id = ?");
+            $delCat->bind_param("i", $id);
+            $delCat->execute();
             foreach ($categorias as $cat) {
                 $insCat = $conn->prepare("INSERT INTO video_categorias (video_id, categoria) VALUES (?, ?)");
                 $insCat->bind_param("is", $id, $cat);
