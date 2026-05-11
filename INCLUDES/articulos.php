@@ -49,7 +49,7 @@ if ($selected_id):
         <?php if (!empty($post['imagen'])): ?>
             <img src="<?php echo htmlspecialchars($post['imagen']); ?>"
                  alt="<?php echo htmlspecialchars($post['titulo']); ?>"
-                 class="article-detail-img">
+                 class="article-detail-img" loading="lazy">
         <?php endif; ?>
 
         <h2 class="post-title"><?php echo htmlspecialchars($post['titulo']); ?></h2>
@@ -204,7 +204,7 @@ else:
             <div class="post-card">
                 <?php if (!empty($post['imagen'])): ?>
                     <img src="<?php echo htmlspecialchars($post['imagen']); ?>"
-                         alt="<?php echo htmlspecialchars($post['titulo']); ?>">
+                         alt="<?php echo htmlspecialchars($post['titulo']); ?>" loading="lazy">
                 <?php else: ?>
                     <div style="height:180px;background:linear-gradient(135deg,#e6f3ff,#b3e0ff);display:flex;align-items:center;justify-content:center;font-size:3rem;">🌊</div>
                 <?php endif; ?>

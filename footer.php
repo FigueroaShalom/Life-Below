@@ -66,6 +66,31 @@ window.addEventListener('scroll', () => {
     const header = document.querySelector('.hy-header');
     if (header) header.classList.toggle('scrolled', window.scrollY > 20);
 });
+
+// Force reload when navigating back (fixes session state in header)
+window.onpageshow = function(event) {
+    if (event.persisted) {
+        window.location.reload();
+    }
+};
+
+// Profile Dropdown Toggle
+const profileTrigger = document.getElementById('profileTrigger');
+const profileMenu = document.getElementById('profileMenu');
+if(profileTrigger && profileMenu) {
+    profileTrigger.addEventListener('click', (e) => {
+        e.stopPropagation();
+        profileMenu.classList.toggle('show');
+    });
+    document.addEventListener('click', (e) => {
+        if (!profileMenu.contains(e.target)) {
+            profileMenu.classList.remove('show');
+        }
+    });
+}
 </script>
+<?php if (isset($current_section) && $current_section === 'dashboard'): ?>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<?php endif; ?>
 </body>
 </html>
