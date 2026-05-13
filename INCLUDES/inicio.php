@@ -1,37 +1,16 @@
-<?php
-$carousel_images = [
-    [
-        'img'   => 'uploads/carrusel1.jpg',
-        'title' => 'Aumenta la población de lobos marinos en el Pacífico',
-        'desc'  => 'Científicos encuentran un población de lobos marinos, aumentando su presencia en la región.'
-    ],
-    [
-        'img'   => 'uploads/carrusel2.jpg',
-        'title' => 'El gigante gentil',
-        'desc'  => 'Los manatíes regresan a las costas protegidas.'
-    ],
-    [
-        'img'   => 'uploads/carrusel3.jpg',
-        'title' => 'Proyecto de limpieza oceánica récord',
-        'desc'  => 'Remueven 100 toneladas de plástico del Océano Pacífico.'
-    ],
-];
-?>
-
 <style>
     /* Convertir textos blancos a oscuros */
     .hy-hero-title, .hy-hero-sub { color: var(--navy) !important; }
     
-    /* --- NUEVOS ESTILOS: AZUL CLARO --- */
     /* 1. Letras "ciencia y la sociedad" */
     .hy-hero-accent {
         background: none !important;
         -webkit-text-fill-color: initial !important;
-        color: #4DA8DA !important; /* Azul claro vibrante */
+        color: #4DA8DA !important;
         text-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
     }
 
-    /* 2. Botones primarios (Explorar artículos y Crear cuenta) */
+    /* 2. Botones primarios (Crear cuenta) */
     .hy-cta-primary {
         background-color: #4DA8DA !important;
         color: #ffffff !important;
@@ -41,11 +20,10 @@ $carousel_images = [
     }
 
     .hy-cta-primary:hover {
-        background-color: #3892c2 !important; /* Un poco más oscuro al pasar el mouse */
+        background-color: #3892c2 !important;
         transform: translateY(-2px) !important;
         color: #ffffff !important;
     }
-    /* --------------------------------- */
 
     /* Convertir barra de estadísticas en cápsula de cristal */
     .hy-stats {
@@ -73,6 +51,36 @@ $carousel_images = [
         max-width: 1280px;
         box-shadow: 0 8px 32px rgba(0, 40, 80, 0.1);
     }
+
+    .hy-carousel-track { position: relative; }
+    .hy-carousel-slide {
+        display: none;
+        position: relative;
+        height: 420px;
+    }
+    .hy-carousel-slide.active { display: block; }
+    .hy-carousel-slide img {
+        width: 100%; height: 100%; object-fit: cover;
+        transition: opacity .4s ease;
+    }
+    .hy-carousel-slide.fade-in {
+        animation: cFadeIn .5s ease both;
+    }
+    @keyframes cFadeIn {
+        from { opacity: 0; transform: scale(1.02); }
+        to   { opacity: 1; transform: scale(1); }
+    }
+    .hy-dot {
+        cursor: pointer; border: none;
+        background: rgba(0,0,0,0.1);
+    }
+    .hy-dot.active { background: #00c4d8; }
+    .hy-arrow {
+        cursor: pointer; border: none;
+        font-family: inherit;
+        background: rgba(255,255,255,0.4);
+    }
+    .hy-arrow:hover { background: rgba(255,255,255,0.8); }
 </style>
 
 <section class="hy-hero">
@@ -86,15 +94,10 @@ $carousel_images = [
         <p class="hy-hero-sub">
             Descubre, aprende y actúa. Life Below transforma el conocimiento científico oceánico en contenido accesible para todos.
         </p>
-        <div class="hy-hero-actions">
-            <a href="index.php?section=articulos" class="hy-cta-primary">Explorar artículos</a>
-            <a href="index.php?section=watch"     class="hy-cta-secondary">Ver videos</a>
-        </div>
     </div>
     <div class="hy-hero-visual">
         <div class="hy-hero-img-wrap">
             <img src="uploads/carrusel_hero.jpg" alt="Vida marina">
-            <div class="hy-hero-img-badge"><p>Vida Submarina</p></div>
         </div>
     </div>
 </section>
@@ -115,68 +118,20 @@ $carousel_images = [
     </div>
 
     <div class="hy-carousel" id="mainCarousel">
-
-        <div class="hy-carousel-track">
-            <?php foreach ($carousel_images as $i => $slide): ?>
-            <div class="hy-carousel-slide <?php echo $i === 0 ? 'active' : ''; ?>" data-index="<?php echo $i; ?>">
-                <img src="<?php echo $slide['img']; ?>"
-                     alt="<?php echo htmlspecialchars($slide['title']); ?>"
-                     loading="<?php echo $i === 0 ? 'eager' : 'lazy'; ?>">
-                <div class="hy-carousel-caption">
-                    <h3><?php echo htmlspecialchars($slide['title']); ?></h3>
-                    <p><?php echo htmlspecialchars($slide['desc']); ?></p>
-                    <a href="index.php?section=noticias" class="hy-cta-white" style="color:var(--navy); background: rgba(255,255,255,0.7); border: none;">Leer más →</a>
-                </div>
+        <div class="hy-carousel-track" id="apiCarouselTrack">
+            <div style="padding: 5rem; text-align: center; color: var(--navy);">
+                Cargando noticias desde la API...
             </div>
-            <?php endforeach; ?>
         </div>
 
         <div class="hy-carousel-controls" style="background: rgba(255,255,255,0.2); backdrop-filter: blur(8px);">
-            <div class="hy-carousel-dots" id="carouselDots">
-                <?php foreach ($carousel_images as $i => $slide): ?>
-                    <button class="hy-dot <?php echo $i === 0 ? 'active' : ''; ?>"
-                            data-index="<?php echo $i; ?>"
-                            aria-label="Slide <?php echo $i+1; ?>" style="border: 1px solid rgba(0,0,0,0.2);"></button>
-                <?php endforeach; ?>
-            </div>
+            <div class="hy-carousel-dots" id="apiCarouselDots">
+                </div>
             <div class="hy-carousel-arrows">
                 <button class="hy-arrow" id="carouselPrev" aria-label="Anterior" style="color: var(--navy); border: 1px solid rgba(0,0,0,0.1);">‹</button>
                 <button class="hy-arrow" id="carouselNext" aria-label="Siguiente" style="color: var(--navy); border: 1px solid rgba(0,0,0,0.1);">›</button>
             </div>
         </div>
-
-    </div>
-</section>
-
-<section class="hy-section">
-    <div class="hy-section-header">
-        <h2 class="hy-section-title">Explora LIFE BELOW</h2>
-    </div>
-    <div class="hy-explore-grid">
-        <a href="index.php?section=articulos" class="hy-explore-card" style="--c1:#0077be;--c2:#00b4d8;">
-            <div class="hy-explore-icon">📄</div>
-            <h3>Artículos</h3>
-            <p>Investigaciones y textos sobre conservación marina escritos por nuestra comunidad.</p>
-            <span class="hy-explore-link">Leer artículos →</span>
-        </a>
-        <a href="index.php?section=watch" class="hy-explore-card" style="--c1:#005f9e;--c2:#0097c7;">
-            <div class="hy-explore-icon">▶</div>
-            <h3>Videos</h3>
-            <p>Videos exclusivos sobre la vida submarina, ecosistemas y conservación oceánica.</p>
-            <span class="hy-explore-link">Ver videos →</span>
-        </a>
-        <a href="index.php?section=galeria" class="hy-explore-card" style="--c1:#007a50;--c2:#00b47a;">
-            <div class="hy-explore-icon">■</div>
-            <h3>Galería</h3>
-            <p>Imágenes de especies marinas clasificadas por categoría y hábitat.</p>
-            <span class="hy-explore-link">Ver galería →</span>
-        </a>
-        <a href="index.php?section=noticias" class="hy-explore-card" style="--c1:#6a0080;--c2:#9c27b0;">
-            <div class="hy-explore-icon">◆</div>
-            <h3>Noticias</h3>
-            <p>Eventos, proyectos y noticias recientes sobre los océanos del mundo.</p>
-            <span class="hy-explore-link">Ver noticias →</span>
-        </a>
     </div>
 </section>
 
@@ -195,96 +150,101 @@ $carousel_images = [
 </section>
 <?php endif; ?>
 
-<style>
-.hy-carousel-track { position: relative; }
-.hy-carousel-slide {
-    display: none;
-    position: relative;
-    height: 420px;
-}
-.hy-carousel-slide.active { display: block; }
-.hy-carousel-slide img {
-    width: 100%; height: 100%; object-fit: cover;
-    transition: opacity .4s ease;
-}
-/* Animación fade */
-.hy-carousel-slide.fade-in {
-    animation: cFadeIn .5s ease both;
-}
-@keyframes cFadeIn {
-    from { opacity: 0; transform: scale(1.02); }
-    to   { opacity: 1; transform: scale(1); }
-}
-/* Botones como button, no como a */
-.hy-dot {
-    cursor: pointer; border: none;
-    background: rgba(0,0,0,0.1);
-}
-.hy-dot.active { background: #00c4d8; }
-.hy-arrow {
-    cursor: pointer; border: none;
-    font-family: inherit;
-    background: rgba(255,255,255,0.4);
-}
-.hy-arrow:hover { background: rgba(255,255,255,0.8); }
-</style>
-
 <script>
 (function() {
-    const slides   = document.querySelectorAll('#mainCarousel .hy-carousel-slide');
-    const dots     = document.querySelectorAll('#mainCarousel .hy-dot');
-    const btnPrev  = document.getElementById('carouselPrev');
-    const btnNext  = document.getElementById('carouselNext');
-    const INTERVAL = 5000; // 5 segundos
+    const API_KEY = 'd5b5320a0accff00272ab27733ba94ce'; 
+    const query = 'vida submarina OR oceanos OR biodiversidad';
+    // Le pedimos exactamente 3 resultados a la API
+    const url = `https://gnews.io/api/v4/search?q=${encodeURIComponent(query)}&lang=es&max=3&token=${API_KEY}`;
+    
+    const track = document.getElementById('apiCarouselTrack');
+    const dotsContainer = document.getElementById('apiCarouselDots');
 
-    let current = 0;
-    let timer   = null;
+    fetch(url)
+        .then(res => res.json())
+        .then(data => {
+            if (data.articles && data.articles.length > 0) {
+                let slidesHtml = '';
+                let dotsHtml = '';
 
-    function goTo(index) {
-        slides[current].classList.remove('active', 'fade-in');
-        dots[current].classList.remove('active');
-        current = (index + slides.length) % slides.length;
-        slides[current].classList.add('active', 'fade-in');
-        dots[current].classList.add('active');
-    }
+                data.articles.forEach((article, index) => {
+                    const isActive = index === 0 ? 'active' : '';
+                    const imgUrl = article.image || 'uploads/carrusel1.jpg';
+                    
+                    slidesHtml += `
+                        <div class="hy-carousel-slide ${isActive}" data-index="${index}">
+                            <img src="${imgUrl}" alt="${article.title}">
+                            <div class="hy-carousel-caption">
+                                <h3>${article.title}</h3>
+                                <p>${article.description}</p>
+                                <a href="${article.url}" target="_blank" class="hy-cta-white" style="color:var(--navy); background: rgba(255,255,255,0.7); border: none;">Leer más →</a>
+                            </div>
+                        </div>
+                    `;
 
-    function next() { goTo(current + 1); }
-    function prev() { goTo(current - 1); }
+                    dotsHtml += `
+                        <button class="hy-dot ${isActive}" data-index="${index}" aria-label="Slide ${index+1}" style="border: 1px solid rgba(0,0,0,0.2);"></button>
+                    `;
+                });
 
-    function startAuto() {
-        stopAuto();
-        timer = setInterval(next, INTERVAL);
-    }
-
-    function stopAuto() {
-        if (timer) { clearInterval(timer); timer = null; }
-    }
-
-    btnNext.addEventListener('click', function() { next(); startAuto(); });
-    btnPrev.addEventListener('click', function() { prev(); startAuto(); });
-
-    dots.forEach(function(dot) {
-        dot.addEventListener('click', function() {
-            goTo(parseInt(this.dataset.index));
-            startAuto();
+                track.innerHTML = slidesHtml;
+                dotsContainer.innerHTML = dotsHtml;
+                
+                // Iniciar la logica del carrusel una vez que se cargan los datos
+                initCarouselLogic();
+            } else {
+                track.innerHTML = '<div style="padding: 5rem; text-align: center; color: var(--navy);">No se encontraron noticias recientes.</div>';
+            }
+        })
+        .catch(err => {
+            console.error('Error cargando API:', err);
+            track.innerHTML = '<div style="padding: 5rem; text-align: center; color: var(--navy);">No se pudo conectar con el servidor de noticias.</div>';
         });
-    });
 
-    document.getElementById('mainCarousel').addEventListener('mouseenter', stopAuto);
-    document.getElementById('mainCarousel').addEventListener('mouseleave', startAuto);
+    function initCarouselLogic() {
+        const slides   = document.querySelectorAll('#mainCarousel .hy-carousel-slide');
+        const dots     = document.querySelectorAll('#mainCarousel .hy-dot');
+        const btnPrev  = document.getElementById('carouselPrev');
+        const btnNext  = document.getElementById('carouselNext');
+        const INTERVAL = 5000;
 
-    let touchStartX = 0;
-    document.getElementById('mainCarousel').addEventListener('touchstart', function(e) {
-        touchStartX = e.touches[0].clientX;
-    });
-    document.getElementById('mainCarousel').addEventListener('touchend', function(e) {
-        const diff = touchStartX - e.changedTouches[0].clientX;
-        if (Math.abs(diff) > 50) {
-            diff > 0 ? next() : prev();
-            startAuto();
+        let current = 0;
+        let timer   = null;
+
+        function goTo(index) {
+            slides[current].classList.remove('active', 'fade-in');
+            dots[current].classList.remove('active');
+            current = (index + slides.length) % slides.length;
+            slides[current].classList.add('active', 'fade-in');
+            dots[current].classList.add('active');
         }
-    });
 
-    startAuto();
+        function next() { goTo(current + 1); }
+        function prev() { goTo(current - 1); }
+
+        function startAuto() {
+            stopAuto();
+            timer = setInterval(next, INTERVAL);
+        }
+
+        function stopAuto() {
+            if (timer) { clearInterval(timer); timer = null; }
+        }
+
+        btnNext.addEventListener('click', function() { next(); startAuto(); });
+        btnPrev.addEventListener('click', function() { prev(); startAuto(); });
+
+        dots.forEach(function(dot) {
+            dot.addEventListener('click', function() {
+                goTo(parseInt(this.dataset.index));
+                startAuto();
+            });
+        });
+
+        document.getElementById('mainCarousel').addEventListener('mouseenter', stopAuto);
+        document.getElementById('mainCarousel').addEventListener('mouseleave', startAuto);
+
+        startAuto();
+    }
 })();
 </script>
