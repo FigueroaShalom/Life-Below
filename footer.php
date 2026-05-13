@@ -70,13 +70,7 @@
             <a href="index.php?section=dashboard">Dashboard</a>
         </div>
 
-        <div class="hy-footer-col">
-            <h4>Sostenibilidad</h4>
-            <p style="font-size:.85rem; color:rgba(0, 24, 40, 0.7) !important; line-height:1.6;">
-                Contribuimos a la conservación marina a través de la educación y la ciencia.
-            </p>
-            <span class="hy-ods-badge">Vida Submarina</span>
-        </div>
+    
 
     </div>
 

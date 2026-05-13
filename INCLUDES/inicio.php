@@ -25,21 +25,7 @@
         color: #ffffff !important;
     }
 
-    /* Convertir barra de estadísticas en cápsula de cristal */
-    .hy-stats {
-        background: rgba(255, 255, 255, 0.2) !important;
-        backdrop-filter: blur(12px);
-        -webkit-backdrop-filter: blur(12px);
-        border: 1px solid rgba(255, 255, 255, 0.5);
-        border-radius: 24px;
-        margin: 2rem auto;
-        max-width: 1280px;
-        padding: 2rem;
-        box-shadow: 0 8px 32px rgba(0, 40, 80, 0.1);
-    }
-    .hy-stat-num, .hy-stat-label, .hy-cta-text h2, .hy-cta-text p { color: var(--navy) !important; }
-    .hy-stat { border-right: 1px solid rgba(0, 24, 40, 0.1) !important; }
-    
+   
     /* Convertir barra de llamada a la acción en cápsula de cristal */
     .hy-cta-section {
         background: rgba(255, 255, 255, 0.2) !important;
@@ -102,14 +88,6 @@
     </div>
 </section>
 
-<section class="hy-stats">
-    <div class="hy-stats-inner">
-        <div class="hy-stat"><div class="hy-stat-num">+500</div><div class="hy-stat-label">Especies documentadas</div></div>
-        <div class="hy-stat"><div class="hy-stat-num">7</div><div class="hy-stat-label">Océanos y mares</div></div>
-        <div class="hy-stat"><div class="hy-stat-num">71%</div><div class="hy-stat-label">Del planeta es agua</div></div>
-        <div class="hy-stat"><div class="hy-stat-num">∞</div><div class="hy-stat-label">Por descubrir</div></div>
-    </div>
-</section>
 
 <section class="hy-section">
     <div class="hy-section-header">
@@ -154,7 +132,7 @@
 (function() {
     const API_KEY = 'd5b5320a0accff00272ab27733ba94ce'; 
     const query = 'vida submarina OR oceanos OR biodiversidad';
-    // Le pedimos exactamente 3 resultados a la API
+    
     const url = `https://gnews.io/api/v4/search?q=${encodeURIComponent(query)}&lang=es&max=3&token=${API_KEY}`;
     
     const track = document.getElementById('apiCarouselTrack');
