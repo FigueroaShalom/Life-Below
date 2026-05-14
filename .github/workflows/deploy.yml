@@ -1,0 +1,31 @@
+name: Deploy via SFTP
+
+on:
+  push:
+    branches:
+      - main
+      - isai
+
+jobs:
+  deploy:
+    name: Deploy to IONOS
+    runs-on: ubuntu-latest
+    steps:
+      - name: 🚚 Get latest code
+        uses: actions/checkout@v4
+
+      - name: 🚀 Deploy to IONOS via SFTP
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        with:
+          server: ${{ secrets.SFTP_SERVER }}
+          username: ${{ secrets.SFTP_USERNAME }}
+          password: ${{ secrets.SFTP_PASSWORD }}
+          port: 22
+          protocol: sftp
+          local-dir: ./
+          server-dir: ${{ secrets.SFTP_REMOTE_PATH }}
+          exclude: |
+            **/.git*
+            **/.git*/**
+            **/node_modules/**
+            .github/**
