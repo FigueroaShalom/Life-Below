@@ -18,7 +18,7 @@ $current_section = $_GET['section'] ?? 'inicio';
     <link rel="stylesheet" href="style.css?v=1.1">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
-    <link rel="icon" type="image/jpeg" href="uploads/logooo.jpg">
+    <link rel="icon" type="image/svg+xml" href="uploads/favicon-circle.svg">
 </head>
 <body>
 
