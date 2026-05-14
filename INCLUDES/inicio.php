@@ -2,7 +2,7 @@
     /* Convertir textos blancos a oscuros */
     .hy-hero-title, .hy-hero-sub { color: var(--navy) !important; }
     
-    /* 1. Letras "ciencia y la sociedad" */
+    /* ESLOGAN DEL INCIO */
     .hy-hero-accent {
         background: none !important;
         -webkit-text-fill-color: initial !important;
@@ -10,7 +10,7 @@
         text-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
     }
 
-    /* 2. Botones primarios (Crear cuenta) */
+    /* CREAR CUENTA*/
     .hy-cta-primary {
         background-color: #4DA8DA !important;
         color: #ffffff !important;
@@ -25,8 +25,6 @@
         color: #ffffff !important;
     }
 
-   
-    /* Convertir barra de llamada a la acción en cápsula de cristal */
     .hy-cta-section {
         background: rgba(255, 255, 255, 0.2) !important;
         backdrop-filter: blur(12px);
@@ -168,7 +166,6 @@
                 track.innerHTML = slidesHtml;
                 dotsContainer.innerHTML = dotsHtml;
                 
-                // Iniciar la logica del carrusel una vez que se cargan los datos
                 initCarouselLogic();
             } else {
                 track.innerHTML = '<div style="padding: 5rem; text-align: center; color: var(--navy);">No se encontraron noticias recientes.</div>';

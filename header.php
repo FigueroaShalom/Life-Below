@@ -30,7 +30,7 @@ $current_section = $_GET['section'] ?? 'inicio';
         }
         
        .hy-header.scrolled {
-            background: rgba(135, 206, 235, 0.75) !important; /* Más azul al hacer scroll */
+            background: rgba(135, 206, 235, 0.75) !important; 
             backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
             border-bottom: 1px solid rgba(255, 255, 255, 0.5) !important;

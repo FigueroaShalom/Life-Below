@@ -1,5 +1,4 @@
 <?php
-// index.php
 require_once 'config.php';
 
 // Manejo de logout
@@ -9,14 +8,14 @@ if (isset($_GET['logout'])) {
     exit;
 }
 
-// Secciones permitidas (Whitelist para seguridad)
+// Whitelist para seguridad
 $secciones_permitidas = [
     'inicio', 'watch', 'mapa_dinamico', 'galeria', 'noticias', 'articulos', 'login', 'registro', 'dashboard'
 ];
 
 $current_section = $_GET['section'] ?? 'inicio';
 
-// Validar que la sección exista en el whitelist
+// Validar seccion del wihitelist
 if (!in_array($current_section, $secciones_permitidas)) {
     $current_section = '404';
 }
@@ -26,7 +25,7 @@ $section_file = 'INCLUDES/' . $current_section . '.php';
 include 'header.php';
 
 if ($current_section === '404') {
-    // Aplicando Glassmorphism al 404 para que combine con el nuevo CSS
+    
     echo '<div style="text-align:center; padding: 5rem 2rem; min-height: 60vh; display:flex; flex-direction:column; justify-content:center; align-items:center;">';
     echo '<div style="background: rgba(255, 255, 255, 0.15); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.4); padding: 4rem; border-radius: 24px; box-shadow: 0 8px 32px rgba(0, 40, 80, 0.1);">';
     echo '<h1 style="font-size: 5rem; color: #001828; font-family: \'Nunito\', sans-serif; margin-bottom: 0;">404</h1>';
