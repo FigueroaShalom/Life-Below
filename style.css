@@ -1,9 +1,3 @@
-/* ════════════════════════════════════════════════════════════
-   HYDRON — style.css
-   Inspirado en Ocean School (oceanschool.nfb.ca)
-   Fuente: Nunito | Paleta: azul océano + verde marino
-════════════════════════════════════════════════════════════ */
-
 @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap');
 
 /* ── RESET ── */
@@ -829,12 +823,34 @@ a   { color: inherit; }
     --off-white: #f0f8ff;
     --muted:     #5a7a9a;
     --border:    rgba(0,120,190,0.15);
+    --navy:      #001828;
+    --ocean:     #0077be;
+    --cyan:      #00c4d8;
+    --text:      #1a2a3a;
+    
+    /* Nuevas variables Glassmorphism */
+    --glass-bg: rgba(255, 255, 255, 0.15); /* Fondo transparentoso */
+    --glass-border: rgba(255, 255, 255, 0.4); /* Borde plateado/blanco */
+    --glass-blur: blur(12px); /* Efecto de desenfoque */
+    --silver-hover: rgba(255, 255, 255, 0.35); /* Botones al pasar el mouse */
+    
     --radius:    16px;
-    --radius-sm: 10px;
-    --shadow:    0 4px 24px rgba(0,40,80,0.12);
-    --shadow-lg: 0 12px 48px rgba(0,40,80,0.18);
+    --shadow:    0 8px 32px rgba(0, 40, 80, 0.1);
     --font:      'Nunito', sans-serif;
     --header-h:  72px;
+}
+
+body {
+    font-family: var(--font);
+    color: var(--text);
+    line-height: 1.6;
+    min-height: 100vh;
+    overflow-x: hidden;
+    /* Fondo azul clarito de la segunda imagen */
+    background: linear-gradient(135deg, #e0f2fe 0%, #bae6fd 50%, #7dd3fc 100%); 
+    /* Nota: Si tienes una imagen de fondo específica, iría aquí así: 
+       background: url('tu-imagen.jpg') center/cover no-repeat fixed; */
+
 }
 
 body { overflow-x: hidden; }
@@ -842,7 +858,10 @@ body { overflow-x: hidden; }
 /* ── HEADER ── */
 .hy-header {
     position: sticky; top: 0; z-index: 1000;
-    background: var(--navy);
+    background: rgba(255, 255, 255, 0.2); /* Transparente */
+    backdrop-filter: var(--glass-blur);
+    -webkit-backdrop-filter: var(--glass-blur);
+    border-bottom: 1px solid var(--glass-border);
     height: var(--header-h);
     transition: box-shadow .3s;
 }
@@ -858,11 +877,15 @@ body { overflow-x: hidden; }
 .hy-nav-link {
     padding: 6px 14px; border-radius: 50px;
     font-size: .9rem; font-weight: 700;
-    color: rgba(255,255,255,0.75); text-decoration: none;
-    transition: background .2s, color .2s; white-space: nowrap;
-    font-family: var(--font);
+    color: var(--navy); /* Texto oscuro para que resalte en fondo claro */
+    text-decoration: none;
+    transition: all .2s;
 }
-.hy-nav-link:hover { background: rgba(255,255,255,0.1); color: #fff; }
+
+.hy-nav-link:hover { 
+    background: var(--silver-hover); 
+    box-shadow: 0 4px 10px rgba(255,255,255,0.2);
+}
 .hy-nav-link.hy-active { background: rgba(0,180,220,0.2); color: var(--cyan); }
 .hy-nav-actions { display: flex; align-items: center; gap: .6rem; flex-shrink: 0; }
 .hy-user-chip {
@@ -877,14 +900,29 @@ body { overflow-x: hidden; }
     text-decoration: none; transition: all .2s; font-family: var(--font);
 }
 .hy-btn-outline:hover { background: rgba(255,255,255,0.1); border-color: #fff; }
-.hy-btn-solid {
-    padding: 8px 20px; border-radius: 50px;
-    background: linear-gradient(135deg, var(--ocean), var(--teal));
-    color: #fff; font-weight: 800; font-size: .85rem;
-    text-decoration: none; white-space: nowrap; font-family: var(--font);
-    transition: transform .2s, box-shadow .2s;
+.hy-btn-solid, .hy-btn-outline, .hy-cta-primary, .hy-cta-secondary {
+    display: inline-block; 
+    padding: 10px 24px; 
+    border-radius: 50px;
+    
+    /* Efecto Plateado/Cristal */
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    border: 1px solid var(--glass-border);
+    
+    color: var(--navy); /* Letra oscura */
+    font-weight: 800; font-size: .95rem;
+    text-decoration: none;
+    transition: all .3s ease;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
 }
-.hy-btn-solid:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(0,150,200,0.4); }
+.hy-btn-solid:hover, .hy-btn-outline:hover, .hy-cta-primary:hover, .hy-cta-secondary:hover { 
+    transform: translateY(-2px); 
+    background: var(--silver-hover); 
+    border-color: rgba(255, 255, 255, 0.8);
+    box-shadow: 0 8px 25px rgba(255,255,255,0.4); 
+}
 .hy-hamburger {
     display: none; flex-direction: column; gap: 5px;
     background: none; border: none; cursor: pointer; padding: 6px; margin-left: auto;
@@ -904,8 +942,8 @@ body { overflow-x: hidden; }
 /* ── HERO ── */
 .hy-hero {
     position: relative;
-    background: linear-gradient(135deg, var(--navy) 0%, #003a5c 50%, #004d6e 100%);
-    min-height: 560px; display: grid;
+    background: transparent; 
+    min-height: 560px;display: grid;
     grid-template-columns: 1fr 1fr;
     align-items: center; overflow: hidden; padding: 4rem 0;
 }
@@ -1017,11 +1055,15 @@ body { overflow-x: hidden; }
 
 /* ── EXPLORE GRID ── */
 .hy-explore-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px,1fr)); gap: 1.5rem; }
-.hy-explore-card {
-    background: #fff; border-radius: var(--radius); padding: 2rem 1.8rem;
-    text-decoration: none; color: var(--navy);
-    box-shadow: var(--shadow); border: 1.5px solid var(--border);
-    transition: transform .25s, box-shadow .25s; position: relative; overflow: hidden;
+.hy-explore-card, .post-card, .dashboard-card, .article-detail {
+    background: var(--glass-bg);
+    backdrop-filter: var(--glass-blur);
+    -webkit-backdrop-filter: var(--glass-blur);
+    border-radius: var(--radius);
+    padding: 2rem;
+    box-shadow: var(--shadow);
+    border: 1px solid var(--glass-border);
+    transition: transform .25s, box-shadow .25s;
 }
 .hy-explore-card::before { content:''; position:absolute; top:0; left:0; right:0; height:4px; background:linear-gradient(90deg,var(--c1),var(--c2)); }
 .hy-explore-card:hover { transform: translateY(-5px); box-shadow: 0 16px 48px rgba(0,40,80,0.18); }

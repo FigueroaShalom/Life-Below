@@ -1,10 +1,45 @@
-</main><!-- /hy-main -->
+</main><style>
+    .hy-footer {
+        background: rgba(255, 255, 255, 0.15) !important;
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
+        border-top: 1px solid rgba(255, 255, 255, 0.4);
+        color: var(--navy) !important;
+    }
+    .hy-footer h4, .hy-footer p, .hy-footer a {
+        color: var(--navy) !important;
+    }
+    .hy-footer a:hover {
+        opacity: 0.7;
+    }
+    .hy-footer-bottom {
+        border-top: 1px solid rgba(0, 24, 40, 0.1) !important;
+        background: transparent !important;
+    }
+    .hy-footer-bottom p {
+        color: rgba(0, 24, 40, 0.7) !important;
+    }
+    .hy-ods-badge {
+        background: rgba(255, 255, 255, 0.4) !important;
+        border: 1px solid rgba(0, 24, 40, 0.2) !important;
+        color: var(--navy) !important;
+    }
+    
+    /* Efecto cristal para el header cuando haces scroll */
+    .hy-header.scrolled {
+        background: rgba(255, 255, 255, 0.6) !important;
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.5);
+        box-shadow: 0 4px 30px rgba(0, 40, 80, 0.05);
+    }
+</style>
 
 <footer class="hy-footer">
     <div class="hy-footer-inner">
 
         <div class="hy-footer-brand">
-            <p>Life Below</p>
+            <p style="font-weight: 800; font-size: 1.5rem;">Life Below</p>
             <p>Explorando y protegiendo<br>nuestros océanos.</p>
             <div class="hy-footer-social">
                 <a href="#" title="Instagram">
@@ -35,13 +70,7 @@
             <a href="index.php?section=dashboard">Dashboard</a>
         </div>
 
-        <div class="hy-footer-col">
-            <h4>Sostenibilidad</h4>
-            <p style="font-size:.85rem;color:rgba(255,255,255,0.55);line-height:1.6;">
-                Contribuimos a la conservación marina a través de la educación y la ciencia.
-            </p>
-            <span class="hy-ods-badge">Vida Submarina</span>
-        </div>
+    
 
     </div>
 
