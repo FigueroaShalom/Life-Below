@@ -228,10 +228,16 @@ if ($sub === 'eventos') {
 }
 
 .hy-section-header {
-    display: flex; align-items: flex-end;
-    justify-content: space-between;
-    flex-wrap: wrap; gap: 1rem; margin-bottom: 2rem;
+    display: flex; 
+    flex-direction: column; /* Apila el título y subtítulo */
+    align-items: center;    /* Centra horizontalmente */
+    justify-content: center;
+    text-align: center;     /* Centra el texto */
+    gap: 0.5rem; 
+    margin-bottom: 2rem;
 }
+
+
 .hy-section-title {
     font-family: var(--font-main); font-weight: 900;
     font-size: 2rem; color: var(--ocean-deep);
@@ -243,9 +249,12 @@ if ($sub === 'eventos') {
 }
 
 .hy-tabs-row {
-    display: flex; align-items: center;
-    justify-content: space-between;
-    flex-wrap: wrap; gap: 1rem; margin-bottom: 2rem;
+    display: flex; 
+    align-items: center;
+    justify-content: center; /* ¡Esto es lo que centra los botones y el buscador! */
+    flex-wrap: wrap; 
+    gap: 1.5rem; 
+    margin-bottom: 2rem;
 }
 .hy-tabs { display: flex; gap: .45rem; flex-wrap: wrap; }
 .hy-tab {

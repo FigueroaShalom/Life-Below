@@ -129,7 +129,7 @@
 <script>
 (function() {
     const API_KEY = 'd5b5320a0accff00272ab27733ba94ce'; 
-    const query = 'vida submarina OR oceanos OR biodiversidad';
+    const query = 'vida submarina OR oceanos OR vida marina OR conservación marina OR especies marinas';
     
     const url = `https://gnews.io/api/v4/search?q=${encodeURIComponent(query)}&lang=es&max=3&token=${API_KEY}`;
     
