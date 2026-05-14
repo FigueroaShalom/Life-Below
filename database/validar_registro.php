@@ -1,4 +1,5 @@
 <?php
+session_start();
 include("Conexion_base.php");
 
 function validarPassword($pass) {
@@ -39,6 +40,11 @@ elseif ($action === "validar_email") {
 
 // 🚀 REGISTRO
 elseif ($action === "registro") {
+    $csrf = $_POST['csrf_token'] ?? '';
+    if (empty($_SESSION['csrf_token']) || $csrf !== $_SESSION['csrf_token']) {
+        echo "error_csrf";
+        exit();
+    }
 
     $user = trim($_POST['user']);
     $email = trim($_POST['email']);
