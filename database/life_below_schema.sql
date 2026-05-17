@@ -77,7 +77,7 @@ CREATE TABLE `videos` (
   `video_url` VARCHAR(255) NOT NULL,
   `id_autor` INT(11) NOT NULL,
   `related_publicacion_id` INT(11) DEFAULT NULL,
-  `fecha_creacion` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP(),
+  `fecha_publicacion` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP(),
   PRIMARY KEY (`id`),
   CONSTRAINT `fk_videos_autor` FOREIGN KEY (`id_autor`) REFERENCES `usuarios` (`id`) ON DELETE CASCADE,
   CONSTRAINT `fk_videos_publicacion` FOREIGN KEY (`related_publicacion_id`) REFERENCES `publicaciones` (`id`) ON DELETE SET NULL
@@ -116,7 +116,7 @@ CREATE TABLE `video_views` (
   `id` INT(11) NOT NULL AUTO_INCREMENT,
   `user_id` INT(11) NOT NULL,
   `video_id` INT(11) NOT NULL,
-  `fecha` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP(),
+  `viewed_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP(),
   PRIMARY KEY (`id`),
   CONSTRAINT `fk_video_views_usuario` FOREIGN KEY (`user_id`) REFERENCES `usuarios` (`id`) ON DELETE CASCADE,
   CONSTRAINT `fk_video_views_video` FOREIGN KEY (`video_id`) REFERENCES `videos` (`id`) ON DELETE CASCADE
