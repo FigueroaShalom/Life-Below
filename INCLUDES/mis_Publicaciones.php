@@ -23,10 +23,12 @@ $articulos = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
 
 // Videos del usuario
 $stmt2 = $conn->prepare("
-    SELECT id, titulo, categoria, video_url, fecha_publicacion, related_publicacion_id
-    FROM videos
-    WHERE id_autor = ?
-    ORDER BY fecha_publicacion DESC
+    SELECT v.id, v.titulo, 
+           (SELECT GROUP_CONCAT(vc.categoria) FROM video_categorias vc WHERE vc.video_id = v.id) AS categoria,
+           v.video_url, v.fecha_publicacion, v.related_publicacion_id
+    FROM videos v
+    WHERE v.id_autor = ?
+    ORDER BY v.fecha_publicacion DESC
 ");
 $stmt2->bind_param("i", $_SESSION['id']);
 $stmt2->execute();
