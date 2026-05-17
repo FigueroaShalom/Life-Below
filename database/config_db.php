@@ -4,5 +4,5 @@
 $host     = "db5020481855.hosting-data.io";
 $usuario  = "dbu928705";
 $password = "Hydron2025!";
-$base     = "life_below_blog";
+$base     = "dbs15685592";
 ?>
