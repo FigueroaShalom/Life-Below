@@ -75,11 +75,13 @@
     font-family: 'Nunito', sans-serif;
     font-weight: 900; font-size: 2.2rem;
     color: #fff; letter-spacing: -.5px; margin-bottom: .3rem;
+    transition: all 0.3s ease;
 }
 .os-form-sub {
     font-family: 'Nunito', sans-serif; font-size: .75rem; font-weight: 600;
     letter-spacing: 2px; text-transform: uppercase;
     color: rgba(100,180,210,0.55); margin-bottom: 1.8rem;
+    transition: all 0.3s ease;
 }
 #registroMsg {
     font-family: 'Nunito', sans-serif; font-size: .88rem;
@@ -116,17 +118,41 @@
 }
 .os-input-wrap:focus-within svg { color: #00d4e8; }
 .os-btn {
-    width: 100%; padding: 14px; margin-top: .5rem;
-    background: linear-gradient(135deg, #0088c8, #00b8cc);
-    border: none; border-radius: 12px; color: #fff;
+    width: 100%; padding: 10px 20px; margin-top: .5rem;
+    background: rgba(0, 119, 190, 0.05);
+    border: 1.5px solid #0077be; border-radius: 50px; color: #00d4e8;
     font-family: 'Nunito', sans-serif;
-    font-weight: 900; font-size: 1rem;
-    letter-spacing: 2.5px; text-transform: uppercase; cursor: pointer;
-    transition: transform .2s, box-shadow .2s;
-    box-shadow: 0 4px 20px rgba(0,160,200,0.3);
+    font-weight: 800; font-size: 0.88rem;
+    letter-spacing: 2px; text-transform: uppercase; cursor: pointer;
+    transition: all 0.22s ease-in-out;
+    display: inline-block; text-align: center; text-decoration: none;
 }
-.os-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 32px rgba(0,170,210,0.5); }
+.os-btn:hover {
+    background: #0077be;
+    color: #ffffff;
+    border-color: #0077be;
+    transform: translateY(-1.5px);
+    box-shadow: 0 4px 16px rgba(0, 119, 190, 0.35);
+}
 .os-btn:active { transform: translateY(0); }
+
+/* Hover effects for verification green button and back button */
+#verificarForm button[type="submit"] {
+    transition: background .25s ease, transform .2s ease, box-shadow .25s ease !important;
+}
+#verificarForm button[type="submit"]:hover {
+    background: #00c48a !important;
+    transform: translateY(-1.5px);
+    box-shadow: 0 6px 20px rgba(0,196,138,0.4) !important;
+}
+#backToRegBtn {
+    transition: background .25s ease, border-color .25s ease, transform .2s ease !important;
+}
+#backToRegBtn:hover {
+    background: rgba(130,185,210,0.1) !important;
+    border-color: rgba(130,185,210,0.6) !important;
+    transform: translateY(-1.5px);
+}
 .os-form-foot {
     text-align: center; margin-top: 1.4rem;
     font-family: 'Nunito', sans-serif;
@@ -192,6 +218,7 @@
 
         <div id="registroMsg"></div>
 
+        <!-- Formulario de Registro Principal (Paso 1) -->
         <form id="registroForm">
             <input type="hidden" id="csrf_token_reg" value="<?php echo $_SESSION['csrf_token'] ?? ''; ?>">
             <div class="os-group">
@@ -224,7 +251,31 @@
             <button type="submit" class="os-btn">Registrarse</button>
         </form>
 
-        <div class="os-form-foot">
+        <!-- Formulario de Verificación de Código (Paso 2 - Oculto al inicio) -->
+        <form id="verificarForm" style="display: none;">
+            <input type="hidden" id="csrf_token_ver" value="<?php echo $_SESSION['csrf_token'] ?? ''; ?>">
+            <div class="os-group" style="text-align: center; margin-bottom: 1.5rem;">
+                <p style="color: rgba(130, 185, 210, 0.9); font-size: 0.9rem; line-height: 1.5; margin-bottom: 1.5rem;">
+                    Ingresa el código de 6 dígitos que enviamos a tu correo electrónico.
+                </p>
+                
+                <div class="code-inputs-container" style="display: flex; gap: 8px; justify-content: center; margin-bottom: 1.2rem;">
+                    <input class="os-code-input" type="text" maxlength="1" pattern="[0-9]" inputmode="numeric" style="width: 42px; height: 48px; text-align: center; font-size: 1.5rem; font-weight: 800; border-radius: 10px; border: 1.5px solid rgba(0,160,200,0.25); background: rgba(255,255,255,0.04); color: #e4f4ff; outline: none; transition: all 0.25s;" required>
+                    <input class="os-code-input" type="text" maxlength="1" pattern="[0-9]" inputmode="numeric" style="width: 42px; height: 48px; text-align: center; font-size: 1.5rem; font-weight: 800; border-radius: 10px; border: 1.5px solid rgba(0,160,200,0.25); background: rgba(255,255,255,0.04); color: #e4f4ff; outline: none; transition: all 0.25s;" required>
+                    <input class="os-code-input" type="text" maxlength="1" pattern="[0-9]" inputmode="numeric" style="width: 42px; height: 48px; text-align: center; font-size: 1.5rem; font-weight: 800; border-radius: 10px; border: 1.5px solid rgba(0,160,200,0.25); background: rgba(255,255,255,0.04); color: #e4f4ff; outline: none; transition: all 0.25s;" required>
+                    <input class="os-code-input" type="text" maxlength="1" pattern="[0-9]" inputmode="numeric" style="width: 42px; height: 48px; text-align: center; font-size: 1.5rem; font-weight: 800; border-radius: 10px; border: 1.5px solid rgba(0,160,200,0.25); background: rgba(255,255,255,0.04); color: #e4f4ff; outline: none; transition: all 0.25s;" required>
+                    <input class="os-code-input" type="text" maxlength="1" pattern="[0-9]" inputmode="numeric" style="width: 42px; height: 48px; text-align: center; font-size: 1.5rem; font-weight: 800; border-radius: 10px; border: 1.5px solid rgba(0,160,200,0.25); background: rgba(255,255,255,0.04); color: #e4f4ff; outline: none; transition: all 0.25s;" required>
+                    <input class="os-code-input" type="text" maxlength="1" pattern="[0-9]" inputmode="numeric" style="width: 42px; height: 48px; text-align: center; font-size: 1.5rem; font-weight: 800; border-radius: 10px; border: 1.5px solid rgba(0,160,200,0.25); background: rgba(255,255,255,0.04); color: #e4f4ff; outline: none; transition: all 0.25s;" required>
+                </div>
+                
+                <small id="timerMsg" style="color: rgba(130, 185, 210, 0.6); font-weight: 600; display: block; margin-top: 10px;"></small>
+            </div>
+            
+            <button type="submit" class="os-btn" style="background: linear-gradient(135deg, #00b8a0, #00c48a); box-shadow: 0 4px 20px rgba(0,196,138,0.3);">Verificar Código</button>
+            <button type="button" id="backToRegBtn" class="os-btn" style="background: transparent; border: 1.5px solid rgba(130,185,210,0.3); color: rgba(130,185,210,0.8); box-shadow: none; margin-top: 0.8rem;">Volver</button>
+        </form>
+
+        <div class="os-form-foot" id="formFooter">
             ¿Ya tienes cuenta? <a href="?section=login" class="os-nav-link">Inicia sesión</a>
         </div>
     </div>
@@ -326,6 +377,92 @@ document.getElementById("password").addEventListener("keyup", function() {
         msg.textContent = "⚠️ " + check;
     }
 });
+
+// VARIABLES DE VERIFICACIÓN DE CÓDIGO
+const codeInputs = document.querySelectorAll(".os-code-input");
+let timerInterval = null;
+
+// Lógica de navegación y focos de casillas de código
+codeInputs.forEach((input, index) => {
+    // Al escribir un número, mover el foco a la derecha
+    input.addEventListener("input", (e) => {
+        const val = e.target.value;
+        if (!/^[0-9]$/.test(val)) {
+            e.target.value = "";
+            return;
+        }
+        if (val && index < codeInputs.length - 1) {
+            codeInputs[index + 1].focus();
+        }
+    });
+
+    // Al presionar retroceso (Backspace), borrar y mover a la izquierda
+    input.addEventListener("keydown", (e) => {
+        if (e.key === "Backspace") {
+            if (!e.target.value && index > 0) {
+                codeInputs[index - 1].value = "";
+                codeInputs[index - 1].focus();
+            } else {
+                e.target.value = "";
+            }
+        }
+    });
+
+    // Permitir pegar el código completo de 6 dígitos
+    input.addEventListener("paste", (e) => {
+        e.preventDefault();
+        const text = (e.clipboardData || window.clipboardData).getData("text").trim();
+        if (/^[0-9]{6}$/.test(text)) {
+            codeInputs.forEach((inp, idx) => {
+                inp.value = text[idx];
+            });
+            codeInputs[5].focus();
+        }
+    });
+
+    // Efectos de enfoque moderno
+    input.addEventListener("focus", () => {
+        input.style.borderColor = "rgba(0, 200, 220, 0.8)";
+        input.style.background = "rgba(0, 40, 80, 0.45)";
+        input.style.boxShadow = "0 0 0 3px rgba(0, 180, 220, 0.15)";
+    });
+
+    input.addEventListener("blur", () => {
+        input.style.borderColor = "rgba(0, 160, 200, 0.25)";
+        input.style.background = "rgba(255, 255, 255, 0.04)";
+        input.style.boxShadow = "none";
+    });
+});
+
+// Temporizador de 10 minutos (600 segundos)
+function startVerificationTimer(durationSeconds) {
+    let timeLeft = durationSeconds;
+    const timerMsg = document.getElementById("timerMsg");
+    
+    if (timerInterval) clearInterval(timerInterval);
+    
+    function updateTimer() {
+        const minutes = Math.floor(timeLeft / 60);
+        const seconds = timeLeft % 60;
+        const secondsStr = seconds < 10 ? '0' + seconds : seconds;
+        
+        if (timeLeft <= 0) {
+            clearInterval(timerInterval);
+            timerMsg.style.color = "#ff5555";
+            timerMsg.innerHTML = "❌ El código ha expirado. Por favor, vuelve a registrarte.";
+            codeInputs.forEach(inp => inp.disabled = true);
+        } else {
+            timerMsg.style.color = "rgba(130, 185, 210, 0.6)";
+            timerMsg.innerHTML = `El código expira en: <strong>${minutes}:${secondsStr}</strong>`;
+            timeLeft--;
+        }
+    }
+    
+    updateTimer();
+    timerInterval = setInterval(updateTimer, 1000);
+}
+
+// Envío del registro principal (Paso 1)
 document.getElementById("registroForm").addEventListener("submit", function(e) {
     e.preventDefault();
     const user  = document.getElementById("user").value.trim();
@@ -333,6 +470,7 @@ document.getElementById("registroForm").addEventListener("submit", function(e) {
     const pass  = document.getElementById("password").value.trim();
     const csrf  = document.getElementById("csrf_token_reg").value;
     const msg   = document.getElementById("registroMsg");
+    
     if (!user||!email||!pass) {
         msg.style.cssText="background:rgba(255,150,0,.15);color:#ffaa00;border:1px solid rgba(255,150,0,.3);";
         msg.textContent="⚠️ Completa todos los campos"; return;
@@ -342,16 +480,38 @@ document.getElementById("registroForm").addEventListener("submit", function(e) {
         msg.style.cssText="background:rgba(255,150,0,.15);color:#ffaa00;border:1px solid rgba(255,150,0,.3);";
         msg.textContent="⚠️ " + passCheck; return;
     }
-    msg.style.cssText="color:rgba(0,210,230,.7);"; msg.textContent="Registrando explorador...";
+    
+    msg.style.cssText="color:rgba(0,210,230,.7);background:none;border:none;";
+    msg.textContent="Enviando código de verificación...";
+    
     fetch("database/validar_registro.php", {
         method:"POST", headers:{"Content-Type":"application/x-www-form-urlencoded"},
         body:"action=registro&user="+encodeURIComponent(user)+"&email="+encodeURIComponent(email)+"&password="+encodeURIComponent(pass)+"&csrf_token="+encodeURIComponent(csrf)
     }).then(r=>r.text()).then(data=>{
         data=data.trim();
-        if (data==="ok") {
+        if (data==="codigo_enviado") {
             msg.style.cssText="background:rgba(0,200,100,.15);color:#00e676;border:1px solid rgba(0,200,100,.3);";
-            msg.textContent="✅ ¡Cuenta creada!";
-            setTimeout(()=>window.location.href="index.php?section=login",1100);
+            msg.innerHTML="✅ Código de verificación enviado a <strong>" + email + "</strong>";
+            
+            // Ocultar formulario de registro con animación/transición suave
+            document.getElementById("registroForm").style.display = "none";
+            document.getElementById("formFooter").style.display = "none";
+            
+            // Cambiar títulos de la cabecera
+            document.querySelector(".os-form-title").textContent = "Verificar cuenta";
+            document.querySelector(".os-form-sub").textContent = "Ingresa tu código";
+            
+            // Mostrar formulario de verificación y activar focos
+            document.getElementById("verificarForm").style.display = "block";
+            codeInputs.forEach(inp => {
+                inp.value = "";
+                inp.disabled = false;
+            });
+            setTimeout(() => codeInputs[0].focus(), 150);
+            
+            // Iniciar cuenta regresiva (10 minutos)
+            startVerificationTimer(600);
+            
         } else if (data==="user") {
             msg.style.cssText="background:rgba(255,60,60,.15);color:#ff6b6b;border:1px solid rgba(255,60,60,.3);";
             msg.textContent="❌ Usuario ya existe";
@@ -371,6 +531,95 @@ document.getElementById("registroForm").addEventListener("submit", function(e) {
     });
 });
 
+// Envío del código de verificación (Paso 2)
+document.getElementById("verificarForm").addEventListener("submit", function(e) {
+    e.preventDefault();
+    const msg = document.getElementById("registroMsg");
+    const csrf = document.getElementById("csrf_token_ver").value;
+    
+    // Unir los 6 dígitos
+    let code = "";
+    codeInputs.forEach(inp => {
+        code += inp.value.trim();
+    });
+    
+    if (code.length !== 6) {
+        msg.style.cssText="background:rgba(255,150,0,.15);color:#ffaa00;border:1px solid rgba(255,150,0,.3);";
+        msg.textContent="⚠️ Ingresa los 6 dígitos del código";
+        return;
+    }
+    
+    msg.style.cssText="color:rgba(0,210,230,.7);background:none;border:none;";
+    msg.textContent="Verificando explorador...";
+    
+    fetch("database/validar_registro.php", {
+        method: "POST",
+        headers: {"Content-Type": "application/x-www-form-urlencoded"},
+        body: "action=verificar_codigo&code=" + encodeURIComponent(code) + "&csrf_token=" + encodeURIComponent(csrf)
+    }).then(r => r.text()).then(data => {
+        data = data.trim();
+        if (data === "verificado_ok") {
+            if (timerInterval) clearInterval(timerInterval);
+            msg.style.cssText="background:rgba(0,200,100,.15);color:#00e676;border:1px solid rgba(0,200,100,.3);";
+            msg.textContent="✅ ¡Verificado con éxito! Iniciando sesión...";
+            
+            // Suave transición de ingreso directo
+            setTimeout(() => {
+                const wrapper = document.querySelector('.os-wrapper');
+                if (wrapper) {
+                    wrapper.style.transition = 'opacity .4s ease, transform .4s ease';
+                    wrapper.style.opacity = '0';
+                    wrapper.style.transform = 'translateY(-16px)';
+                }
+                setTimeout(() => {
+                    window.location.href = "index.php?section=inicio";
+                }, 380);
+            }, 1500);
+            
+        } else if (data === "codigo_incorrecto") {
+            msg.style.cssText="background:rgba(255,60,60,.15);color:#ff6b6b;border:1px solid rgba(255,60,60,.3);";
+            msg.textContent="❌ Código incorrecto. Verifica e intenta de nuevo.";
+        } else if (data === "expirado") {
+            msg.style.cssText="background:rgba(255,60,60,.15);color:#ff6b6b;border:1px solid rgba(255,60,60,.3);";
+            msg.textContent="❌ El código ha expirado.";
+        } else if (data === "session_invalida") {
+            msg.style.cssText="background:rgba(255,60,60,.15);color:#ff6b6b;border:1px solid rgba(255,60,60,.3);";
+            msg.textContent="❌ Sesión de registro no encontrada.";
+        } else if (data === "ya_registrado") {
+            msg.style.cssText="background:rgba(255,60,60,.15);color:#ff6b6b;border:1px solid rgba(255,60,60,.3);";
+            msg.textContent="❌ Este usuario o email ya se registraron.";
+        } else {
+            msg.style.cssText="background:rgba(255,150,0,.15);color:#ffaa00;border:1px solid rgba(255,150,0,.3);";
+            msg.textContent="⚠️ " + data;
+        }
+    }).catch(() => {
+        msg.style.cssText="background:rgba(255,60,60,.15);color:#ff6b6b;border:1px solid rgba(255,60,60,.3);";
+        msg.textContent="⚠️ Error de conexión";
+    });
+});
+
+// Acción del Botón "Volver"
+document.getElementById("backToRegBtn").addEventListener("click", function() {
+    if (timerInterval) clearInterval(timerInterval);
+    
+    // Ocultar formulario de verificación
+    document.getElementById("verificarForm").style.display = "none";
+    
+    // Mostrar formulario de registro
+    document.getElementById("registroForm").style.display = "block";
+    document.getElementById("formFooter").style.display = "block";
+    
+    // Restaurar títulos originales
+    document.querySelector(".os-form-title").textContent = "Crear cuenta";
+    document.querySelector(".os-form-sub").textContent = "Únete a la exploración";
+    
+    // Limpiar mensaje
+    const msg = document.getElementById("registroMsg");
+    msg.style.cssText = "";
+    msg.textContent = "";
+});
+
+// Transición suave de enlaces
 document.querySelectorAll('.os-nav-link, .fp-footer a').forEach(function(a){
     a.addEventListener('click', function(e){
         e.preventDefault();

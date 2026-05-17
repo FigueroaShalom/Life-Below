@@ -1,4 +1,5 @@
 <?php
+if (session_status() === PHP_SESSION_NONE) session_start();
 require_once __DIR__ . '/../database/Conexion_base.php';
 
 function isYoutube($url) {
@@ -36,110 +37,150 @@ function findRelatedArticle($conn, $title, $description, $category) {
 
 $cat_filter   = $_GET['cat'] ?? '';
 $search_query = trim($_GET['q'] ?? '');
+$user_id = isset($_SESSION['user_id']) ? (int)$_SESSION['user_id'] : 0;
+
 $sql = "
-    SELECT v.id, v.titulo, v.descripcion, v.video_url, v.categoria, v.fecha_publicacion,
+    SELECT v.id, v.titulo, v.descripcion, v.video_url, v.fecha_publicacion,
+           v.related_publicacion_id,
+           GROUP_CONCAT(vc.categoria) AS categorias,
            u.user AS autor,
-           (SELECT COUNT(*) FROM likes WHERE id_publicacion = v.id) AS total_likes
+           (SELECT COUNT(*) FROM likes WHERE id_publicacion = v.related_publicacion_id) AS total_likes,
+           " . ($user_id ? "(SELECT COUNT(*) FROM video_views WHERE user_id = $user_id AND video_id = v.id AND viewed_at > DATE_SUB(NOW(), INTERVAL 30 DAY)) * 10 + RAND() AS score" : "RAND() AS score") . "
     FROM videos v JOIN usuarios u ON v.id_autor = u.id
+    LEFT JOIN video_categorias vc ON v.id = vc.video_id
 ";
 $where = [];
 if ($cat_filter) {
     $cat_safe = $conn->real_escape_string($cat_filter);
-    $where[] = "v.categoria = '$cat_safe'";
+    $where[] = "EXISTS (SELECT 1 FROM video_categorias vc WHERE vc.video_id = v.id AND vc.categoria = '$cat_safe')";
 }
 if ($search_query) {
     $query_safe = $conn->real_escape_string($search_query);
     $where[] = "(
         v.titulo LIKE '%$query_safe%' OR
         v.descripcion LIKE '%$query_safe%' OR
-        v.categoria LIKE '%$query_safe%' OR
+        EXISTS (SELECT 1 FROM video_categorias vc WHERE vc.video_id = v.id AND vc.categoria LIKE '%$query_safe%') OR
         u.user LIKE '%$query_safe%'
     )";
 }
 if (!empty($where)) {
     $sql .= ' WHERE ' . implode(' AND ', $where);
 }
-$sql .= " ORDER BY v.fecha_publicacion DESC";
+$sql .= " GROUP BY v.id, v.titulo, v.descripcion, v.video_url, v.fecha_publicacion, v.related_publicacion_id, u.user ORDER BY score DESC";
 $videos = $conn->query($sql)->fetch_all(MYSQLI_ASSOC);
-$categorias = ['general', 'peces', 'mamiferos', 'conservacion', 'documental'];
 $total = count($videos);
+
+$categorias = [
+    ['key' => 'general', 'text' => 'Todos', 'icon' => ''],
+    ['key' => 'peces', 'text' => 'Peces', 'icon' => ''],
+    ['key' => 'mamiferos', 'text' => 'Mamíferos', 'icon' => ''],
+    ['key' => 'conservacion', 'text' => 'Conservación', 'icon' => ''],
+    ['key' => 'documental', 'text' => 'Documental', 'icon' => ''],
+];
 ?>
 
 <script src="https://www.youtube.com/iframe_api"></script>
 
 <style>
+.watch-top-search {
+    background: var(--bg);
+    padding: 1.5rem 2rem;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    justify-content: center;
+}
+.watch-top-search .watch-search {
+    max-width: 600px;
+    width: 100%;
+}
+</style>
+<style>
 .watch-page {
     display: flex;
-    background: #000d1a;
+    flex-direction: column;
+    background: var(--bg);
     min-height: calc(100vh - 70px);
+}
+
+.watch-main {
+    display: flex;
+    flex: 1;
 }
 
 /* ── SIDEBAR ── */
 .watch-sidebar {
-    width: 210px;
+    width: 300px;
     flex-shrink: 0;
-    padding: 2rem 1.2rem;
+    padding: 2.5rem 1.8rem;
     display: flex;
     flex-direction: column;
-    gap: 1.8rem;
-    border-right: 1px solid rgba(255,255,255,0.06);
+    gap: 2.2rem;
+    border-right: 1px solid var(--border);
     position: sticky;
     top: 0;
-    height: calc(100vh - 70px);
+    height: auto;
+    max-height: calc(100vh - 70px);
     overflow-y: auto;
     scrollbar-width: none;
 }
 .watch-sidebar::-webkit-scrollbar { display: none; }
 .watch-sidebar-title {
     font-family: 'Nunito', sans-serif;
-    font-size: 1.4rem;
+    font-size: 2.4rem;
     font-weight: 900;
-    color: #fff;
+    color: var(--header-text);
     letter-spacing: -0.5px;
 }
-.watch-sidebar-title span { color: #00c4d8; }
+.watch-sidebar-title span { color: var(--ocean); }
 .watch-sidebar-sub {
     font-family: 'Nunito', sans-serif;
-    font-size: .72rem;
-    color: rgba(255,255,255,0.3);
-    margin-top: .2rem;
+    font-size: 1rem;
+    color: var(--muted);
+    margin-top: .4rem;
 }
 .watch-counter-box {
-    background: rgba(255,255,255,0.04);
-    border: 1px solid rgba(255,255,255,0.07);
+    background: var(--card-bg);
+    border: 1px solid var(--border);
     border-radius: 12px;
     padding: .9rem;
     text-align: center;
 }
 .watch-counter-num {
     font-family: 'Nunito', sans-serif;
-    font-size: 1.8rem;
+    font-size: 2.2rem;
     font-weight: 900;
-    color: #00c4d8;
+    color: #0077be;
     line-height: 1;
 }
 .watch-counter-label {
     font-family: 'Nunito', sans-serif;
     font-size: .68rem;
-    color: rgba(255,255,255,0.3);
+    color: var(--muted);
     margin-top: .3rem;
 }
 .watch-search {
-    display: grid;
+    display: flex;
     gap: .6rem;
+    align-items: center;
 }
 .watch-search input {
-    width: 100%;
-    padding: .75rem 1rem;
-    border-radius: 14px;
-    border: 1px solid rgba(255,255,255,0.12);
-    background: rgba(255,255,255,0.04);
-    color: #fff;
+    flex: 1;
+    padding: .75rem 1.2rem;
+    border-radius: 50px;
+    border: 1.5px solid var(--border);
+    background: var(--card-bg);
+    color: var(--ocean);
     font-family: 'Nunito', sans-serif;
-    font-size: .85rem;
+    font-size: .95rem;
+    font-weight: 700;
+    outline: none;
+}
+.watch-search input:focus {
+    border-color: var(--ocean);
 }
 .watch-search input::placeholder {
-    color: rgba(255,255,255,0.42);
+    color: var(--ocean);
+    opacity: 0.6;
 }
 .watch-search button,
 .watch-search-clear {
@@ -147,23 +188,23 @@ $total = count($videos);
     align-items: center;
     justify-content: center;
     gap: .4rem;
-    padding: .7rem 1rem;
-    border-radius: 12px;
+    padding: .7rem 1.2rem;
+    border-radius: 50px;
     font-family: 'Nunito', sans-serif;
     font-size: .82rem;
     font-weight: 800;
     text-decoration: none;
-    border: none;
-}
-.watch-search button {
-    background: #00c4d8;
-    color: #04121e;
+    border: 1.5px solid var(--border);
+    background: var(--card-bg);
+    color: var(--ocean);
     cursor: pointer;
+    transition: all .2s;
 }
-.watch-search-clear {
-    background: rgba(255,255,255,0.06);
-    color: rgba(255,255,255,0.75);
-    border: 1px solid rgba(255,255,255,0.1);
+.watch-search button:hover,
+.watch-search-clear:hover {
+    background: var(--ocean);
+    color: #fff;
+    border-color: var(--ocean);
 }
 .watch-filters { display: flex; flex-direction: column; gap: .35rem; }
 .watch-filters-label {
@@ -172,30 +213,27 @@ $total = count($videos);
     font-weight: 800;
     letter-spacing: 1.5px;
     text-transform: uppercase;
-    color: rgba(255,255,255,0.28);
+    color: var(--muted);
     margin-bottom: .2rem;
 }
 .watch-filter-btn {
-    padding: 7px 12px;
-    border-radius: 9px;
-    border: 1px solid rgba(255,255,255,0.07);
-    color: rgba(255,255,255,0.45);
-    font-weight: 700;
-    font-size: .78rem;
+    padding: 9px 14px;
+    border-radius: 50px;
+    border: 1.5px solid var(--border);
+    color: var(--ocean);
+    font-weight: 800;
+    font-size: .85rem;
     text-decoration: none;
-    background: transparent;
+    background: var(--card-bg);
     transition: all .2s;
     font-family: 'Nunito', sans-serif;
     display: block;
 }
-.watch-filter-btn:hover {
-    background: rgba(255,255,255,0.05);
-    color: rgba(255,255,255,0.75);
-}
+.watch-filter-btn:hover,
 .watch-filter-btn.active {
-    background: rgba(0,196,216,0.12);
-    color: #00c4d8;
-    border-color: rgba(0,196,216,0.25);
+    background: var(--ocean);
+    color: #fff;
+    border-color: var(--ocean);
 }
 .watch-keyboard-hint { display: flex; flex-direction: column; gap: .45rem; }
 .watch-keyboard-hint-title {
@@ -244,7 +282,7 @@ $total = count($videos);
     position: relative;
     border-radius: 20px;
     overflow: hidden;
-    box-shadow: 0 0 60px rgba(0,196,216,0.1), 0 0 0 1px rgba(0,196,216,0.07);
+    box-shadow: 0 0 60px rgba(0,119,190,0.1), 0 0 0 1px rgba(0,119,190,0.07);
     background: #000;
 }
 
@@ -302,29 +340,34 @@ $total = count($videos);
 }
 
 /* Info y acciones: ocultas, visibles en hover o show-ui */
-.reel-info, .reel-actions {
+.reel-info, .reel-actions, .reel-progress {
     opacity: 0;
     transition: opacity .3s ease;
 }
 .reel-card.active:hover .reel-info,
 .reel-card.active:hover .reel-actions,
+.reel-card.active:hover .reel-progress,
 .reel-card.show-ui .reel-info,
-.reel-card.show-ui .reel-actions { opacity: 1; }
+.reel-card.show-ui .reel-actions,
+.reel-card.show-ui .reel-progress { opacity: 1; }
 
 .reel-info {
     position: absolute;
     bottom: 68px; left: 14px; right: 58px;
     z-index: 4; color: #fff;
 }
-.reel-cat-badge {
+.reel-hashtags {
+    margin-bottom: .35rem;
+}
+.reel-hashtag {
     display: inline-block;
-    background: rgba(0,196,216,0.15);
-    border: 1px solid rgba(0,196,216,0.3);
-    color: #00c4d8;
-    font-size: .58rem; font-weight: 800;
-    letter-spacing: 1px; text-transform: uppercase;
-    padding: 2px 8px; border-radius: 50px;
-    font-family: 'Nunito', sans-serif; margin-bottom: .35rem;
+    background: rgba(0,119,190,0.15);
+    border: 1px solid rgba(0,119,190,0.3);
+    color: #0077be;
+    font-size: .55rem; font-weight: 800;
+    letter-spacing: 1px; text-transform: capitalize;
+    padding: 1px 6px; border-radius: 50px;
+    font-family: 'Nunito', sans-serif; margin-right: 4px; margin-bottom: 2px;
 }
 .reel-autor {
     font-size: .68rem; font-weight: 800;
@@ -416,11 +459,26 @@ $total = count($videos);
 
 .reel-progress {
     position: absolute; bottom: 0; left: 0; right: 0;
-    height: 2px; background: rgba(255,255,255,.1); z-index: 6;
+    height: 32px; background: transparent; z-index: 6;
+    display: flex; align-items: center; padding: 0 12px;
+    cursor: pointer;
 }
+.reel-time-current, .reel-time-total {
+    font-family: 'Nunito', sans-serif;
+    font-size: .7rem; font-weight: 700;
+    color: rgba(255,255,255,.9);
+}
+.reel-time-current { margin-right: 10px; }
+.reel-time-total { margin-left: 10px; }
 .reel-progress-bar {
-    height: 100%; background: #00c4d8; width: 0%;
-    transition: width .1s linear;
+    flex: 1; height: 6px; background: var(--border); position: relative;
+    border-radius: 3px; overflow: hidden;
+}
+.reel-progress-bar::before {
+    content: '';
+    position: absolute; top: 0; left: 0; bottom: 0;
+    background: #0077be; width: var(--progress-width, 0%);
+    border-radius: 3px;
 }
 
 /* Navegación inferior */
@@ -431,10 +489,10 @@ $total = count($videos);
 }
 .watch-nav-btn {
     width: 34px; height: 34px; border-radius: 50%;
-    background: rgba(255,255,255,0.1);
+    background: var(--card-bg);
     backdrop-filter: blur(8px);
-    border: 1px solid rgba(255,255,255,0.1);
-    color: #fff; display: flex; align-items: center;
+    border: 1px solid var(--border);
+    color: var(--header-text); display: flex; align-items: center;
     justify-content: center; cursor: pointer;
     transition: background .2s;
 }
@@ -457,6 +515,121 @@ $total = count($videos);
     color: rgba(255,255,255,.5); margin-bottom: .4rem;
 }
 
+/* ── MODAL DE COMENTARIOS ── */
+.comments-modal {
+    display: none;
+    position: fixed; inset: 0; z-index: 1000;
+    background: rgba(0,0,0,0.7);
+    backdrop-filter: blur(4px);
+    justify-content: center; align-items: center;
+    animation: fadeIn .3s ease;
+}
+.comments-modal.open {
+    display: flex;
+}
+.comments-modal-content {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    width: 90%;
+    max-width: 500px;
+    max-height: 80vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+.comments-modal-header {
+    padding: 1.5rem;
+    border-bottom: 1px solid rgba(0,119,190,0.2);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.comments-modal-header h3 {
+    margin: 0;
+    color: var(--header-text);
+    font-family: 'Nunito', sans-serif;
+    font-size: 1.2rem;
+    font-weight: 800;
+}
+.comments-modal-close {
+    background: none;
+    border: none;
+    color: rgba(255,255,255,0.5);
+    cursor: pointer;
+    font-size: 1.5rem;
+    transition: color .2s;
+}
+.comments-modal-close:hover {
+    color: #fff;
+}
+.comments-modal-body {
+    flex: 1;
+    overflow-y: auto;
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+.comment-item {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(0,119,190,0.15);
+    border-radius: 12px;
+    padding: 1rem;
+}
+.comment-author {
+    font-weight: 700;
+    color: #0077be;
+    font-size: 0.9rem;
+    margin-bottom: 0.3rem;
+}
+.comment-text {
+    color: var(--text-color);
+    font-size: 0.9rem;
+    line-height: 1.4;
+}
+.comment-time {
+    font-size: 0.75rem;
+    color: rgba(255,255,255,0.35);
+    margin-top: 0.5rem;
+}
+.comments-modal-footer {
+    padding: 1.5rem;
+    border-top: 1px solid rgba(0,119,190,0.2);
+    display: flex;
+    gap: 0.5rem;
+}
+.comments-modal-footer input {
+    flex: 1;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(0,119,190,0.2);
+    border-radius: 12px;
+    padding: 0.7rem;
+    color: #fff;
+    font-family: 'Nunito', sans-serif;
+    font-size: 0.9rem;
+}
+.comments-modal-footer input::placeholder {
+    color: rgba(255,255,255,0.3);
+}
+.comments-modal-footer button {
+    background: #0077be;
+    border: none;
+    border-radius: 12px;
+    color: #fff;
+    padding: 0.7rem 1rem;
+    cursor: pointer;
+    font-weight: 700;
+    transition: background .2s;
+}
+.comments-modal-footer button:hover {
+    background: #005a94;
+}
+.comments-loading {
+    text-align: center;
+    color: rgba(255,255,255,0.5);
+}
+
 @media (max-width: 768px) {
     .watch-sidebar { display: none; }
     .watch-center { padding: .5rem; }
@@ -473,6 +646,20 @@ $total = count($videos);
 
 <div class="watch-page">
 
+<div class="watch-top-search">
+    <form class="watch-search" action="?section=watch" method="GET">
+        <input type="hidden" name="section" value="watch">
+        <?php if ($cat_filter): ?><input type="hidden" name="cat" value="<?php echo htmlspecialchars($cat_filter); ?>"><?php endif; ?>
+        <input type="text" name="q" value="<?php echo htmlspecialchars($search_query); ?>"
+               placeholder="Buscar temas, categorías o autores...">
+        <button type="submit">Buscar</button>
+        <?php if ($search_query): ?>
+            <a class="watch-search-clear" href="?section=watch<?php echo $cat_filter ? '&cat='.urlencode($cat_filter) : ''; ?>">Limpiar</a>
+        <?php endif; ?>
+    </form>
+</div>
+
+<div class="watch-main">
     <!-- SIDEBAR -->
     <div class="watch-sidebar">
         <div>
@@ -480,40 +667,18 @@ $total = count($videos);
             <div class="watch-sidebar-sub">Vida marina en video</div>
         </div>
 
-        <form class="watch-search" action="?section=watch" method="GET">
-            <input type="hidden" name="section" value="watch">
-            <?php if ($cat_filter): ?><input type="hidden" name="cat" value="<?php echo htmlspecialchars($cat_filter); ?>"><?php endif; ?>
-            <input type="text" name="q" value="<?php echo htmlspecialchars($search_query); ?>"
-                   placeholder="Buscar temas, categorías o autores...">
-            <button type="submit">Buscar</button>
-            <?php if ($search_query): ?>
-                <a class="watch-search-clear" href="?section=watch<?php echo $cat_filter ? '&cat='.urlencode($cat_filter) : ''; ?>">Limpiar</a>
-            <?php endif; ?>
-        </form>
-
-        <div class="watch-counter-box">
-            <div class="watch-counter-num" id="watchCounterCurrent">1</div>
-            <div class="watch-counter-label">de <?php echo $total; ?> videos</div>
-        </div>
-
         <div class="watch-filters">
             <div class="watch-filters-label">Categorías</div>
             <a href="?section=watch<?php echo $search_query ? '&q='.urlencode($search_query) : ''; ?>"
-               class="watch-filter-btn <?php echo !$cat_filter ? 'active' : ''; ?>">Todos</a>
-            <?php foreach ($categorias as $cat): ?>
-                <a href="?section=watch&cat=<?php echo $cat; ?><?php echo $search_query ? '&q='.urlencode($search_query) : ''; ?>"
-                   class="watch-filter-btn <?php echo $cat_filter === $cat ? 'active' : ''; ?>">
-                    <?php echo ucfirst($cat); ?>
+               class="watch-filter-btn <?php echo !$cat_filter ? 'active' : ''; ?>"><?php echo $categorias[0]['icon']; ?> <?php echo $categorias[0]['text']; ?></a>
+            <?php foreach (array_slice($categorias, 1) as $cat): ?>
+                <a href="?section=watch&cat=<?php echo $cat['key']; ?><?php echo $search_query ? '&q='.urlencode($search_query) : ''; ?>"
+                   class="watch-filter-btn <?php echo $cat_filter === $cat['key'] ? 'active' : ''; ?>">
+                    <?php echo $cat['icon']; ?> <?php echo $cat['text']; ?>
                 </a>
             <?php endforeach; ?>
         </div>
-
-        <div class="watch-keyboard-hint">
-            <div class="watch-keyboard-hint-title">Controles</div>
-            <div class="watch-key-row"><span class="watch-key">↑ ↓</span><span>Cambiar video</span></div>
-            <div class="watch-key-row"><span class="watch-key">Space</span><span>Pausar / Reanudar</span></div>
-            <div class="watch-key-row"><span class="watch-key">M</span><span>Silenciar</span></div>
-        </div>
+        <div style="flex: 1;"></div>
     </div>
 
     <!-- FEED -->
@@ -532,22 +697,14 @@ $total = count($videos);
                 $ytId  = $isYt ? getYoutubeId($v['video_url']) : null;
                 $thumb = $isYt ? getYoutubeThumbnail($v['video_url']) : null;
                 $localUrl = !$isYt ? htmlspecialchars($v['video_url']) : null;
-                $relatedArticleId = findRelatedArticle($conn, $v['titulo'], $v['descripcion'], $v['categoria']);
-                $relatedQuery     = rawurlencode(trim($v['titulo'] . ' ' . $v['categoria']));
+                $relatedArticleId = $v['related_publicacion_id'] ? $v['related_publicacion_id'] : findRelatedArticle($conn, $v['titulo'], $v['descripcion'], $v['categorias']);
+                $relatedQuery     = rawurlencode(trim($v['titulo'] . ' ' . ($v['categorias'] ?? '')));
             ?>
             <div class="reel-card <?php echo $i === 0 ? 'active' : ''; ?>"
                  data-index="<?php echo $i; ?>"
                  data-id="<?php echo $v['id']; ?>"
                  data-type="<?php echo $isYt ? 'youtube' : 'local'; ?>"
                  data-ytid="<?php echo $ytId ?? ''; ?>">
-
-                <div class="reel-type-badge <?php echo $isYt ? 'youtube' : 'local'; ?>">
-                    <?php if ($isYt): ?>
-                        <svg width="9" height="9" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>YouTube
-                    <?php else: ?>
-                        <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>Local
-                    <?php endif; ?>
-                </div>
 
                 <?php if ($isYt): ?>
                     <?php if ($thumb): ?>
@@ -568,7 +725,6 @@ $total = count($videos);
                 <div class="reel-gradient"></div>
 
                 <div class="reel-info">
-                    <span class="reel-cat-badge"><?php echo htmlspecialchars($v['categoria'] ?? 'general'); ?></span>
                     <div class="reel-autor">
                         <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
                         <?php echo htmlspecialchars($v['autor']); ?>
@@ -577,20 +733,36 @@ $total = count($videos);
                     <?php if (!empty($v['descripcion'])): ?>
                         <div class="reel-desc"><?php echo htmlspecialchars($v['descripcion']); ?></div>
                     <?php endif; ?>
+                    <div class="reel-hashtags">
+                        <?php $cats = array_filter(array_map('trim', explode(',', $v['categorias']))); foreach ($cats as $cat): ?>
+                            <?php if ($cat !== ''): ?>
+                                <span class="reel-hashtag">#<?php echo htmlspecialchars($cat); ?></span>
+                            <?php endif; ?>
+                        <?php endforeach; ?>
+                    </div>
                 </div>
 
                 <div class="reel-actions">
                     <?php if (isset($_SESSION['user_id'])): ?>
-                    <form method="POST" action="database/procesar_like.php">
-                        <input type="hidden" name="id_publicacion" value="<?php echo $v['id']; ?>">
-                        <input type="hidden" name="redirect" value="?section=watch<?php echo $cat_filter ? '&cat='.$cat_filter : ''; ?>">
-                        <button type="submit" class="reel-action-btn" title="Like">
-                            <div class="reel-action-icon">
-                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>
-                            </div>
-                            <span class="reel-action-label"><?php echo $v['total_likes']; ?></span>
-                        </button>
-                    </form>
+                        <?php if (!empty($v['related_publicacion_id'])): ?>
+                            <form method="POST" action="database/procesar_like.php">
+                                <input type="hidden" name="id_publicacion" value="<?php echo $v['related_publicacion_id']; ?>">
+                                <input type="hidden" name="redirect" value="?section=watch<?php echo $cat_filter ? '&cat='.$cat_filter : ''; ?>">
+                                <button type="submit" class="reel-action-btn" title="Like">
+                                    <div class="reel-action-icon">
+                                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>
+                                    </div>
+                                    <span class="reel-action-label"><?php echo $v['total_likes']; ?></span>
+                                </button>
+                            </form>
+                        <?php else: ?>
+                            <button type="button" class="reel-action-btn" title="Relaciona este video con un artículo para dar like" disabled>
+                                <div class="reel-action-icon">
+                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>
+                                </div>
+                                <span class="reel-action-label"><?php echo $v['total_likes']; ?></span>
+                            </button>
+                        <?php endif; ?>
                     <?php else: ?>
                     <a href="?section=login" class="reel-action-btn" title="Like">
                         <div class="reel-action-icon">
@@ -607,12 +779,16 @@ $total = count($videos);
                         </div>
                         <span class="reel-action-label">Aprender</span>
                     </a>
-                    <a href="?section=noticias&q=<?php echo $relatedQuery; ?>" class="reel-action-btn" title="Noticias relacionadas">
+
+                    <button type="button" class="reel-action-btn reel-comments-btn" 
+                            title="Comentarios"
+                            data-video-id="<?php echo $v['id']; ?>"
+                            data-video-title="<?php echo htmlspecialchars($v['titulo']); ?>">
                         <div class="reel-action-icon">
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
                         </div>
-                        <span class="reel-action-label">Noticias</span>
-                    </a>
+                        <span class="reel-action-label">Comentarios</span>
+                    </button>
 
                     <button class="reel-action-btn reel-sound-btn" title="Sonido">
                         <div class="reel-action-icon">
@@ -638,30 +814,149 @@ $total = count($videos);
                     </div>
                 </div>
 
-                <?php if (!$isYt): ?>
-                <div class="reel-progress"><div class="reel-progress-bar"></div></div>
-                <?php endif; ?>
+                <div class="reel-progress">
+                    <span class="reel-time-current">0:00</span>
+                    <div class="reel-progress-bar"></div>
+                    <span class="reel-time-total">0:00</span>
+                </div>
 
             </div>
             <?php endforeach; ?>
 
-            <div class="watch-nav">
-                <button class="watch-nav-btn" id="btnPrev" disabled>
-                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="18 15 12 9 6 15"/></svg>
-                </button>
-                <span class="watch-nav-indicator" id="navIndicator">1 / <?php echo $total; ?></span>
-                <button class="watch-nav-btn" id="btnNext" <?php echo $total <= 1 ? 'disabled' : ''; ?>>
-                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
-                </button>
-            </div>
-
         </div>
         <?php endif; ?>
     </div>
+</div>
+</div>
 
+<!-- MODAL DE COMENTARIOS -->
+<div class="comments-modal" id="commentsModal">
+    <div class="comments-modal-content">
+        <div class="comments-modal-header">
+            <h3 id="commentsModalTitle">Comentarios</h3>
+            <button type="button" class="comments-modal-close" onclick="closeCommentsModal()">×</button>
+        </div>
+        <div class="comments-modal-body" id="commentsList">
+            <div class="comments-loading">Cargando comentarios...</div>
+        </div>
+        <?php if (isset($_SESSION['user_id'])): ?>
+        <div class="comments-modal-footer">
+            <input type="text" id="commentInput" placeholder="Escribe un comentario..." maxlength="500">
+            <button type="button" onclick="submitComment()">Enviar</button>
+        </div>
+        <?php else: ?>
+        <div class="comments-modal-footer">
+            <p style="color: rgba(255,255,255,0.5); margin: 0; width: 100%; text-align: center;">
+                <a href="?section=login" style="color: #0077be; text-decoration: none;">Inicia sesión</a> para comentar
+            </p>
+        </div>
+        <?php endif; ?>
+    </div>
 </div>
 
 <script>
+// ── FUNCIONES DE COMENTARIOS ──────────────────────────────────────────
+let currentVideoIdForComments = null;
+
+function openCommentsModal(videoId, videoTitle) {
+    currentVideoIdForComments = videoId;
+    document.getElementById('commentsModal').classList.add('open');
+    document.getElementById('commentsModalTitle').textContent = 'Comentarios: ' + videoTitle;
+    loadComments(videoId);
+}
+
+function closeCommentsModal() {
+    document.getElementById('commentsModal').classList.remove('open');
+    currentVideoIdForComments = null;
+}
+
+function loadComments(videoId) {
+    const commentsList = document.getElementById('commentsList');
+    commentsList.innerHTML = '<div class="comments-loading">Cargando comentarios...</div>';
+    
+    fetch('database/obtener_comentarios_video.php?video_id=' + encodeURIComponent(videoId))
+        .then(r => r.json())
+        .then(data => {
+            if (!data.ok) {
+                commentsList.innerHTML = '<div class="comments-loading">Error al cargar comentarios</div>';
+                return;
+            }
+            
+            if (data.comentarios.length === 0) {
+                commentsList.innerHTML = '<div class="comments-loading">No hay comentarios aún. ¡Sé el primero!</div>';
+                return;
+            }
+            
+            commentsList.innerHTML = '';
+            data.comentarios.forEach(comment => {
+                const commentEl = document.createElement('div');
+                commentEl.className = 'comment-item';
+                commentEl.innerHTML = `
+                    <div class="comment-author">${escapeHtml(comment.autor)}</div>
+                    <div class="comment-text">${escapeHtml(comment.contenido)}</div>
+                    <div class="comment-time">${comment.fecha}</div>
+                `;
+                commentsList.appendChild(commentEl);
+            });
+        })
+        .catch(() => {
+            commentsList.innerHTML = '<div class="comments-loading">Error al cargar comentarios</div>';
+        });
+}
+
+function submitComment() {
+    const input = document.getElementById('commentInput');
+    const contenido = input.value.trim();
+    
+    if (!contenido) {
+        alert('Escribe un comentario');
+        return;
+    }
+    
+    if (!currentVideoIdForComments) {
+        alert('Error: video no seleccionado');
+        return;
+    }
+    
+    const fd = new FormData();
+    fd.append('video_id', currentVideoIdForComments);
+    fd.append('contenido', contenido);
+    
+    fetch('database/procesar_comentario_video.php', { method: 'POST', body: fd })
+        .then(r => r.json())
+        .then(data => {
+            if (data.ok) {
+                input.value = '';
+                loadComments(currentVideoIdForComments);
+            } else {
+                alert(data.mensaje || 'Error al enviar comentario');
+            }
+        })
+        .catch(() => alert('Error de conexión'));
+}
+
+function escapeHtml(text) {
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+}
+
+// Evento: botón de comentarios
+document.addEventListener('DOMContentLoaded', () => {
+    document.querySelectorAll('.reel-comments-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            openCommentsModal(btn.dataset.videoId, btn.dataset.videoTitle);
+        });
+    });
+    
+    // Cerrar modal al hacer clic fuera
+    document.getElementById('commentsModal').addEventListener('click', (e) => {
+        if (e.target.id === 'commentsModal') {
+            closeCommentsModal();
+        }
+    });
+});
+
 (function () {
     const cards = [...document.querySelectorAll('.reel-card')];
     const total = cards.length;
@@ -709,6 +1004,7 @@ $total = count($videos);
                         const thumb = document.getElementById('thumb-' + vidId);
                         if (thumb) thumb.style.opacity = '0';
                         syncSoundIcon(card);
+                        updateProgress(card);
                     }
                 }
             });
@@ -737,6 +1033,15 @@ $total = count($videos);
         btn.querySelector('.icon-sound').style.display = !globalMuted ? '' : 'none';
     }
 
+    // ── Registrar vista ──────────────────────────────────────────────────
+    function registerView(videoId) {
+        fetch('database/procesar_vista.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: 'video_id=' + encodeURIComponent(videoId)
+        }).catch(() => {}); // Ignorar errores
+    }
+
     // ── Cambiar video activo ──────────────────────────────────────────────
     function goTo(index) {
         const prev = cards[current];
@@ -762,11 +1067,13 @@ $total = count($videos);
                 vid.play().catch(() => {});
             }
             syncSoundIcon(next);
+            updateProgress(next);
         } else {
             createYTPlayer(next);
             // syncSoundIcon se llama en onReady
         }
 
+        registerView(next.dataset.id);
         updateNav();
         showUIBriefly(next);
     }
@@ -779,23 +1086,23 @@ $total = count($videos);
     }
 
     function updateNav() {
-        document.getElementById('navIndicator').textContent = (current + 1) + ' / ' + total;
-        document.getElementById('watchCounterCurrent').textContent = current + 1;
-        document.getElementById('btnPrev').disabled = current === 0;
-        document.getElementById('btnNext').disabled = current === total - 1;
+        const counterEl = document.getElementById('watchCounterCurrent');
+        if (counterEl) counterEl.textContent = current + 1;
     }
 
     // ── Navegación ────────────────────────────────────────────────────────
-    document.getElementById('btnPrev').addEventListener('click', () => { if (current > 0) goTo(current - 1); });
-    document.getElementById('btnNext').addEventListener('click', () => { if (current < total - 1) goTo(current + 1); });
 
     document.addEventListener('keydown', (e) => {
         if (['INPUT','TEXTAREA','SELECT'].includes(document.activeElement.tagName)) return;
         switch(e.key) {
-            case 'ArrowDown': case 'ArrowRight':
+            case 'ArrowDown':
                 e.preventDefault(); if (current < total - 1) goTo(current + 1); break;
-            case 'ArrowUp': case 'ArrowLeft':
+            case 'ArrowUp':
                 e.preventDefault(); if (current > 0) goTo(current - 1); break;
+            case 'ArrowRight':
+                e.preventDefault(); seekVideo(10); break; // Adelantar 10s
+            case 'ArrowLeft':
+                e.preventDefault(); seekVideo(-10); break; // Atrasar 10s
             case ' ': e.preventDefault(); togglePlayPause(); break;
             case 'm': case 'M': e.preventDefault(); toggleMute(); break;
         }
@@ -890,28 +1197,122 @@ $total = count($videos);
         });
     });
 
+    // ── Formatear tiempo ──────────────────────────────────────────────────
+    function formatTime(seconds) {
+        const mins = Math.floor(seconds / 60);
+        const secs = Math.floor(seconds % 60);
+        return mins + ':' + (secs < 10 ? '0' : '') + secs;
+    }
+
+    // ── Actualizar progreso y tiempos ─────────────────────────────────────
+    function updateProgress(card) {
+        const bar = card.querySelector('.reel-progress-bar');
+        const currentEl = card.querySelector('.reel-time-current');
+        const totalEl = card.querySelector('.reel-time-total');
+        if (!bar || !currentEl || !totalEl) return;
+
+        let current = 0, duration = 0;
+        if (card.dataset.type === 'local') {
+            const vid = card.querySelector('.reel-video-local');
+            if (vid && vid.duration) {
+                current = vid.currentTime;
+                duration = vid.duration;
+            }
+        } else {
+            const player = ytPlayers[card.dataset.id];
+            if (player) {
+                current = player.getCurrentTime();
+                duration = player.getDuration();
+            }
+        }
+        if (duration > 0) {
+            const progress = current / duration;
+            bar.style.setProperty('--progress', progress);
+            bar.style.setProperty('--progress-width', (progress * 100) + '%');
+            currentEl.textContent = formatTime(current);
+            totalEl.textContent = formatTime(duration);
+        }
+    }
+
+    // ── Seek con flechas ──────────────────────────────────────────────────
+    function seekVideo(seconds) {
+        const card = cards[current];
+        if (card.dataset.type === 'local') {
+            const vid = card.querySelector('.reel-video-local');
+            if (vid && vid.duration) {
+                vid.currentTime = Math.max(0, Math.min(vid.duration, vid.currentTime + seconds));
+                updateProgress(card);
+            }
+        } else {
+            const player = ytPlayers[card.dataset.id];
+            if (player) {
+                const newTime = Math.max(0, Math.min(player.getDuration(), player.getCurrentTime() + seconds));
+                player.seekTo(newTime);
+                setTimeout(() => updateProgress(card), 100);
+            }
+        }
+    }
+    cards.forEach(card => {
+        const progress = card.querySelector('.reel-progress');
+        const progressBar = card.querySelector('.reel-progress-bar');
+        if (!progress || !progressBar) return;
+        progress.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const barRect = progressBar.getBoundingClientRect();
+            const pos = Math.max(0, Math.min(1, (e.clientX - barRect.left) / barRect.width));
+            let duration = 0;
+            if (card.dataset.type === 'local') {
+                const vid = card.querySelector('.reel-video-local');
+                if (vid && vid.duration) {
+                    duration = vid.duration;
+                    vid.currentTime = pos * duration;
+                }
+            } else {
+                const player = ytPlayers[card.dataset.id];
+                if (player) {
+                    duration = player.getDuration();
+                    player.seekTo(pos * duration);
+                    setTimeout(() => updateProgress(card), 100); // Delay for YouTube seek
+                }
+            }
+            updateProgress(card);
+        });
+    });
+
     // Progreso local
     cards.forEach(card => {
         if (card.dataset.type !== 'local') return;
         const vid = card.querySelector('.reel-video-local');
-        const bar = card.querySelector('.reel-progress-bar');
-        if (!vid || !bar) return;
-        vid.addEventListener('timeupdate', () => {
-            if (vid.duration) bar.style.width = (vid.currentTime / vid.duration * 100) + '%';
-        });
+        if (!vid) return;
+        vid.addEventListener('loadedmetadata', () => updateProgress(card));
+        vid.addEventListener('timeupdate', () => updateProgress(card));
     });
 
+    // Progreso YouTube - actualizar cada segundo
+    const ytProgressInterval = setInterval(() => {
+        const activeCard = cards[current];
+        if (activeCard && activeCard.dataset.type === 'youtube') {
+            updateProgress(activeCard);
+        }
+    }, 1000);
+
     // ── Arrancar primer video ─────────────────────────────────────────────
-    const first = cards[0];
-    if (first.dataset.type === 'local') {
-        const vid = first.querySelector('.reel-video-local');
-        if (vid) { vid.muted = false; vid.play().catch(() => {}); }
-        syncSoundIcon(first);
-    } else {
-        createYTPlayer(first);
-    }
-    updateNav();
-    showUIBriefly(first);
+    window.addEventListener('load', () => {
+        const first = cards[0];
+        if (first.dataset.type === 'local') {
+            const vid = first.querySelector('.reel-video-local');
+            if (vid) { 
+                vid.muted = globalMuted;
+                vid.play().catch(() => {}); // Intentar reproducir con sonido
+            }
+            syncSoundIcon(first);
+        } else {
+            createYTPlayer(first);
+        }
+        registerView(first.dataset.id);
+        updateNav();
+        showUIBriefly(first);
+    });
 
 })();
 </script>

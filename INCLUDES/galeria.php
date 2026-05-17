@@ -114,35 +114,57 @@ $total_pages = ceil($total / $per_page);
 .hy-gallery-search {
     display: flex; gap: .6rem; margin-bottom: 1.5rem;
 }
+/* Nuevo contenedor para separar tabs y buscador */
+.hy-gallery-controls-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-bottom: 2rem;
+    margin-top: 1rem;
+}
+
+/* Buscador modificado (sin margen inferior) */
+.hy-gallery-search {
+    display: flex; gap: .6rem; margin-bottom: 0;
+}
 .hy-gallery-search input {
     flex: 1; padding: 11px 18px;
-    border: 1.5px solid rgba(0,120,190,0.2); border-radius: 50px;
-    font-family: 'Nunito', sans-serif; font-size: .95rem; color: #001828;
+    border: 1.5px solid var(--border); border-radius: 50px;
+    font-family: 'Nunito', sans-serif; font-size: .95rem; color: var(--ocean);
+    background: var(--card-bg);
     outline: none; transition: border-color .2s;
+    font-weight: 700;
 }
-.hy-gallery-search input:focus { border-color: #0077be; }
+.hy-gallery-search input::placeholder {
+    color: var(--ocean);
+    opacity: 0.6;
+}
+.hy-gallery-search input:focus { border-color: var(--ocean); }
 .hy-gallery-search button {
     padding: 11px 22px; border-radius: 50px;
-    background: #0077be; color: #fff; border: none;
+    background: var(--card-bg); color: var(--ocean);
+    border: 1.5px solid var(--border);
     font-family: 'Nunito', sans-serif; font-weight: 800; font-size: .9rem;
-    cursor: pointer; transition: background .2s;
+    cursor: pointer; transition: all .2s;
 }
-.hy-gallery-search button:hover { background: #009aaa; }
+.hy-gallery-search button:hover { background: var(--ocean); color: #fff; border-color: var(--ocean); }
 
-/* Tabs categorías */
+/* Tabs categorías modificados (sin margen inferior) */
 .hy-gallery-tabs {
-    display: flex; gap: .5rem; flex-wrap: wrap; margin-bottom: 2rem;
+    display: flex; gap: .5rem; flex-wrap: wrap; margin-bottom: 0;
 }
 .hy-gallery-tab {
     padding: 8px 18px; border-radius: 50px;
-    border: 1.5px solid rgba(0,120,190,0.2);
-    color: #0077be; font-weight: 700; font-size: .85rem;
-    text-decoration: none; background: #fff;
+    border: 1.5px solid var(--border);
+    color: var(--ocean); font-weight: 800; font-size: .85rem;
+    text-decoration: none; background: var(--card-bg);
     transition: all .2s; font-family: 'Nunito', sans-serif;
     display: flex; align-items: center; gap: 5px;
 }
 .hy-gallery-tab:hover,
-.hy-gallery-tab.active { background: #0077be; color: #fff; border-color: #0077be; }
+.hy-gallery-tab.active { background: var(--ocean); color: #fff; border-color: var(--ocean); }
 
 /* Stats */
 .hy-gallery-stats {
@@ -265,54 +287,48 @@ $total_pages = ceil($total / $per_page);
 }
 .hy-page-btn {
     padding: 9px 18px; border-radius: 50px;
-    border: 1.5px solid rgba(0,120,190,0.2);
-    color: #0077be; font-weight: 700; font-size: .88rem;
-    text-decoration: none; background: #fff;
+    border: 1.5px solid var(--border);
+    color: var(--ocean); font-weight: 800; font-size: .88rem;
+    text-decoration: none; background: var(--card-bg);
     transition: all .2s; font-family: 'Nunito', sans-serif;
 }
 .hy-page-btn:hover,
-.hy-page-btn.active { background: #0077be; color: #fff; border-color: #0077be; }
+.hy-page-btn.active { background: var(--ocean); color: #fff; border-color: var(--ocean); }
 .hy-page-btn.disabled { opacity: .4; pointer-events: none; }
 </style>
 
 <div class="hy-gallery-wrap">
 
     <!-- Header -->
-    <div class="hy-gallery-header">
-        <div>
-            <h1>Galería de Vida Marina</h1>
-            <p>Imágenes en alta resolución proporcionadas por Pexels</p>
+   <div class="hy-gallery-controls-row">
+        
+        <div class="hy-gallery-tabs">
+            <?php foreach ($categorias as $key => $cat): ?>
+                <a href="?section=galeria&category=<?php echo $key; ?>"
+                   class="hy-gallery-tab <?php echo $categoria===$key?'active':''; ?>">
+                    <?php echo $cat['icon'] . ' ' . $cat['label']; ?>
+                </a>
+            <?php endforeach; ?>
         </div>
-        <span class="hy-pexels-badge">Live · Pexels</span>
-    </div>
 
-    <!-- Buscador -->
-    <form method="GET" action="index.php" class="hy-gallery-search">
-        <input type="hidden" name="section" value="galeria">
-        <?php if ($categoria): ?>
-            <input type="hidden" name="category" value="<?php echo htmlspecialchars($categoria); ?>">
-        <?php endif; ?>
-        <input type="text" name="q"
-               value="<?php echo htmlspecialchars($busqueda); ?>"
-               placeholder="🔍 Buscar imágenes... (ej: tortuga, arrecife, ballena)">
-        <button type="submit">Buscar</button>
-    </form>
+        <form method="GET" action="index.php" class="hy-gallery-search">
+            <input type="hidden" name="section" value="galeria">
+            <?php if ($categoria): ?>
+                <input type="hidden" name="category" value="<?php echo htmlspecialchars($categoria); ?>">
+            <?php endif; ?>
+            <input type="text" name="q"
+                   value="<?php echo htmlspecialchars($busqueda); ?>"
+                   placeholder=" Buscar imágenes...">
+            <button type="submit">Buscar</button>
+        </form>
 
-    <!-- Tabs categorías -->
-    <div class="hy-gallery-tabs">
-        <?php foreach ($categorias as $key => $cat): ?>
-            <a href="?section=galeria&category=<?php echo $key; ?>"
-               class="hy-gallery-tab <?php echo $categoria===$key?'active':''; ?>">
-                <?php echo $cat['icon'] . ' ' . $cat['label']; ?>
-            </a>
-        <?php endforeach; ?>
     </div>
 
     <!-- Stats -->
     <div class="hy-gallery-stats">
         <span class="hy-gallery-count">
             <?php if ($has_error): ?>
-                ⚠️ Error de conexión
+                 Error de conexión
             <?php else: ?>
                 <?php echo number_format($total); ?> imágenes encontradas
                 — página <?php echo $page; ?> de <?php echo max(1, $total_pages); ?>
@@ -325,13 +341,13 @@ $total_pages = ceil($total / $per_page);
 
         <?php if ($has_error): ?>
             <div class="hy-gallery-empty">
-                <h3>⚠️ No se pudo conectar</h3>
+                <h3> No se pudo conectar</h3>
                 <p>Verifica tu conexión a internet. La API de Pexels puede estar temporalmente no disponible.</p>
             </div>
 
         <?php elseif (empty($resultados)): ?>
             <div class="hy-gallery-empty">
-                <h3>🌊 Sin resultados</h3>
+                <h3> Sin resultados...</h3>
                 <p>Prueba con otra categoría o término de búsqueda.</p>
             </div>
 
@@ -350,9 +366,9 @@ $total_pages = ceil($total / $per_page);
                              alt="<?php echo htmlspecialchars($name); ?>"
                              class="hy-gallery-card-img"
                              loading="lazy"
-                             onerror="this.parentElement.innerHTML='<div class=\'hy-gallery-placeholder\'>🌊</div>'">
+                             onerror="this.parentElement.innerHTML='<div class=\'hy-gallery-placeholder\'></div>'">
                     <?php else: ?>
-                        <div class="hy-gallery-placeholder">🌊</div>
+                        <div class="hy-gallery-placeholder"></div>
                     <?php endif; ?>
 
                     <div class="hy-gallery-card-overlay">

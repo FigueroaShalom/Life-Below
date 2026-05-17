@@ -1,6 +1,48 @@
 <?php
 if (session_status() === PHP_SESSION_NONE) session_start();
 if (!isset($_SESSION['id'])) exit('Acceso denegado');
+require_once __DIR__ . '/../database/Conexion_base.php';
+
+$isEdit = false;
+$videoData = null;
+$relatedId = null;
+$videoFuente = 'youtube';
+$videoCategorias = [];
+$videoCategoriasPredefinidas = [];
+$videoCategoriasPersonalizadas = '';
+
+if (isset($_GET['editar_vid'])) {
+    $editId = (int)$_GET['editar_vid'];
+    $stmt = $conn->prepare("SELECT id, titulo, descripcion, video_url, categoria, related_publicacion_id FROM videos WHERE id = ? AND id_autor = ?");
+    $stmt->bind_param("ii", $editId, $_SESSION['id']);
+    $stmt->execute();
+    $videoData = $stmt->get_result()->fetch_assoc();
+    if ($videoData) {
+        $isEdit = true;
+        $relatedId = $videoData['related_publicacion_id'];
+        $videoFuente = preg_match('/youtube\.com\/watch\?v=|youtu\.be\//i', $videoData['video_url']) ? 'youtube' : 'local';
+        $stmtCat = $conn->prepare("SELECT categoria FROM video_categorias WHERE video_id = ?");
+        $stmtCat->bind_param("i", $editId);
+        $stmtCat->execute();
+        $videoCategorias = array_column($stmtCat->get_result()->fetch_all(MYSQLI_ASSOC), 'categoria');
+        
+        // Separar categorías predefinidas de personalizadas
+        $predefinidas = ['peces', 'mamiferos', 'moluscos', 'crustaceos', 'conservacion', 'general'];
+        foreach ($videoCategorias as $cat) {
+            if (in_array($cat, $predefinidas)) {
+                $videoCategoriasPredefinidas[] = $cat;
+            } else {
+                $videoCategoriasPersonalizadas .= ($videoCategoriasPersonalizadas ? ', ' : '') . $cat;
+            }
+        }
+    }
+}
+
+$publicaciones = [];
+$stmtPub = $conn->prepare("SELECT id, titulo, categoria FROM publicaciones WHERE id_autor = ? ORDER BY fecha_creacion DESC");
+$stmtPub->bind_param("i", $_SESSION['id']);
+$stmtPub->execute();
+$publicaciones = $stmtPub->get_result()->fetch_all(MYSQLI_ASSOC);
 ?>
 
 <div class="card shadow border-0" style="background:rgba(255,255,255,0.9);backdrop-filter:blur(10px);">
@@ -71,20 +113,34 @@ if (!isset($_SESSION['id'])) exit('Acceso denegado');
             <div class="mb-3">
                 <label class="form-label fw-bold">Título</label>
                 <input type="text" name="titulo" class="form-control"
-                       placeholder="Ej: Vida en el arrecife de coral" required>
+                       placeholder="Ej: Vida en el arrecife de coral"
+                       value="<?php echo $isEdit ? htmlspecialchars($videoData['titulo']) : ''; ?>" required>
             </div>
 
             <div class="row">
-                <div class="col-md-6 mb-3">
-                    <label class="form-label fw-bold">Categoría</label>
-                    <select name="categoria" class="form-select">
-                        <option value="peces">Peces</option>
-                        <option value="mamiferos">Mamíferos</option>
-                        <option value="moluscos">Moluscos</option>
-                        <option value="crustaceos">Crustáceos</option>
-                        <option value="conservacion">Conservación</option>
-                        <option value="general">General</option>
-                    </select>
+                <div class="col-md-12 mb-3">
+                    <label class="form-label fw-bold">Categorías (máximo 4)</label>
+                    <div class="row">
+                        <?php $cats = ['peces' => 'Peces', 'mamiferos' => 'Mamíferos', 'moluscos' => 'Moluscos', 'crustaceos' => 'Crustáceos', 'conservacion' => 'Conservación', 'general' => 'General']; ?>
+                        <?php foreach ($cats as $key => $label): ?>
+                            <div class="col-md-6 mb-2">
+                                <div class="form-check">
+                                    <input class="form-check-input categoria-predefinida" type="checkbox" name="categorias[]" value="<?php echo $key; ?>" id="cat-<?php echo $key; ?>"
+                                           <?php echo $isEdit && in_array($key, $videoCategoriasPredefinidas ?? []) ? 'checked' : ''; ?>>
+                                    <label class="form-check-label" for="cat-<?php echo $key; ?>">
+                                        <?php echo $label; ?>
+                                    </label>
+                                </div>
+                            </div>
+                        <?php endforeach; ?>
+                    </div>
+                    <div class="form-text mb-2">Selecciona las categorías predefinidas que apliquen a tu video.</div>
+                    
+                    <label class="form-label fw-bold mt-3">Categorías Personalizadas</label>
+                    <input type="text" id="categorias-personalizadas" name="categorias_personalizadas" class="form-control"
+                           placeholder="Escribe categorías separadas por comas (ej: pesca, buceo, corales)"
+                           value="<?php echo htmlspecialchars($videoCategoriasPersonalizadas); ?>">
+                    <div class="form-text">Agrega hasta 4 categorías en total. Sepáralas por comas si necesitas más de una.</div>
                 </div>
                 <div class="col-md-6 mb-3">
                     <label class="form-label fw-bold">Fuente del Video</label>
@@ -100,7 +156,8 @@ if (!isset($_SESSION['id'])) exit('Acceso denegado');
             <div id="campo-youtube" class="mb-3">
                 <label class="form-label fw-bold">URL de YouTube</label>
                 <input type="url" name="video_url" class="form-control"
-                       placeholder="https://www.youtube.com/watch?v=...">
+                       placeholder="https://www.youtube.com/watch?v=..."
+                       value="<?php echo $isEdit && $videoFuente === 'youtube' ? htmlspecialchars($videoData['video_url']) : ''; ?>">
                 <div class="form-text">Pega el enlace completo de YouTube o youtu.be</div>
             </div>
 
@@ -124,12 +181,31 @@ if (!isset($_SESSION['id'])) exit('Acceso denegado');
             <div class="mb-4">
                 <label class="form-label fw-bold">Descripción (opcional)</label>
                 <textarea name="descripcion" class="form-control" rows="4"
-                          placeholder="Breve descripción del video..."></textarea>
+                          placeholder="Breve descripción del video..."><?php echo $isEdit ? htmlspecialchars($videoData['descripcion']) : ''; ?></textarea>
             </div>
+
+            <div class="mb-3">
+                <label class="form-label fw-bold">Relacionar con artículo o noticia</label>
+                <select name="related_publicacion_id" class="form-select">
+                    <option value="">Sin relación</option>
+                    <?php foreach ($publicaciones as $pub): ?>
+                        <?php $label = $pub['categoria'] === 'noticias' ? 'Noticia' : 'Artículo'; ?>
+                        <option value="<?php echo $pub['id']; ?>" <?php echo $relatedId == $pub['id'] ? 'selected' : ''; ?>>
+                            <?php echo $label . ' · ' . htmlspecialchars($pub['titulo']); ?>
+                        </option>
+                    <?php endforeach; ?>
+                </select>
+                <div class="form-text">Selecciona un artículo o noticia propio para relacionarlo directamente con este video.</div>
+            </div>
+
+            <input type="hidden" id="action-video" name="accion" value="<?php echo $isEdit ? 'actualizar_video' : 'crear_video'; ?>">
+            <?php if ($isEdit): ?>
+                <input type="hidden" name="id_video" value="<?php echo $videoData['id']; ?>">
+            <?php endif; ?>
 
             <button type="submit" id="btn-publicar-video" class="btn btn-primary px-4"
                     style="background:var(--ocean,#0077b6);border:none;">
-                Publicar Video
+                <?php echo $isEdit ? 'Actualizar Video' : 'Publicar Video'; ?>
             </button>
         </form>
     </div>
@@ -158,6 +234,33 @@ function toggleFuente(val) {
     document.getElementById('campo-local').style.display   = val === 'local'   ? 'block' : 'none';
 }
 
+/* ── Limitar checkboxes de categorías ────────────────────── */
+document.addEventListener('DOMContentLoaded', function() {
+    const checkboxes = document.querySelectorAll('input[name="categorias[]"]');
+    const inputPersonalizadas = document.getElementById('categorias-personalizadas');
+    
+    function validarTotalCategorias() {
+        const checked = document.querySelectorAll('input[name="categorias[]"]:checked').length;
+        const personalizadas = inputPersonalizadas.value
+            .split(',')
+            .map(c => c.trim())
+            .filter(c => c.length > 0).length;
+        const total = checked + personalizadas;
+        
+        if (total > 4) {
+            alert('El total no puede superar 4 categorías. Tienes ' + total + ' seleccionadas.');
+            return false;
+        }
+        return true;
+    }
+    
+    checkboxes.forEach(cb => {
+        cb.addEventListener('change', validarTotalCategorias);
+    });
+    
+    inputPersonalizadas.addEventListener('input', validarTotalCategorias);
+});
+
 /* ── Helper: mostrar alerta ──────────────────────────────── */
 function mostrarAlerta(idAlerta, ok, texto) {
     const el = document.getElementById(idAlerta);
@@ -172,7 +275,7 @@ document.getElementById('form-crear-contenido').addEventListener('submit', funct
     const fd = new FormData(this);
     fd.append('categoria', fd.get('category')); // el PHP espera 'categoria'
 
-    fetch('../database/procesar_crear_contenido.php', { method:'POST', body:fd })
+    fetch('database/procesar_crear_contenido.php', { method:'POST', body:fd })
     .then(r => r.text())
     .then(data => {
         if (data.trim() === 'success') {
@@ -191,8 +294,21 @@ document.getElementById('form-crear-video').addEventListener('submit', function(
 
     const btn    = document.getElementById('btn-publicar-video');
     const fd     = new FormData(this);
-    fd.append('accion', 'crear_video');
+    const accion = document.getElementById('action-video').value;
+    fd.append('accion', accion);
     const fuente = document.getElementById('select-fuente').value;
+
+    // ── Procesar categorías personalizadas ────────────────
+    const personalizadasInput = document.getElementById('categorias-personalizadas').value;
+    if (personalizadasInput.trim()) {
+        const personalizadas = personalizadasInput
+            .split(',')
+            .map(c => c.trim())
+            .filter(c => c.length > 0);
+        personalizadas.forEach(cat => {
+            fd.append('categorias[]', cat);
+        });
+    }
 
     btn.disabled    = true;
     btn.innerText   = 'Publicando...';
@@ -214,7 +330,7 @@ document.getElementById('form-crear-video').addEventListener('submit', function(
             }
         });
 
-        xhr.open('POST', '../database/procesar_video.php');
+        xhr.open('POST', 'database/procesar_video.php');
         xhr.onload = function() {
             progress.style.display = 'none';
             procesarRespuestaVideo(xhr.responseText);
@@ -230,16 +346,25 @@ document.getElementById('form-crear-video').addEventListener('submit', function(
 
     // ── YouTube → fetch normal ────────────────────────────
     } else {
-        fetch('../database/procesar_video.php', { method:'POST', body:fd })
+        fetch('database/procesar_video.php', { method:'POST', body:fd })
         .then(r => r.text())
         .then(data => procesarRespuestaVideo(data))
         .catch(() => mostrarAlerta('alerta-video', false, 'Error de conexión.'))
         .finally(() => {
             btn.disabled  = false;
-            btn.innerText = 'Publicar Video';
+            btn.innerText = '<?php echo $isEdit ? 'Actualizar Video' : 'Publicar Video'; ?>';
         });
     }
 });
+
+// Ajustar fuente al cargar el formulario en modo edición
+(function () {
+    const selectFuente = document.getElementById('select-fuente');
+    if (selectFuente) {
+        selectFuente.value = '<?php echo $videoFuente; ?>';
+        toggleFuente(selectFuente.value);
+    }
+})();
 
 /* ── Procesar respuesta JSON de procesar_video.php ───────── */
 function procesarRespuestaVideo(raw) {

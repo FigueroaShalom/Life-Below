@@ -23,7 +23,7 @@ $articulos = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
 
 // Videos del usuario
 $stmt2 = $conn->prepare("
-    SELECT id, titulo, categoria, video_url, fecha_publicacion
+    SELECT id, titulo, categoria, video_url, fecha_publicacion, related_publicacion_id
     FROM videos
     WHERE id_autor = ?
     ORDER BY fecha_publicacion DESC
@@ -127,6 +127,9 @@ $videos = $stmt2->get_result()->fetch_all(MYSQLI_ASSOC);
                     <div class="post-actions" style="margin-top:.8rem;">
                         <a href="../index.php?section=watch&video=<?php echo $vid['id']; ?>" class="btn-small" target="_blank">Ver</a>
                         <a href="crear_contenido.php?editar_vid=<?php echo $vid['id']; ?>" class="btn-small">Editar</a>
+                        <?php if (!empty($vid['related_publicacion_id'])): ?>
+                            <a href="../index.php?section=articulos&post=<?php echo $vid['related_publicacion_id']; ?>" class="btn-small">Relacionado</a>
+                        <?php endif; ?>
                         <form method="POST" action="../database/procesar_video.php" style="display:inline;"
                               onsubmit="return confirm('¿Eliminar este video?')">
                             <input type="hidden" name="id_video"  value="<?php echo $vid['id']; ?>">

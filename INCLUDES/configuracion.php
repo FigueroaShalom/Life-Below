@@ -11,7 +11,7 @@ $user = $stmt->get_result()->fetch_assoc();
 
 <div class="config-container">
     <div class="d-flex align-items-center mb-4">
-        <h3 class="fw-bold mb-0">⚙️ Configuración de Cuenta</h3>
+        <h3 class="fw-bold mb-0">Configuración de Cuenta</h3>
     </div>
 
     <ul class="nav nav-tabs mb-4" id="configTabs" role="tablist">

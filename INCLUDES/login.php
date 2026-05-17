@@ -197,21 +197,23 @@
 
 /* botón principal */
 .os-btn {
-    width: 100%; padding: 14px; margin-top: .6rem;
-    background: linear-gradient(135deg, #0088c8, #00b8cc);
-    border: none; outline: none; border-radius: 12px; color: #fff;
+    width: 100%; padding: 10px 20px; margin-top: .6rem;
+    background: rgba(0, 119, 190, 0.05);
+    border: 1.5px solid #0077be; outline: none; border-radius: 50px; color: #00d4e8;
     font-family: 'Nunito', sans-serif;
-    font-weight: 900; font-size: 1rem;
-    letter-spacing: 2.5px; text-transform: uppercase;
+    font-weight: 800; font-size: 0.88rem;
+    letter-spacing: 2px; text-transform: uppercase;
     cursor: pointer; -webkit-appearance: none; appearance: none;
-    transition: transform .2s, box-shadow .2s;
-    box-shadow: 0 4px 20px rgba(0,160,200,0.3);
-    display: block; text-decoration: none;
+    transition: all 0.22s ease-in-out;
+    display: block; text-decoration: none; text-align: center;
 }
 .os-btn::before, .os-btn::after { display: none !important; content: none !important; }
 .os-btn:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 32px rgba(0,170,210,0.5);
+    background: #0077be;
+    color: #ffffff;
+    border-color: #0077be;
+    transform: translateY(-1.5px);
+    box-shadow: 0 4px 16px rgba(0, 119, 190, 0.35);
 }
 .os-btn:active { transform: translateY(0); }
 

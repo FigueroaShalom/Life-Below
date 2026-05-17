@@ -1,10 +1,36 @@
-</main><!-- /hy-main -->
+</main><style>
+    .hy-footer {
+        background: var(--footer-bg-glass) !important;
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
+        border-top: 1px solid var(--header-border);
+        color: var(--text-color) !important;
+    }
+    .hy-footer h4, .hy-footer p, .hy-footer a {
+        color: var(--text-color) !important;
+    }
+    .hy-footer a:hover {
+        opacity: 0.7;
+    }
+    .hy-footer-bottom {
+        border-top: 1px solid var(--header-border) !important;
+        background: transparent !important;
+    }
+    .hy-footer-bottom p {
+        color: var(--muted) !important;
+    }
+    .hy-ods-badge {
+        background: var(--card-bg) !important;
+        border: 1px solid var(--border) !important;
+        color: var(--ocean) !important;
+    }
+</style>
 
 <footer class="hy-footer">
     <div class="hy-footer-inner">
 
         <div class="hy-footer-brand">
-            <p>Life Below</p>
+            <p style="font-weight: 800; font-size: 1.5rem;">Life Below</p>
             <p>Explorando y protegiendo<br>nuestros océanos.</p>
             <div class="hy-footer-social">
                 <a href="#" title="Instagram">
@@ -23,7 +49,7 @@
         <div class="hy-footer-col">
             <h4>Explorar</h4>
             <a href="index.php?section=articulos">Artículos</a>
-            <a href="index.php?section=watch">Videos</a>
+            <a href="index.php?section=watch">HydroWatch</a>
             <a href="index.php?section=galeria">Galería</a>
             <a href="index.php?section=noticias">Noticias</a>
         </div>
@@ -35,13 +61,7 @@
             <a href="index.php?section=dashboard">Dashboard</a>
         </div>
 
-        <div class="hy-footer-col">
-            <h4>Sostenibilidad</h4>
-            <p style="font-size:.85rem;color:rgba(255,255,255,0.55);line-height:1.6;">
-                Contribuimos a la conservación marina a través de la educación y la ciencia.
-            </p>
-            <span class="hy-ods-badge">Vida Submarina</span>
-        </div>
+    
 
     </div>
 
