@@ -3,6 +3,6 @@
 
 $host     = "db5020481855.hosting-data.io";
 $usuario  = "dbu928705";
-$password = "4DML9.ErsbGFMy4";
+$password = "jFUHvV73f68#HPF";
 $base     = "dbs15685592";
 ?>
