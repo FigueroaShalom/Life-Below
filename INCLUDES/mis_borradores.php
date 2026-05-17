@@ -9,10 +9,10 @@ if (!isset($_SESSION['id'])) {
 require_once __DIR__ . '/../database/Conexion_base.php';
 
 // ── Agregar columna estado si no existe (solo una vez) ────────────────────────
-$conn->query("
-    ALTER TABLE publicaciones
-    ADD COLUMN IF NOT EXISTS estado ENUM('publicado','borrador') NOT NULL DEFAULT 'publicado'
-");
+$check_col = $conn->query("SHOW COLUMNS FROM publicaciones LIKE 'estado'");
+if ($check_col && $check_col->num_rows == 0) {
+    $conn->query("ALTER TABLE publicaciones ADD COLUMN estado ENUM('publicado','borrador') NOT NULL DEFAULT 'publicado'");
+}
 
 $msg_ok  = '';
 $msg_err = '';

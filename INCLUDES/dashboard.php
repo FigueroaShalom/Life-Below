@@ -160,7 +160,7 @@ $_SESSION['email'] = $email;
 <button onclick="cargar('crear_contenido')">Crear Contenido</button>
 <button onclick="cargar('mis_Publicaciones')">Mis Publicaciones</button>
 <button onclick="cargar('mis_borradores')">Mis Borradores</button>
-<button class="admin" onclick="cargar('aprobar_fotos')">🖼️ Aprobar Fotos</button>
+<button class="admin" onclick="cargar('aprobar_fotos')">Aprobar Fotos</button>
 <button class="admin" onclick="cargar('Perfil(dashboard)/administrar_Usuarios')">Administrar usuarios</button>
 <button class="admin" onclick="cargar('Perfil(dashboard)/crear_Usuarios')">Crear Usuario</button>
 
