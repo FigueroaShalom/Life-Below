@@ -1,9 +1,4 @@
 <?php
-$conexion = new mysqli("localhost", "root", "", "life_below_blog");
-
-if ($conexion->connect_error) {
-    die("Error de conexión: " . $conexion->connect_error);
-}
-
-
+require_once __DIR__ . '/../database/Conexion_base.php';
+$conexion = $conn;
 ?>
