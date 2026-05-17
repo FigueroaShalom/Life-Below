@@ -18,6 +18,11 @@ $user  = $user_data['user'];
 $email = $user_data['email'];
 $rol   = $user_data['rol'];
 $foto  = $user_data['foto'] ?: 'https://cdn-icons-png.flaticon.com/512/149/149071.png';
+
+// ✅ Sincronizar de forma segura la sesión con el estado real de la base de datos
+$_SESSION['rol']   = $rol;
+$_SESSION['user']  = $user;
+$_SESSION['email'] = $email;
 ?>
 
 <style>
