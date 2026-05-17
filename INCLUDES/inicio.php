@@ -1,14 +1,5 @@
 <style>
-    /* Convertir textos blancos a oscuros */
-    .hy-hero-title, .hy-hero-sub { color: var(--navy) !important; }
-    
-    /* ESLOGAN DEL INCIO */
-    .hy-hero-accent {
-        background: none !important;
-        -webkit-text-fill-color: initial !important;
-        color: #4DA8DA !important;
-        text-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
-    }
+
 
     /* CREAR CUENTA*/
     .hy-cta-primary {
@@ -72,11 +63,11 @@
     <div class="hy-hero-content">
         <span class="hy-hero-tag" style="background: rgba(255,255,255,0.4); border-color: white;">Vida Submarina · Conocimiento & Ciencia</span>
         <h1 class="hy-hero-title">
-            Un mar de ideas,<br>un punto entre la<br>
-            <span class="hy-hero-accent">ciencia y la sociedad</span>
+            Protege y Descubre<br>
+            <span class="hy-hero-accent">la Vida Marina</span>
         </h1>
         <p class="hy-hero-sub">
-            Descubre, aprende y actúa. Life Below transforma el conocimiento científico oceánico en contenido accesible para todos.
+            Únete a nuestra comunidad para aprender, compartir y conservar la biodiversidad de nuestros océanos.
         </p>
     </div>
     <div class="hy-hero-visual">

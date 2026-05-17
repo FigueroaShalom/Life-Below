@@ -149,7 +149,7 @@ $foto  = $user_data['foto'] ?: 'https://cdn-icons-png.flaticon.com/512/149/14907
 </div>
 
 <div class="hy-menu">
-<button onclick="cargar('configuracion')">⚙️ Configuración</button>
+<button onclick="cargar('configuracion')">Configuración</button>
 
 <?php if($rol == "administrador"){ ?>
 <button onclick="cargar('crear_contenido')">Crear Contenido</button>

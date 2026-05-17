@@ -20,46 +20,96 @@ $current_section = $_GET['section'] ?? 'inicio';
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="icon" type="image/jpeg" href="uploads/logooo.jpg">
     
+    <!-- Theme script to prevent flash -->
+    <script>
+        (function() {
+            const isLoggedIn = <?php echo isset($_SESSION['user']) ? 'true' : 'false'; ?>;
+            const savedTheme = isLoggedIn ? (localStorage.getItem('theme') || 'dark') : 'dark';
+            
+            if (savedTheme === 'dark') {
+                document.documentElement.classList.add('dark-mode');
+                document.addEventListener('DOMContentLoaded', () => document.body.classList.add('dark-mode'));
+            } else {
+                document.documentElement.classList.remove('dark-mode');
+                document.addEventListener('DOMContentLoaded', () => document.body.classList.remove('dark-mode'));
+            }
+        })();
+    </script>
+    
     <style>
         .hy-header {
-            background: rgba(135, 206, 235, 0.4) !important;
+            background: var(--header-blur-bg) !important;
             backdrop-filter: blur(16px);
             -webkit-backdrop-filter: blur(16px);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.3) !important;
+            border-bottom: 1px solid var(--header-border) !important;
             transition: all 0.3s ease;
         }
         
        .hy-header.scrolled {
-            background: rgba(135, 206, 235, 0.75) !important; 
+            background: var(--header-scroll-bg) !important; 
             backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.5) !important;
+            border-bottom: 1px solid var(--header-border) !important;
             box-shadow: 0 4px 30px rgba(0, 40, 80, 0.05);
         }
 
-        .hy-nav-link, .hy-btn-outline {
-            color: var(--navy) !important; 
+        .hy-nav-link {
+            color: var(--header-text) !important; 
         }
+        
+        .hy-btn-outline, .hy-btn-solid {
+            font-family: var(--font) !important;
+            font-weight: 800 !important;
+            text-transform: uppercase !important;
+            letter-spacing: 1px !important;
+            border-radius: 50px !important;
+            transition: all 0.22s ease-in-out !important;
+            white-space: nowrap !important;
+        }
+        
         .hy-btn-outline {
-            border-color: var(--navy) !important;
+            padding: 8px 18px !important;
+            font-size: 0.85rem !important;
+            background: transparent !important;
+            border: 1.5px solid var(--ocean) !important;
+            color: var(--ocean) !important;
         }
+        
         .hy-btn-outline:hover {
-            background: var(--navy) !important;
+            background: var(--ocean) !important;
             color: #fff !important;
+            border-color: var(--ocean) !important;
+            transform: translateY(-1px) !important;
+            box-shadow: 0 4px 12px rgba(0,119,190,0.3) !important;
+        }
+        
+        .hy-btn-solid {
+            padding: 8px 20px !important;
+            font-size: 0.85rem !important;
+            background: linear-gradient(135deg, var(--ocean), var(--teal)) !important;
+            border: 1.5px solid transparent !important;
+            color: #fff !important;
+            box-shadow: 0 3px 10px rgba(0,119,190,0.2) !important;
+        }
+        
+        .hy-btn-solid:hover {
+            background: linear-gradient(135deg, var(--teal), var(--cyan)) !important;
+            transform: translateY(-1px) !important;
+            box-shadow: 0 5px 16px rgba(0,154,170,0.4) !important;
         }
 
         .hy-dropdown-menu, .hy-mobile-menu {
-            background: rgba(255, 255, 255, 0.25) !important;
+            background: var(--header-menu-bg) !important;
             backdrop-filter: blur(16px);
             -webkit-backdrop-filter: blur(16px);
-            border: 1px solid rgba(255, 255, 255, 0.5);
+            border: 1px solid var(--header-border);
             box-shadow: 0 8px 32px rgba(0, 40, 80, 0.1);
         }
         .hy-mobile-menu a, .hy-dropdown-header, .hy-dropdown-menu a {
-            color: var(--navy) !important;
+            color: var(--header-text) !important;
         }
         .hy-hamburger span {
-            background: var(--navy) !important; 
+            background: var(--header-text) !important; 
         }
     </style>
 </head>
@@ -91,15 +141,15 @@ $current_section = $_GET['section'] ?? 'inicio';
             ?>
                 <div class="hy-profile-dropdown">
                     <button class="hy-profile-trigger" id="profileTrigger" title="Mi Cuenta" style="background: transparent; border: none; cursor: pointer;">
-                        <img src="<?php echo htmlspecialchars($foto_head); ?>" alt="Perfil" style="width:40px; height:40px; border-radius:50%; object-fit:cover; border:2px solid rgba(255,255,255,0.8);">
+                        <img src="<?php echo htmlspecialchars($foto_head); ?>" alt="Perfil" style="width:40px; height:40px; border-radius:50%; object-fit:cover; border:2px solid var(--header-border);">
                     </button>
                     <div class="hy-dropdown-menu" id="profileMenu">
                         <div class="hy-dropdown-header">
                             <strong><?php echo htmlspecialchars($_SESSION['user']); ?></strong>
                         </div>
-                        <a href="index.php?section=dashboard">⚙️ Mi Perfil</a>
-                        <hr style="border-color: rgba(0,0,0,0.1);">
-                        <a href="index.php?logout=1" class="logout">Logout</a>
+                        <a href="index.php?section=dashboard">Mi Perfil</a>
+                        <a href="#" id="themeToggle" style="cursor: pointer;"><span class="theme-text">Oscuro</span></a>
+                        <a href="index.php?logout=1" class="logout">Salir</a>
                     </div>
                 </div>
             <?php else: ?>
@@ -131,3 +181,36 @@ $current_section = $_GET['section'] ?? 'inicio';
 </header>
 
 <main class="hy-main">
+
+<script>
+    // Theme Toggle Logic
+    const themeToggle = document.getElementById('themeToggle');
+    const body = document.body;
+    const themeText = themeToggle ? themeToggle.querySelector('.theme-text') : null;
+
+    function updateThemeUI(isDark) {
+        if (themeText) {
+            themeText.textContent = isDark ? 'Claro' : 'Oscuro';
+        }
+    }
+
+    // Initial UI state
+    updateThemeUI(body.classList.contains('dark-mode'));
+
+    if (themeToggle) {
+        themeToggle.addEventListener('click', (e) => {
+            e.preventDefault();
+            const isDark = body.classList.toggle('dark-mode');
+            document.documentElement.classList.toggle('dark-mode');
+            localStorage.setItem('theme', isDark ? 'dark' : 'light');
+            updateThemeUI(isDark);
+        });
+    }
+
+    // Reset theme to dark on logout
+    document.querySelectorAll('a[href*="logout"]').forEach(link => {
+        link.addEventListener('click', () => {
+            localStorage.removeItem('theme');
+        });
+    });
+</script>

@@ -83,9 +83,9 @@ $categorias = [
 
 <style>
 .watch-top-search {
-    background: #001828;
+    background: var(--bg);
     padding: 1.5rem 2rem;
-    border-bottom: 1px solid rgba(0,120,190,0.2);
+    border-bottom: 1px solid var(--border);
     display: flex;
     justify-content: center;
 }
@@ -98,7 +98,7 @@ $categorias = [
 .watch-page {
     display: flex;
     flex-direction: column;
-    background: #001828;
+    background: var(--bg);
     min-height: calc(100vh - 70px);
 }
 
@@ -115,7 +115,7 @@ $categorias = [
     display: flex;
     flex-direction: column;
     gap: 2.2rem;
-    border-right: 1px solid rgba(0,120,190,0.2);
+    border-right: 1px solid var(--border);
     position: sticky;
     top: 0;
     height: auto;
@@ -128,19 +128,19 @@ $categorias = [
     font-family: 'Nunito', sans-serif;
     font-size: 2.4rem;
     font-weight: 900;
-    color: #fff;
+    color: var(--header-text);
     letter-spacing: -0.5px;
 }
-.watch-sidebar-title span { color: #0077be; }
+.watch-sidebar-title span { color: var(--ocean); }
 .watch-sidebar-sub {
     font-family: 'Nunito', sans-serif;
     font-size: 1rem;
-    color: rgba(255,255,255,0.3);
+    color: var(--muted);
     margin-top: .4rem;
 }
 .watch-counter-box {
-    background: rgba(255,255,255,0.04);
-    border: 1px solid rgba(255,255,255,0.07);
+    background: var(--card-bg);
+    border: 1px solid var(--border);
     border-radius: 12px;
     padding: .9rem;
     text-align: center;
@@ -155,7 +155,7 @@ $categorias = [
 .watch-counter-label {
     font-family: 'Nunito', sans-serif;
     font-size: .68rem;
-    color: rgba(255,255,255,0.3);
+    color: var(--muted);
     margin-top: .3rem;
 }
 .watch-search {
@@ -165,16 +165,22 @@ $categorias = [
 }
 .watch-search input {
     flex: 1;
-    padding: .75rem 1rem;
-    border-radius: 14px;
-    border: 1px solid rgba(0,120,190,0.2);
-    background: rgba(255,255,255,0.04);
-    color: #fff;
+    padding: .75rem 1.2rem;
+    border-radius: 50px;
+    border: 1.5px solid var(--border);
+    background: var(--card-bg);
+    color: var(--ocean);
     font-family: 'Nunito', sans-serif;
-    font-size: .85rem;
+    font-size: .95rem;
+    font-weight: 700;
+    outline: none;
+}
+.watch-search input:focus {
+    border-color: var(--ocean);
 }
 .watch-search input::placeholder {
-    color: rgba(255,255,255,0.42);
+    color: var(--ocean);
+    opacity: 0.6;
 }
 .watch-search button,
 .watch-search-clear {
@@ -182,23 +188,23 @@ $categorias = [
     align-items: center;
     justify-content: center;
     gap: .4rem;
-    padding: .7rem 1rem;
-    border-radius: 12px;
+    padding: .7rem 1.2rem;
+    border-radius: 50px;
     font-family: 'Nunito', sans-serif;
     font-size: .82rem;
     font-weight: 800;
     text-decoration: none;
-    border: none;
-}
-.watch-search button {
-    background: #0077be;
-    color: #04121e;
+    border: 1.5px solid var(--border);
+    background: var(--card-bg);
+    color: var(--ocean);
     cursor: pointer;
+    transition: all .2s;
 }
-.watch-search-clear {
-    background: rgba(255,255,255,0.06);
-    color: rgba(255,255,255,0.75);
-    border: 1px solid rgba(255,255,255,0.1);
+.watch-search button:hover,
+.watch-search-clear:hover {
+    background: var(--ocean);
+    color: #fff;
+    border-color: var(--ocean);
 }
 .watch-filters { display: flex; flex-direction: column; gap: .35rem; }
 .watch-filters-label {
@@ -207,30 +213,27 @@ $categorias = [
     font-weight: 800;
     letter-spacing: 1.5px;
     text-transform: uppercase;
-    color: rgba(255,255,255,0.28);
+    color: var(--muted);
     margin-bottom: .2rem;
 }
 .watch-filter-btn {
     padding: 9px 14px;
-    border-radius: 9px;
-    border: 1px solid rgba(255,255,255,0.07);
-    color: rgba(255,255,255,0.45);
-    font-weight: 700;
+    border-radius: 50px;
+    border: 1.5px solid var(--border);
+    color: var(--ocean);
+    font-weight: 800;
     font-size: .85rem;
     text-decoration: none;
-    background: transparent;
+    background: var(--card-bg);
     transition: all .2s;
     font-family: 'Nunito', sans-serif;
     display: block;
 }
-.watch-filter-btn:hover {
-    background: rgba(255,255,255,0.05);
-    color: rgba(255,255,255,0.75);
-}
+.watch-filter-btn:hover,
 .watch-filter-btn.active {
-    background: rgba(0,119,190,0.12);
-    color: #0077be;
-    border-color: rgba(0,119,190,0.25);
+    background: var(--ocean);
+    color: #fff;
+    border-color: var(--ocean);
 }
 .watch-keyboard-hint { display: flex; flex-direction: column; gap: .45rem; }
 .watch-keyboard-hint-title {
@@ -468,7 +471,7 @@ $categorias = [
 .reel-time-current { margin-right: 10px; }
 .reel-time-total { margin-left: 10px; }
 .reel-progress-bar {
-    flex: 1; height: 6px; background: rgba(255,255,255,.3); position: relative;
+    flex: 1; height: 6px; background: var(--border); position: relative;
     border-radius: 3px; overflow: hidden;
 }
 .reel-progress-bar::before {
@@ -486,10 +489,10 @@ $categorias = [
 }
 .watch-nav-btn {
     width: 34px; height: 34px; border-radius: 50%;
-    background: rgba(255,255,255,0.1);
+    background: var(--card-bg);
     backdrop-filter: blur(8px);
-    border: 1px solid rgba(255,255,255,0.1);
-    color: #fff; display: flex; align-items: center;
+    border: 1px solid var(--border);
+    color: var(--header-text); display: flex; align-items: center;
     justify-content: center; cursor: pointer;
     transition: background .2s;
 }
@@ -525,8 +528,8 @@ $categorias = [
     display: flex;
 }
 .comments-modal-content {
-    background: #001828;
-    border: 1px solid rgba(0,119,190,0.3);
+    background: var(--card-bg);
+    border: 1px solid var(--border);
     border-radius: 16px;
     width: 90%;
     max-width: 500px;
@@ -544,7 +547,7 @@ $categorias = [
 }
 .comments-modal-header h3 {
     margin: 0;
-    color: #fff;
+    color: var(--header-text);
     font-family: 'Nunito', sans-serif;
     font-size: 1.2rem;
     font-weight: 800;
@@ -581,7 +584,7 @@ $categorias = [
     margin-bottom: 0.3rem;
 }
 .comment-text {
-    color: rgba(255,255,255,0.8);
+    color: var(--text-color);
     font-size: 0.9rem;
     line-height: 1.4;
 }

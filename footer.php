@@ -1,37 +1,28 @@
 </main><style>
     .hy-footer {
-        background: rgba(255, 255, 255, 0.15) !important;
+        background: var(--footer-bg-glass) !important;
         backdrop-filter: blur(16px);
         -webkit-backdrop-filter: blur(16px);
-        border-top: 1px solid rgba(255, 255, 255, 0.4);
-        color: var(--navy) !important;
+        border-top: 1px solid var(--header-border);
+        color: var(--text-color) !important;
     }
     .hy-footer h4, .hy-footer p, .hy-footer a {
-        color: var(--navy) !important;
+        color: var(--text-color) !important;
     }
     .hy-footer a:hover {
         opacity: 0.7;
     }
     .hy-footer-bottom {
-        border-top: 1px solid rgba(0, 24, 40, 0.1) !important;
+        border-top: 1px solid var(--header-border) !important;
         background: transparent !important;
     }
     .hy-footer-bottom p {
-        color: rgba(0, 24, 40, 0.7) !important;
+        color: var(--muted) !important;
     }
     .hy-ods-badge {
-        background: rgba(255, 255, 255, 0.4) !important;
-        border: 1px solid rgba(0, 24, 40, 0.2) !important;
-        color: var(--navy) !important;
-    }
-    
-    /* Efecto cristal para el header cuando haces scroll */
-    .hy-header.scrolled {
-        background: rgba(255, 255, 255, 0.6) !important;
-        backdrop-filter: blur(20px);
-        -webkit-backdrop-filter: blur(20px);
-        border-bottom: 1px solid rgba(255, 255, 255, 0.5);
-        box-shadow: 0 4px 30px rgba(0, 40, 80, 0.05);
+        background: var(--card-bg) !important;
+        border: 1px solid var(--border) !important;
+        color: var(--ocean) !important;
     }
 </style>
 

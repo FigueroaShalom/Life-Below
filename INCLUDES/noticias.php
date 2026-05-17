@@ -259,10 +259,10 @@ if ($sub === 'eventos') {
 .hy-tabs { display: flex; gap: .45rem; flex-wrap: wrap; }
 .hy-tab {
     padding: 9px 22px; border-radius: 50px;
-    border: 1.5px solid var(--border-soft);
+    border: 1.5px solid var(--border);
     color: var(--ocean-blue); font-weight: 800;
     font-size: .87rem; text-decoration: none;
-    background: #fff; transition: all .22s;
+    background: var(--card-bg); transition: all .22s;
     font-family: var(--font-main);
 }
 .hy-tab:hover, .hy-tab.active {
@@ -274,11 +274,16 @@ if ($sub === 'eventos') {
 .hy-search-form { display: flex; gap: .5rem; flex-wrap: wrap; align-items: center; }
 .hy-search-input {
     padding: .72rem 1.1rem; border-radius: 50px;
-    border: 1.5px solid var(--border-soft);
+    border: 1.5px solid var(--border);
     font-size: .92rem; min-width: 220px;
-    font-family: var(--font-main); color: var(--ocean-deep);
-    background: #fff; outline: none;
+    font-family: var(--font-main); color: var(--ocean-blue);
+    background: var(--card-bg); outline: none;
     transition: border-color .2s, box-shadow .2s;
+    font-weight: 700;
+}
+.hy-search-input::placeholder {
+    color: var(--ocean-blue);
+    opacity: 0.6;
 }
 .hy-search-input:focus {
     border-color: var(--ocean-blue);
@@ -286,10 +291,10 @@ if ($sub === 'eventos') {
 }
 .hy-btn {
     padding: 9px 20px; border-radius: 50px;
-    border: 1.5px solid var(--border-soft);
+    border: 1.5px solid var(--border);
     color: var(--ocean-blue); font-weight: 800;
     font-size: .87rem; text-decoration: none;
-    background: #fff; cursor: pointer;
+    background: var(--card-bg); cursor: pointer;
     transition: all .22s; font-family: var(--font-main);
 }
 .hy-btn:hover { background: var(--ocean-blue); color: #fff; border-color: var(--ocean-blue); }
@@ -303,9 +308,9 @@ if ($sub === 'eventos') {
     gap: 1.5rem;
 }
 .hy-news-card {
-    background: #fff; border-radius: var(--radius-card);
+    background: var(--card-bg); border-radius: var(--radius-card);
     overflow: hidden; box-shadow: var(--card-shadow);
-    border: 1.5px solid var(--border-soft);
+    border: 1.5px solid var(--border);
     transition: transform .25s, box-shadow .25s;
     display: flex; flex-direction: column;
 }
@@ -358,7 +363,7 @@ if ($sub === 'eventos') {
     display: flex; align-items: center;
     justify-content: space-between;
     margin-top: auto; padding-top: .8rem;
-    border-top: 1px solid var(--border-soft);
+    border-top: 1px solid var(--border);
 }
 .hy-news-card-date { font-size: .74rem; color: var(--text-body); font-family: var(--font-main); }
 .hy-news-card-link {
@@ -377,9 +382,9 @@ if ($sub === 'eventos') {
     gap: 1.5rem;
 }
 .hy-event-card {
-    background: #fff; border-radius: var(--radius-card);
+    background: var(--card-bg); border-radius: var(--radius-card);
     overflow: hidden; box-shadow: var(--card-shadow);
-    border: 1.5px solid var(--border-soft);
+    border: 1.5px solid var(--border);
     transition: transform .25s, box-shadow .25s;
     display: flex; flex-direction: column;
 }
@@ -445,18 +450,18 @@ if ($sub === 'eventos') {
 }
 .hy-page-btn {
     padding: 9px 18px; border-radius: 50px;
-    border: 1.5px solid var(--border-soft);
+    border: 1.5px solid var(--border);
     color: var(--ocean-blue); font-weight: 800;
     font-size: .87rem; text-decoration: none;
-    background: #fff; transition: all .2s; font-family: var(--font-main);
+    background: var(--card-bg); transition: all .2s; font-family: var(--font-main);
 }
 .hy-page-btn:hover, .hy-page-btn.active {
     background: var(--ocean-blue); color: #fff; border-color: var(--ocean-blue);
 }
 
 .hy-empty {
-    text-align: center; padding: 4rem 2rem; background: #fff;
-    border-radius: var(--radius-card); border: 1.5px solid var(--border-soft);
+    text-align: center; padding: 4rem 2rem; background: var(--card-bg);
+    border-radius: var(--radius-card); border: 1.5px solid var(--border);
 }
 .hy-empty h3 { font-size: 1.3rem; color: var(--ocean-deep); margin-bottom: .5rem; font-family: var(--font-main); }
 .hy-empty p  { color: var(--text-body); font-family: var(--font-main); }

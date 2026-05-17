@@ -103,11 +103,12 @@ $oceans_nav = [
 /* Interfaz Flotante Superior (Controles de Navegación) */
 .map-ui-overlay {
     position: absolute; top: 20px; left: 50%; transform: translateX(-50%);
-    background: rgba(255, 255, 255, 0.95);
+    background: var(--glass-bg);
     padding: 12px 20px; border-radius: 50px;
-    box-shadow: 0 10px 30px rgba(0,40,80,0.3);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.15);
     z-index: 1000; display: flex; gap: 8px; align-items: center;
-    backdrop-filter: blur(8px);
+    backdrop-filter: blur(12px);
+    border: 1px solid var(--border);
 }
 @media (max-width: 768px) {
     .map-ui-overlay { flex-wrap: wrap; width: 90%; justify-content: center; border-radius: 16px; padding: 15px;}
@@ -115,31 +116,32 @@ $oceans_nav = [
 
 .map-ui-title {
     font-family: 'Nunito', sans-serif; font-weight: 900;
-    font-size: 1.1rem; color: #001828; margin-right: 15px;
+    font-size: 1.1rem; color: var(--header-text); margin-right: 15px;
 }
 
 .ocean-btn {
-    background: transparent; border: 2px solid rgba(0,119,190,0.2);
-    color: #0077be; padding: 6px 14px; border-radius: 50px;
+    background: var(--card-bg); border: 1.5px solid var(--border);
+    color: var(--ocean); padding: 8px 18px; border-radius: 50px;
     font-family: 'Nunito', sans-serif; font-weight: 800; font-size: 0.85rem;
-    cursor: pointer; transition: all 0.3s;
+    cursor: pointer; transition: all 0.2s;
 }
 .ocean-btn:hover, .ocean-btn.active {
-    background: #0077be; color: #fff; border-color: #0077be;
-    box-shadow: 0 4px 15px rgba(0,119,190,0.4);
+    background: var(--ocean); color: #fff; border-color: var(--ocean);
 }
 
 .btn-volver {
-    background: #ff9800; border: none; color: #fff;
-    padding: 6px 14px; border-radius: 50px;
+    background: var(--card-bg); border: 1.5px solid var(--border); color: var(--ocean);
+    padding: 8px 18px; border-radius: 50px;
     font-family: 'Nunito', sans-serif; font-weight: 900; font-size: 0.85rem;
-    cursor: pointer; transition: opacity 0.3s, transform 0.3s;
+    cursor: pointer; transition: opacity 0.3s, transform 0.3s, background 0.2s, color 0.2s;
     opacity: 0; pointer-events: none; transform: scale(0.8);
     margin-left: 10px;
 }
 .btn-volver.show {
     opacity: 1; pointer-events: auto; transform: scale(1);
-    box-shadow: 0 4px 15px rgba(255,152,0,0.4);
+}
+.btn-volver:hover {
+    background: var(--ocean); color: #fff; border-color: var(--ocean);
 }
 
 /* Personalización de los "Marcadores" en el mapa (burbujitas de avatares) */

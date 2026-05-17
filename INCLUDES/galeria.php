@@ -131,18 +131,25 @@ $total_pages = ceil($total / $per_page);
 }
 .hy-gallery-search input {
     flex: 1; padding: 11px 18px;
-    border: 1.5px solid rgba(0,120,190,0.2); border-radius: 50px;
-    font-family: 'Nunito', sans-serif; font-size: .95rem; color: #001828;
+    border: 1.5px solid var(--border); border-radius: 50px;
+    font-family: 'Nunito', sans-serif; font-size: .95rem; color: var(--ocean);
+    background: var(--card-bg);
     outline: none; transition: border-color .2s;
+    font-weight: 700;
 }
-.hy-gallery-search input:focus { border-color: #0077be; }
+.hy-gallery-search input::placeholder {
+    color: var(--ocean);
+    opacity: 0.6;
+}
+.hy-gallery-search input:focus { border-color: var(--ocean); }
 .hy-gallery-search button {
     padding: 11px 22px; border-radius: 50px;
-    background: #0077be; color: #fff; border: none;
+    background: var(--card-bg); color: var(--ocean);
+    border: 1.5px solid var(--border);
     font-family: 'Nunito', sans-serif; font-weight: 800; font-size: .9rem;
-    cursor: pointer; transition: background .2s;
+    cursor: pointer; transition: all .2s;
 }
-.hy-gallery-search button:hover { background: #009aaa; }
+.hy-gallery-search button:hover { background: var(--ocean); color: #fff; border-color: var(--ocean); }
 
 /* Tabs categorías modificados (sin margen inferior) */
 .hy-gallery-tabs {
@@ -150,14 +157,14 @@ $total_pages = ceil($total / $per_page);
 }
 .hy-gallery-tab {
     padding: 8px 18px; border-radius: 50px;
-    border: 1.5px solid rgba(0,120,190,0.2);
-    color: #0077be; font-weight: 700; font-size: .85rem;
-    text-decoration: none; background: #fff;
+    border: 1.5px solid var(--border);
+    color: var(--ocean); font-weight: 800; font-size: .85rem;
+    text-decoration: none; background: var(--card-bg);
     transition: all .2s; font-family: 'Nunito', sans-serif;
     display: flex; align-items: center; gap: 5px;
 }
 .hy-gallery-tab:hover,
-.hy-gallery-tab.active { background: #0077be; color: #fff; border-color: #0077be; }
+.hy-gallery-tab.active { background: var(--ocean); color: #fff; border-color: var(--ocean); }
 
 /* Stats */
 .hy-gallery-stats {
@@ -280,13 +287,13 @@ $total_pages = ceil($total / $per_page);
 }
 .hy-page-btn {
     padding: 9px 18px; border-radius: 50px;
-    border: 1.5px solid rgba(0,120,190,0.2);
-    color: #0077be; font-weight: 700; font-size: .88rem;
-    text-decoration: none; background: #fff;
+    border: 1.5px solid var(--border);
+    color: var(--ocean); font-weight: 800; font-size: .88rem;
+    text-decoration: none; background: var(--card-bg);
     transition: all .2s; font-family: 'Nunito', sans-serif;
 }
 .hy-page-btn:hover,
-.hy-page-btn.active { background: #0077be; color: #fff; border-color: #0077be; }
+.hy-page-btn.active { background: var(--ocean); color: #fff; border-color: var(--ocean); }
 .hy-page-btn.disabled { opacity: .4; pointer-events: none; }
 </style>
 
