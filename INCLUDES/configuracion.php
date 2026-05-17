@@ -3,10 +3,17 @@ if (session_status() === PHP_SESSION_NONE) session_start();
 require_once __DIR__ . '/../database/Conexion_base.php';
 
 $id_user = $_SESSION['id'];
-$stmt = $conn->prepare("SELECT user, email, foto, estado_foto FROM usuarios WHERE id = ?");
+$stmt = $conn->prepare("SELECT user, email, foto, estado_foto, rol FROM usuarios WHERE id = ?");
 $stmt->bind_param("i", $id_user);
 $stmt->execute();
 $user = $stmt->get_result()->fetch_assoc();
+
+// Consultar última solicitud de rol
+$stmt_sol = $conn->prepare("SELECT rol_solicitado, estado, fecha_solicitud FROM solicitudes_rol WHERE usuario_id = ? ORDER BY fecha_solicitud DESC LIMIT 1");
+$stmt_sol->bind_param("i", $id_user);
+$stmt_sol->execute();
+$solicitud = $stmt_sol->get_result()->fetch_assoc();
+$stmt_sol->close();
 ?>
 
 <div class="config-container">
@@ -21,6 +28,11 @@ $user = $stmt->get_result()->fetch_assoc();
         <li class="nav-item">
             <button class="nav-link" id="security-tab" data-bs-toggle="tab" data-bs-target="#security" type="button">Seguridad</button>
         </li>
+        <?php if ($user['rol'] !== 'administrador'): ?>
+        <li class="nav-item">
+            <button class="nav-link" id="role-tab" data-bs-toggle="tab" data-bs-target="#role" type="button">Solicitar Rol</button>
+        </li>
+        <?php endif; ?>
     </ul>
 
     <div class="tab-content" id="configTabsContent">
@@ -94,6 +106,70 @@ $user = $stmt->get_result()->fetch_assoc();
                 </div>
             </div>
         </div>
+
+        <!-- TAB SOLICITAR ROL -->
+        <?php if ($user['rol'] !== 'administrador'): ?>
+        <div class="tab-pane fade" id="role">
+            <div class="row justify-content-center">
+                <div class="col-md-8">
+                    <h5 class="fw-bold mb-3">Solicitar Ascenso de Rol</h5>
+                    <p class="text-muted">Como miembro de la comunidad de HYDRON, puedes postularte para roles con mayores capacidades dentro del sitio.</p>
+
+                    <div class="card p-4 border border-1 bg-white rounded-3 shadow-sm mb-4">
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Tu Rol Actual</label>
+                            <div>
+                                <span class="badge bg-info text-dark px-3 py-2 rounded-pill fs-6 fw-bold"><?php echo ucfirst(htmlspecialchars($user['rol'])); ?></span>
+                            </div>
+                        </div>
+
+                        <?php if ($solicitud && $solicitud['estado'] === 'pendiente'): ?>
+                            <!-- Solicitud pendiente -->
+                            <div class="alert alert-warning border-warning d-flex align-items-center gap-3 mb-0 p-3 rounded-3">
+                                <div style="font-size: 1.8rem;">⏳</div>
+                                <div>
+                                    <strong class="d-block mb-1">Solicitud en revisión</strong>
+                                    Tienes una petición pendiente para convertirte en <span class="badge bg-dark text-white px-2 py-1"><?php echo ucfirst(htmlspecialchars($solicitud['rol_solicitado'])); ?></span> enviada el <?php echo date('d/m/Y', strtotime($solicitud['fecha_solicitud'])); ?>. Un administrador revisará tu perfil muy pronto.
+                                </div>
+                            </div>
+                        <?php else: ?>
+                            <!-- Formulario de solicitud -->
+                            <?php if ($solicitud && $solicitud['estado'] === 'rechazada'): ?>
+                                <div class="alert alert-danger border-danger mb-3 p-3 rounded-3 d-flex align-items-center gap-3">
+                                    <div style="font-size: 1.8rem;">❌</div>
+                                    <div>
+                                        <strong class="d-block mb-1">Solicitud anterior denegada</strong>
+                                        Tu petición previa para ser <?php echo ucfirst(htmlspecialchars($solicitud['rol_solicitado'])); ?> no fue aprobada por los moderadores. Puedes intentar postularte nuevamente.
+                                    </div>
+                                </div>
+                            <?php endif; ?>
+
+                            <form id="form-solicitar-rol">
+                                <input type="hidden" name="accion" value="crear_solicitud">
+                                <div class="mb-3">
+                                    <label class="form-label fw-bold">Selecciona el Rol Solicitado</label>
+                                    <select name="rol_solicitado" id="rol_solicitado" class="form-select" required>
+                                        <option value="">Selecciona un rol...</option>
+                                        <?php if ($user['rol'] !== 'autor'): ?>
+                                            <option value="autor">Autor (permite crear y gestionar tus propias publicaciones y videos)</option>
+                                        <?php endif; ?>
+                                        <?php if ($user['rol'] !== 'editor'): ?>
+                                            <option value="editor">Editor (permite crear, editar tus publicaciones, y aprobar aportes de otros)</option>
+                                        <?php endif; ?>
+                                    </select>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label fw-bold">Justificación de la Solicitud</label>
+                                    <textarea class="form-control" name="justificacion" rows="4" placeholder="Cuéntanos brevemente por qué te gustaría obtener este rol y qué tipo de contenido aportarías al blog..." required></textarea>
+                                </div>
+                                <button type="submit" id="btn-submit-rol" class="btn btn-ocean w-100 py-2 fw-bold">Enviar Petición de Rol</button>
+                            </form>
+                        <?php endif; ?>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <?php endif; ?>
     </div>
 </div>
 
@@ -201,6 +277,40 @@ function cambiarPassword() {
             alert('Error: ' + data.error);
         }
     });
+}
+
+// Solicitar Cambio de Rol
+const formRol = document.getElementById('form-solicitar-rol');
+if (formRol) {
+    formRol.onsubmit = function(e) {
+        e.preventDefault();
+        const btn = document.getElementById('btn-submit-rol');
+        btn.disabled = true;
+        btn.innerText = 'Enviando petición...';
+
+        const formData = new FormData(this);
+
+        fetch('./database/procesar_solicitud_rol.php', {
+            method: 'POST',
+            body: formData
+        })
+        .then(res => res.json())
+        .then(data => {
+            if(data.success) {
+                alert(data.mensaje);
+                location.reload();
+            } else {
+                alert('Error: ' + data.error);
+                btn.disabled = false;
+                btn.innerText = 'Enviar Petición de Rol';
+            }
+        })
+        .catch(() => {
+            alert('Error de red al enviar la solicitud.');
+            btn.disabled = false;
+            btn.innerText = 'Enviar Petición de Rol';
+        });
+    };
 }
 </script>
 

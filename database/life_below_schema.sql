@@ -122,4 +122,16 @@ CREATE TABLE `video_views` (
   CONSTRAINT `fk_video_views_video` FOREIGN KEY (`video_id`) REFERENCES `videos` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+-- 9. Tabla: solicitudes_rol
+DROP TABLE IF EXISTS `solicitudes_rol`;
+CREATE TABLE `solicitudes_rol` (
+  `id` INT(11) NOT NULL AUTO_INCREMENT,
+  `usuario_id` INT(11) NOT NULL,
+  `rol_solicitado` VARCHAR(50) NOT NULL,
+  `estado` ENUM('pendiente','aceptada','rechazada') NOT NULL DEFAULT 'pendiente',
+  `fecha_solicitud` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP(),
+  PRIMARY KEY (`id`),
+  CONSTRAINT `fk_solicitudes_rol_usuario` FOREIGN KEY (`usuario_id`) REFERENCES `usuarios` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 SET FOREIGN_KEY_CHECKS = 1;

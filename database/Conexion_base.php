@@ -28,4 +28,15 @@ $conn = new mysqli($host, $usuario, $password, $base);
 if ($conn->connect_error) {
     die("Error de conexión: " . $conn->connect_error);
 }
+
+// Auto-instalación de la tabla solicitudes_rol si no existe
+$conn->query("CREATE TABLE IF NOT EXISTS `solicitudes_rol` (
+  `id` INT(11) NOT NULL AUTO_INCREMENT,
+  `usuario_id` INT(11) NOT NULL,
+  `rol_solicitado` VARCHAR(50) NOT NULL,
+  `estado` ENUM('pendiente','aceptada','rechazada') NOT NULL DEFAULT 'pendiente',
+  `fecha_solicitud` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP(),
+  PRIMARY KEY (`id`),
+  CONSTRAINT `fk_solicitudes_rol_usuario` FOREIGN KEY (`usuario_id`) REFERENCES `usuarios` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci");
 ?>
