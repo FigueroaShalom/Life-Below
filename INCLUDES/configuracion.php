@@ -83,31 +83,47 @@ $stmt_sol->close();
         <div class="tab-pane fade" id="security">
             <div class="row justify-content-center">
                 <div class="col-md-7">
-                    <div id="step-1">
-                        <h5>Cambiar Contraseña</h5>
-                        <p class="text-muted">Para cambiar tu contraseña, primero debemos enviarte un código de verificación a tu correo registrado.</p>
-                        <button class="btn btn-ocean w-100 py-2 fw-bold" onclick="solicitarCodigo()">Enviar código de verificación</button>
-                    </div>
+                    <?php if ($user['rol'] === 'administrador'): ?>
+                        <div id="admin-password-change">
+                            <h5 class="fw-bold mb-3">Cambiar Contraseña</h5>
+                            <p class="text-muted">Como administrador, puedes actualizar tu contraseña de forma directa.</p>
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">Nueva Contraseña</label>
+                                <input type="password" id="admin-new-pass" class="form-control" placeholder="Escribe tu nueva contraseña">
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">Confirmar Nueva Contraseña</label>
+                                <input type="password" id="admin-confirm-pass" class="form-control" placeholder="Repite tu nueva contraseña">
+                            </div>
+                            <button class="btn btn-ocean w-100 py-2 fw-bold" onclick="cambiarPasswordAdmin()">Actualizar Contraseña</button>
+                        </div>
+                    <?php else: ?>
+                        <div id="step-1">
+                            <h5 class="fw-bold mb-3">Cambiar Contraseña</h5>
+                            <p class="text-muted">Para cambiar tu contraseña, primero debemos enviarte un código de verificación a tu correo registrado.</p>
+                            <button class="btn btn-ocean w-100 py-2 fw-bold" onclick="solicitarCodigo()">Enviar código de verificación</button>
+                        </div>
 
-                    <div id="step-2" class="d-none">
-                        <div class="alert alert-success">
-                            Código enviado a <strong><?php echo $user['email']; ?></strong>
+                        <div id="step-2" class="d-none">
+                            <div class="alert alert-success">
+                                Código enviado a <strong><?php echo $user['email']; ?></strong>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">Código de verificación</label>
+                                <input type="text" id="verify-code" class="form-control text-center fs-4 fw-bold" placeholder="000000" maxlength="6">
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">Nueva Contraseña</label>
+                                <input type="password" id="new-pass" class="form-control">
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">Confirmar Nueva Contraseña</label>
+                                <input type="password" id="confirm-pass" class="form-control">
+                            </div>
+                            <button class="btn btn-success w-100 py-2 fw-bold" onclick="cambiarPassword()">Actualizar Contraseña</button>
+                            <button class="btn btn-link w-100 mt-2 text-muted" onclick="volverStep1()">No recibí el código</button>
                         </div>
-                        <div class="mb-3">
-                            <label class="form-label fw-bold">Código de verificación</label>
-                            <input type="text" id="verify-code" class="form-control text-center fs-4 fw-bold" placeholder="000000" maxlength="6">
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label fw-bold">Nueva Contraseña</label>
-                            <input type="password" id="new-pass" class="form-control">
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label fw-bold">Confirmar Nueva Contraseña</label>
-                            <input type="password" id="confirm-pass" class="form-control">
-                        </div>
-                        <button class="btn btn-success w-100 py-2 fw-bold" onclick="cambiarPassword()">Actualizar Contraseña</button>
-                        <button class="btn btn-link w-100 mt-2 text-muted" onclick="volverStep1()">No recibí el código</button>
-                    </div>
+                    <?php endif; ?>
                 </div>
             </div>
         </div>
@@ -272,6 +288,35 @@ function cambiarPassword() {
         method: 'POST',
         headers: {'Content-Type': 'application/x-www-form-urlencoded'},
         body: `accion=cambiar_password&codigo=${code}&password=${pass}`
+    })
+    .then(res => res.json())
+    .then(data => {
+        if(data.success) {
+            alert('Contraseña actualizada correctamente.');
+            location.reload();
+        } else {
+            alert('Error: ' + data.error);
+        }
+    });
+}
+
+function cambiarPasswordAdmin() {
+    const pass = document.getElementById('admin-new-pass').value;
+    const confirm = document.getElementById('admin-confirm-pass').value;
+
+    if(!pass) {
+        alert('Por favor escribe la nueva contraseña');
+        return;
+    }
+    if(pass !== confirm) {
+        alert('Las contraseñas no coinciden');
+        return;
+    }
+
+    fetch('./database/procesar_configuracion.php', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+        body: `accion=cambiar_password&password=${pass}`
     })
     .then(res => res.json())
     .then(data => {

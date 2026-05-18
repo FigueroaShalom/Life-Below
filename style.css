@@ -1445,6 +1445,7 @@ body { overflow-x: hidden; }
     letter-spacing: 1px !important;
     font-size: 0.85rem !important;
     padding: 10px 22px !important;
+    line-height: 1 !important; /* Forces perfect vertical centering */
     transition: all 0.22s ease-in-out !important;
     cursor: pointer !important;
     display: inline-flex !important;
@@ -1454,6 +1455,34 @@ body { overflow-x: hidden; }
     text-decoration: none !important;
     box-shadow: none !important;
     border: 1.5px solid transparent !important;
+}
+
+/* Exempt nav-tabs links and buttons from global content button style overrides */
+.hy-content .nav-tabs button,
+.hy-content .nav-tabs .nav-link {
+    border-radius: 0 !important;
+    text-transform: none !important;
+    letter-spacing: normal !important;
+    font-size: 1rem !important;
+    padding: 12px 25px !important;
+    line-height: normal !important;
+    display: block !important;
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    font-weight: 700 !important;
+    color: var(--text-color) !important;
+    opacity: 0.7 !important;
+    transform: none !important;
+    transition: none !important;
+}
+.hy-content .nav-tabs button.active,
+.hy-content .nav-tabs .nav-link.active {
+    color: var(--ocean) !important;
+    border-bottom: 3px solid var(--ocean) !important;
+    background: transparent !important;
+    opacity: 1 !important;
+    transform: none !important;
 }
 .hy-content button:hover,
 .hy-content .btn:hover,

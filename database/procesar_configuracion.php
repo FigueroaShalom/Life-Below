@@ -97,8 +97,25 @@ elseif ($accion == 'cambiar_password') {
     $codigo = $_POST['codigo'] ?? '';
     $password = $_POST['password'] ?? '';
 
-    if (empty($codigo) || empty($password)) {
-        echo json_encode(['success' => false, 'error' => 'Datos incompletos']);
+    if (empty($password)) {
+        echo json_encode(['success' => false, 'error' => 'La nueva contraseña no puede estar vacía']);
+        exit();
+    }
+
+    $rol = $_SESSION['rol'] ?? 'usuario';
+    if ($rol === 'administrador') {
+        $hash = password_hash($password, PASSWORD_DEFAULT);
+        $stmt = $conn->prepare("UPDATE usuarios SET password = ?, reset_token = NULL, reset_token_exp = NULL WHERE id = ?");
+        $stmt->bind_param("si", $hash, $id_user);
+        $stmt->execute();
+        
+        echo json_encode(['success' => true]);
+        exit();
+    }
+
+    // Para usuarios normales se requiere el código
+    if (empty($codigo)) {
+        echo json_encode(['success' => false, 'error' => 'Código de verificación incompleto']);
         exit();
     }
 
@@ -115,7 +132,7 @@ elseif ($accion == 'cambiar_password') {
         
         echo json_encode(['success' => true]);
     } else {
-        echo json_encode(['success' => false, 'error' => 'Codigo invalido o expirado']);
+        echo json_encode(['success' => false, 'error' => 'Código inválido o expirado']);
     }
 }
 ?>
