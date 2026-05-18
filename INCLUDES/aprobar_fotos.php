@@ -12,7 +12,7 @@ $pendientes = $stmt->get_result();
 ?>
 
 <div class="approval-container">
-    <h3 class="fw-bold mb-4">🖼️ Aprobación de Fotos de Perfil</h3>
+    <h3 class="fw-bold mb-4">Aprobación de Fotos de Perfil</h3>
 
     <?php if($pendientes->num_rows == 0): ?>
         <div class="alert alert-light border text-center py-5">
