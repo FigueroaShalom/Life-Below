@@ -42,17 +42,22 @@ body.dark-mode {
     --text-color: #f0f8ff;
     --card-bg: #002a44;
     --sidebar-bg: #001828;
-    --input-bg: rgba(255, 255, 255, 0.05);
+    --input-bg: rgba(0, 10, 20, 0.4);
     --header-blur-bg: rgba(0, 15, 30, 0.7);
     --header-scroll-bg: rgba(0, 10, 20, 0.9);
     --header-menu-bg: rgba(0, 15, 30, 0.95);
     --header-border: rgba(255, 255, 255, 0.1);
     --header-text: #f0f8ff;
-    --border: rgba(255, 255, 255, 0.1);
+    --border: rgba(255, 255, 255, 0.12);
     --muted: rgba(255, 255, 255, 0.5);
     --navy: #000a14;
     --deep: #001020;
     --footer-bg-glass: rgba(0, 10, 20, 0.8);
+    
+    /* Glassmorphism en modo oscuro */
+    --glass-bg: rgba(0, 26, 44, 0.6);
+    --glass-border: rgba(0, 119, 190, 0.2);
+    --silver-hover: rgba(0, 119, 190, 0.35);
 }
 
 html { scroll-behavior: smooth; }
@@ -1350,4 +1355,316 @@ body { overflow-x: hidden; }
 .stylized-logo:hover {
     transform: rotate(5deg) scale(1.1);
 }
+
+/* ════════════════════════════════════════════════════════════
+   DASHBOARD COHESIVE MODERNIZATION & DARK MODE ADAPTATION
+   ════════════════════════════════════════════════════════════ */
+
+/* 1. Sidebar Menu Button Overrides */
+.hy-menu button, 
+.hy-menu .btn-menu {
+    width: 100% !important;
+    border: 1.5px solid rgba(255, 255, 255, 0.15) !important;
+    border-radius: 50px !important; /* Cohesive Pill shape */
+    padding: 10px 20px !important;
+    font-family: var(--font) !important;
+    font-weight: 800 !important;
+    font-size: .88rem !important;
+    background: transparent !important;
+    color: rgba(255, 255, 255, 0.85) !important;
+    text-align: left !important;
+    cursor: pointer !important;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1), transform 0.15s ease !important;
+    text-decoration: none !important;
+    display: block !important;
+}
+.hy-menu button:hover, 
+.hy-menu .btn-menu:hover {
+    background: var(--ocean) !important;
+    color: #fff !important;
+    border-color: var(--ocean) !important;
+    transform: translateX(6px) !important; /* Premium slide-right animation */
+    box-shadow: 0 4px 16px rgba(0, 119, 190, 0.25) !important;
+}
+.hy-menu button.active, 
+.hy-menu .btn-menu.active {
+    background: var(--ocean) !important;
+    color: #fff !important;
+    border-color: var(--ocean) !important;
+    box-shadow: 0 4px 16px rgba(0, 119, 190, 0.25) !important;
+}
+.hy-menu .admin {
+    border-color: rgba(255, 180, 0, 0.3) !important;
+    color: #ffc107 !important;
+}
+.hy-menu .admin:hover {
+    background: #ffc107 !important;
+    color: #000 !important;
+    border-color: #ffc107 !important;
+    box-shadow: 0 4px 16px rgba(255, 180, 0, 0.25) !important;
+}
+.hy-menu .logout {
+    border-color: rgba(220, 50, 50, 0.3) !important;
+    color: #ff6b6b !important;
+    margin-top: 1rem !important;
+}
+.hy-menu .logout:hover {
+    background: #ff6b6b !important;
+    color: #fff !important;
+    border-color: #ff6b6b !important;
+    box-shadow: 0 4px 16px rgba(220, 50, 50, 0.25) !important;
+}
+
+/* 2. Cohesive Button Styling inside Dashboard Content */
+.hy-content button,
+.hy-content .btn,
+.hy-content .btn-primary,
+.hy-content .btn-secondary,
+.hy-content .btn-success,
+.hy-content .btn-warning,
+.hy-content .btn-danger,
+.hy-content .btn-outline-primary,
+.hy-content .btn-outline-danger {
+    border-radius: 50px !important; /* Pill shape */
+    font-family: var(--font) !important;
+    font-weight: 800 !important;
+    font-size: .88rem !important;
+    padding: 10px 22px !important;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1), transform 0.15s ease !important;
+    cursor: pointer !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 8px !important;
+    text-decoration: none !important;
+    box-shadow: none !important;
+}
+.hy-content button:hover,
+.hy-content .btn:hover,
+.hy-content .btn-primary:hover,
+.hy-content .btn-secondary:hover,
+.hy-content .btn-success:hover,
+.hy-content .btn-warning:hover,
+.hy-content .btn-danger:hover,
+.hy-content .btn-outline-primary:hover,
+.hy-content .btn-outline-danger:hover {
+    transform: translateY(-1.5px) !important;
+}
+.hy-content button:active,
+.hy-content .btn:active,
+.hy-content .btn-primary:active {
+    transform: translateY(0) !important;
+}
+
+/* Primary/Ocean styled buttons inside dashboard content */
+.hy-content .btn-primary,
+.hy-content .btn-ocean,
+.hy-content .btn-outline-primary,
+.hy-content .btn:not(.danger):not(.active):not(.btn-success):not(.btn-warning):not(.btn-danger):not(.btn-secondary) {
+    background: var(--card-bg) !important;
+    color: var(--ocean) !important;
+    border: 1.5px solid var(--border) !important;
+}
+.hy-content .btn-primary:hover,
+.hy-content .btn-ocean:hover,
+.hy-content .btn-outline-primary:hover,
+.hy-content .btn:not(.danger):not(.active):not(.btn-success):not(.btn-warning):not(.btn-danger):not(.btn-secondary):hover {
+    background: var(--ocean) !important;
+    color: #fff !important;
+    border-color: var(--ocean) !important;
+    box-shadow: 0 4px 16px rgba(0, 119, 190, 0.25) !important;
+}
+
+/* Success styled buttons inside dashboard content */
+.hy-content .btn-success {
+    background: var(--card-bg) !important;
+    color: var(--green) !important;
+    border: 1.5px solid rgba(0, 168, 107, 0.3) !important;
+}
+.hy-content .btn-success:hover {
+    background: var(--green) !important;
+    color: #fff !important;
+    border-color: var(--green) !important;
+    box-shadow: 0 4px 16px rgba(0, 168, 107, 0.25) !important;
+}
+
+/* Danger styled buttons inside dashboard content */
+.hy-content .btn-danger,
+.hy-content .btn-outline-danger,
+.hy-content .btn.danger,
+.hy-content .btn-small.danger {
+    background: var(--card-bg) !important;
+    color: #ff4d4d !important;
+    border: 1.5px solid rgba(255, 77, 77, 0.3) !important;
+}
+.hy-content .btn-danger:hover,
+.hy-content .btn-outline-danger:hover,
+.hy-content .btn.danger:hover,
+.hy-content .btn-small.danger:hover {
+    background: #ff4d4d !important;
+    color: #fff !important;
+    border-color: #ff4d4d !important;
+    box-shadow: 0 4px 16px rgba(255, 77, 77, 0.25) !important;
+}
+
+/* Warning styled buttons inside dashboard content */
+.hy-content .btn-warning {
+    background: var(--card-bg) !important;
+    color: #ffb300 !important;
+    border: 1.5px solid rgba(255, 179, 0, 0.3) !important;
+}
+.hy-content .btn-warning:hover {
+    background: #ffb300 !important;
+    color: #000 !important;
+    border-color: #ffb300 !important;
+    box-shadow: 0 4px 16px rgba(255, 179, 0, 0.25) !important;
+}
+
+/* Secondary styled buttons inside dashboard content */
+.hy-content .btn-secondary {
+    background: var(--card-bg) !important;
+    color: var(--muted) !important;
+    border: 1.5px solid var(--border) !important;
+}
+.hy-content .btn-secondary:hover {
+    background: var(--muted) !important;
+    color: #fff !important;
+    border-color: var(--muted) !important;
+}
+
+/* 3. Tables Dark Mode Override */
+.hy-content table,
+.hy-content .table {
+    background: var(--card-bg) !important;
+    color: var(--text-color) !important;
+    border-color: var(--border) !important;
+}
+.hy-content table thead th,
+.hy-content .table thead th {
+    background: var(--navy) !important;
+    color: #fff !important;
+    border-color: var(--border) !important;
+    font-weight: 800 !important;
+}
+.hy-content table tbody tr,
+.hy-content .table tbody tr {
+    background: var(--card-bg) !important;
+    color: var(--text-color) !important;
+}
+.hy-content table tbody tr td,
+.hy-content .table tbody tr td {
+    color: var(--text-color) !important;
+    border-color: var(--border) !important;
+}
+.hy-content table tbody tr:hover,
+.hy-content .table tbody tr:hover {
+    background: rgba(0, 119, 190, 0.05) !important;
+}
+
+/* 4. Card & Container Overrides */
+.hy-content .card {
+    background: var(--card-bg) !important;
+    color: var(--text-color) !important;
+    border: 1.5px solid var(--border) !important;
+    box-shadow: var(--shadow) !important;
+}
+.hy-content .card-header {
+    background: linear-gradient(135deg, var(--navy), var(--deep)) !important;
+    color: #fff !important;
+    border-bottom: 1.5px solid var(--border) !important;
+}
+.hy-content .card-body {
+    background: var(--card-bg) !important;
+    color: var(--text-color) !important;
+}
+
+/* 5. Input & Textarea Premium Styling */
+.hy-content .form-control,
+.hy-content input[type="text"],
+.hy-content input[type="email"],
+.hy-content input[type="password"],
+.hy-content select,
+.hy-content textarea {
+    background: var(--input-bg) !important;
+    color: var(--text-color) !important;
+    border: 1.5px solid var(--border) !important;
+    border-radius: 10px !important;
+    padding: 10px 14px !important;
+    transition: all 0.2s !important;
+}
+.hy-content .form-control:focus,
+.hy-content input[type="text"]:focus,
+.hy-content input[type="email"]:focus,
+.hy-content input[type="password"]:focus,
+.hy-content select:focus,
+.hy-content textarea:focus {
+    background: var(--input-bg) !important;
+    color: var(--text-color) !important;
+    border-color: var(--ocean) !important;
+    box-shadow: 0 0 0 3px rgba(0, 119, 190, 0.2) !important;
+    outline: none !important;
+}
+.hy-content .form-control:disabled,
+.hy-content input:disabled {
+    background: rgba(0, 0, 0, 0.15) !important;
+    color: var(--muted) !important;
+    border-color: var(--border) !important;
+    opacity: 0.6 !important;
+}
+
+/* 6. Tabs in Configuration */
+.nav-tabs {
+    border-bottom: 1.5px solid var(--border) !important;
+}
+.nav-tabs .nav-link {
+    color: var(--text-color) !important;
+    opacity: 0.7 !important;
+    border: none !important;
+    padding: 12px 25px !important;
+    background: transparent !important;
+}
+.nav-tabs .nav-link.active {
+    color: var(--ocean) !important;
+    border-bottom: 3px solid var(--ocean) !important;
+    opacity: 1 !important;
+    background: transparent !important;
+}
+
+/* 7. Custom Modals */
+#modal-editar-usuario > div {
+    background: var(--card-bg) !important;
+    color: var(--text-color) !important;
+    border: 1.5px solid var(--border) !important;
+    box-shadow: var(--shadow-lg) !important;
+}
+#modal-editar-usuario h4 {
+    color: var(--ocean) !important;
+}
+#modal-editar-usuario button {
+    color: var(--text-color) !important;
+}
+
+/* 8. Text contrast fixes */
+.text-navy, 
+.text-navy-blue {
+    color: var(--text-color) !important;
+}
+.text-muted {
+    color: var(--muted) !important;
+}
+
+/* 9. Hardcoded #fff background empty states */
+.hy-content div[style*="background:#fff"],
+.hy-content div[style*="background: #fff"],
+.hy-content div[style*="background: #fafbff"],
+.hy-content div[style*="background:#fafbff"] {
+    background: var(--card-bg) !important;
+    color: var(--text-color) !important;
+    border-color: var(--border) !important;
+}
+.hy-content div[style*="background:#fff"] h3,
+.hy-content div[style*="background: #fff"] h3 {
+    color: var(--text-color) !important;
+}
+
 
