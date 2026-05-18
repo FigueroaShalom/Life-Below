@@ -1731,4 +1731,66 @@ body { overflow-x: hidden; }
     color: var(--text-color) !important;
 }
 
+/* 10. Dark Mode Bootstrap & Table Overrides for Dashboard (Aprobar Fotos, Administrar Usuarios, etc.) */
+body.dark-mode .hy-content .bg-white,
+body.dark-mode .hy-content .bg-light,
+body.dark-mode .hy-content .card-header,
+body.dark-mode .hy-content .card-footer {
+    background-color: var(--card-bg) !important;
+    background: var(--card-bg) !important;
+    color: var(--text-color) !important;
+    border-color: var(--border) !important;
+}
+
+body.dark-mode .hy-content .card {
+    background-color: var(--card-bg) !important;
+    background: var(--card-bg) !important;
+    border: 1.5px solid var(--border) !important;
+}
+
+body.dark-mode .hy-content table,
+body.dark-mode .hy-content .table {
+    background-color: var(--card-bg) !important;
+    background: var(--card-bg) !important;
+    color: var(--text-color) !important;
+    border-color: var(--border) !important;
+}
+
+body.dark-mode .hy-content .table td,
+body.dark-mode .hy-content .table th,
+body.dark-mode .hy-content table td,
+body.dark-mode .hy-content table th {
+    color: var(--text-color) !important;
+    border-color: var(--border) !important;
+    background-color: var(--card-bg) !important;
+    background: var(--card-bg) !important;
+}
+
+body.dark-mode .hy-content thead,
+body.dark-mode .hy-content thead.table-light,
+body.dark-mode .hy-content thead.table-dark {
+    background-color: var(--bg) !important;
+    background: var(--bg) !important;
+}
+
+body.dark-mode .hy-content thead th {
+    color: var(--ocean) !important;
+    border-color: var(--border) !important;
+    background-color: var(--bg) !important;
+    background: var(--bg) !important;
+}
+
+body.dark-mode .hy-content .table-hover tbody tr:hover,
+body.dark-mode .hy-content table.table-hover tbody tr:hover {
+    background-color: rgba(0, 119, 190, 0.08) !important;
+    color: var(--text-color) !important;
+}
+
+body.dark-mode .hy-content .alert-light {
+    background-color: var(--bg) !important;
+    background: var(--bg) !important;
+    color: var(--text-color) !important;
+    border-color: var(--border) !important;
+}
+
 
