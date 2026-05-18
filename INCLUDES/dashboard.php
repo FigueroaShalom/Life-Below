@@ -127,15 +127,17 @@ $_SESSION['email'] = $email;
 .hy-content {
     flex: 1;
     padding: 2rem;
-    background: var(--off-white);
+    background: var(--bg) !important;
+    color: var(--text-color) !important;
 }
 
 .hy-content-box {
-    background: #fff;
+    background: var(--card-bg) !important;
+    color: var(--text-color) !important;
     border-radius: var(--radius);
     padding: 2.5rem;
     box-shadow: var(--shadow);
-    border: 1.5px solid var(--border);
+    border: 1.5px solid var(--border) !important;
 }
 
 </style>

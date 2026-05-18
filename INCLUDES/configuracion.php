@@ -315,8 +315,8 @@ if (formRol) {
 </script>
 
 <style>
-.nav-tabs .nav-link { color: var(--navy); font-weight: 700; border: none; padding: 12px 25px; }
-.nav-tabs .nav-link.active { color: var(--ocean); border-bottom: 3px solid var(--ocean); background: transparent; }
+.nav-tabs .nav-link { color: var(--text-color) !important; font-weight: 700; border: none; padding: 12px 25px; opacity: 0.7; }
+.nav-tabs .nav-link.active { color: var(--ocean) !important; border-bottom: 3px solid var(--ocean) !important; background: transparent !important; opacity: 1 !important; }
 .btn-ocean { background: var(--ocean); color: #fff; }
-.btn-ocean:hover { background: var(--navy); color: #fff; }
+.btn-ocean:hover { background: var(--deep); color: #fff; }
 </style>
