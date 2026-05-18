@@ -1360,55 +1360,72 @@ body { overflow-x: hidden; }
    DASHBOARD COHESIVE MODERNIZATION & DARK MODE ADAPTATION
    ════════════════════════════════════════════════════════════ */
 
-/* 1. Sidebar Menu Button Overrides (Matching header nav links) */
+/* 1. Sidebar Overrides (Matching Artículos page colors in light & dark modes) */
+.hy-sidebar {
+    background: var(--card-bg) !important;
+    border-right: 1.5px solid var(--border) !important;
+}
+.hy-user-box {
+    background: rgba(0, 119, 190, 0.04) !important;
+    border: 1.5px solid var(--border) !important;
+}
+.hy-user-name {
+    color: var(--text-color) !important;
+}
+.hy-user-email {
+    color: var(--muted) !important;
+}
+
 .hy-menu button, 
 .hy-menu .btn-menu {
     width: 100% !important;
-    border: none !important;
+    border: 1.5px solid var(--border) !important;
     border-radius: 50px !important; /* Cohesive Pill shape */
     padding: 10px 20px !important;
     font-family: var(--font) !important;
-    font-weight: 700 !important;
-    font-size: .9rem !important;
-    background: transparent !important;
-    color: rgba(255, 255, 255, 0.8) !important;
+    font-weight: 800 !important;
+    font-size: .87rem !important;
+    background: var(--card-bg) !important;
+    color: var(--ocean) !important;
     text-align: left !important;
     cursor: pointer !important;
-    transition: all 0.2s ease !important;
+    transition: all .22s ease !important;
     text-decoration: none !important;
     display: block !important;
     box-shadow: none !important;
 }
 .hy-menu button:hover, 
-.hy-menu .btn-menu:hover {
-    background: var(--silver-hover) !important;
-    color: #fff !important;
-    transform: translateY(-1px) !important;
-    box-shadow: 0 4px 12px rgba(255, 255, 255, 0.15) !important;
-}
+.hy-menu .btn-menu:hover,
 .hy-menu button.active, 
 .hy-menu .btn-menu.active {
-    background: rgba(0, 180, 220, 0.25) !important;
-    color: var(--cyan) !important;
-    font-weight: 800 !important;
-    box-shadow: 0 4px 12px rgba(0, 196, 216, 0.15) !important;
+    background: var(--ocean) !important;
+    color: #fff !important;
+    border-color: var(--ocean) !important;
+    box-shadow: 0 4px 16px rgba(0, 119, 190, 0.18) !important;
+    transform: translateY(-1px) !important;
 }
 .hy-menu .admin {
-    background: rgba(255, 193, 7, 0.1) !important;
+    background: var(--card-bg) !important;
     color: #ffc107 !important;
+    border-color: rgba(255, 193, 7, 0.3) !important;
 }
 .hy-menu .admin:hover {
-    background: rgba(255, 193, 7, 0.2) !important;
-    color: #ffc107 !important;
+    background: #ffc107 !important;
+    color: #000 !important;
+    border-color: #ffc107 !important;
+    box-shadow: 0 4px 16px rgba(255, 193, 7, 0.18) !important;
 }
 .hy-menu .logout {
-    background: rgba(220, 50, 50, 0.1) !important;
+    background: var(--card-bg) !important;
     color: #ff6b6b !important;
+    border-color: rgba(220, 50, 50, 0.3) !important;
     margin-top: 1rem !important;
 }
 .hy-menu .logout:hover {
-    background: rgba(220, 50, 50, 0.2) !important;
-    color: #ff6b6b !important;
+    background: #ff6b6b !important;
+    color: #fff !important;
+    border-color: #ff6b6b !important;
+    box-shadow: 0 4px 16px rgba(220, 50, 50, 0.18) !important;
 }
 
 /* 2. Cohesive Button Styling inside Dashboard Content (Matching homepage solid/outline) */
