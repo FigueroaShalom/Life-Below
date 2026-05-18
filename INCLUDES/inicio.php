@@ -119,15 +119,10 @@
 
 <script>
 (function() {
-    const API_KEY = 'd5b5320a0accff00272ab27733ba94ce'; 
-    const query = 'vida submarina OR oceanos OR vida marina OR conservación marina OR especies marinas';
-    
-    const url = `https://gnews.io/api/v4/search?q=${encodeURIComponent(query)}&lang=es&max=3&token=${API_KEY}`;
-    
     const track = document.getElementById('apiCarouselTrack');
     const dotsContainer = document.getElementById('apiCarouselDots');
 
-    fetch(url)
+    fetch('database/api_noticias_home.php')
         .then(res => res.json())
         .then(data => {
             if (data.articles && data.articles.length > 0) {
@@ -137,14 +132,15 @@
                 data.articles.forEach((article, index) => {
                     const isActive = index === 0 ? 'active' : '';
                     const imgUrl = article.image || 'uploads/carrusel1.jpg';
+                    const desc = article.description || '';
                     
                     slidesHtml += `
                         <div class="hy-carousel-slide ${isActive}" data-index="${index}">
-                            <img src="${imgUrl}" alt="${article.title}">
+                            <img src="${imgUrl}" alt="${article.title}" onerror="this.src='uploads/carrusel1.jpg'">
                             <div class="hy-carousel-caption">
                                 <h3>${article.title}</h3>
-                                <p>${article.description}</p>
-                                <a href="${article.url}" target="_blank" class="hy-cta-white" style="color:var(--navy); background: rgba(255,255,255,0.7); border: none;">Leer más →</a>
+                                <p>${desc}</p>
+                                <a href="${article.url}" target="_blank" rel="noopener noreferrer" class="hy-cta-white" style="color:var(--navy); background: rgba(255,255,255,0.7); border: none;">Leer más →</a>
                             </div>
                         </div>
                     `;
@@ -159,12 +155,12 @@
                 
                 initCarouselLogic();
             } else {
-                track.innerHTML = '<div style="padding: 5rem; text-align: center; color: var(--navy);">No se encontraron noticias recientes.</div>';
+                track.innerHTML = '<div style="padding: 5rem; text-align: center; color: var(--text-color);"><span style="font-size:2rem;">🌊</span><br><br>No se encontraron noticias marinas recientes.</div>';
             }
         })
         .catch(err => {
-            console.error('Error cargando API:', err);
-            track.innerHTML = '<div style="padding: 5rem; text-align: center; color: var(--navy);">No se pudo conectar con el servidor de noticias.</div>';
+            console.error('Error cargando noticias:', err);
+            track.innerHTML = '<div style="padding: 5rem; text-align: center; color: var(--text-color);"><span style="font-size:2rem;">🌊</span><br><br>No se pudo cargar las noticias en este momento.</div>';
         });
 
     function initCarouselLogic() {
