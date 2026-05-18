@@ -147,7 +147,7 @@ $current_section = $_GET['section'] ?? 'inicio';
                         <div class="hy-dropdown-header">
                             <strong><?php echo htmlspecialchars($_SESSION['user']); ?></strong>
                         </div>
-                        <a href="index.php?section=dashboard">Mi Perfil</a>
+                        <a href="index.php?section=dashboard">Perfil</a>
                         <a href="#" id="themeToggle" style="cursor: pointer;"><span class="theme-text">Oscuro</span></a>
                         <a href="index.php?logout=1" class="logout">Salir</a>
                     </div>
