@@ -87,8 +87,15 @@ $publicaciones = $stmtPub->get_result()->fetch_all(MYSQLI_ASSOC);
                 </div>
                 <div class="col-md-6 mb-3">
                     <label class="form-label fw-bold">URL de Imagen (opcional)</label>
-                    <input type="text" name="imagen" class="form-control"
-                           placeholder="https://ejemplo.com/imagen.jpg">
+                    <input type="text" name="imagen" id="input-imagen-url" class="form-control"
+                           placeholder="https://ejemplo.com/imagen.jpg"
+                           oninput="previewImagen(this.value)">
+                    <div id="imagen-preview-wrap" style="display:none; margin-top:0.6rem;">
+                        <img id="imagen-preview" src="" alt="Vista previa"
+                             style="width:100%; max-height:120px; object-fit:cover; border-radius:8px;
+                                    border:1.5px solid var(--border);"
+                             onerror="document.getElementById('imagen-preview-wrap').style.display='none'">
+                    </div>
                 </div>
             </div>
             <div class="mb-4">
@@ -213,6 +220,19 @@ $publicaciones = $stmtPub->get_result()->fetch_all(MYSQLI_ASSOC);
 </div><!-- /card -->
 
 <script>
+/* ── Vista previa de imagen por URL ──────────────────────── */
+function previewImagen(url) {
+    const wrap = document.getElementById('imagen-preview-wrap');
+    const img  = document.getElementById('imagen-preview');
+    if (url && url.startsWith('http')) {
+        img.src = url;
+        wrap.style.display = 'block';
+    } else {
+        wrap.style.display = 'none';
+        img.src = '';
+    }
+}
+
 /* ── Cambiar tab ─────────────────────────────────────────── */
 function switchTabCrear(tab) {
     const isArt = tab === 'articulo';
