@@ -1360,62 +1360,58 @@ body { overflow-x: hidden; }
    DASHBOARD COHESIVE MODERNIZATION & DARK MODE ADAPTATION
    ════════════════════════════════════════════════════════════ */
 
-/* 1. Sidebar Menu Button Overrides */
+/* 1. Sidebar Menu Button Overrides (Matching header nav links) */
 .hy-menu button, 
 .hy-menu .btn-menu {
     width: 100% !important;
-    border: 1.5px solid rgba(255, 255, 255, 0.15) !important;
+    border: none !important;
     border-radius: 50px !important; /* Cohesive Pill shape */
     padding: 10px 20px !important;
     font-family: var(--font) !important;
-    font-weight: 800 !important;
-    font-size: .88rem !important;
+    font-weight: 700 !important;
+    font-size: .9rem !important;
     background: transparent !important;
-    color: rgba(255, 255, 255, 0.85) !important;
+    color: rgba(255, 255, 255, 0.8) !important;
     text-align: left !important;
     cursor: pointer !important;
-    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1), transform 0.15s ease !important;
+    transition: all 0.2s ease !important;
     text-decoration: none !important;
     display: block !important;
+    box-shadow: none !important;
 }
 .hy-menu button:hover, 
 .hy-menu .btn-menu:hover {
-    background: var(--ocean) !important;
+    background: var(--silver-hover) !important;
     color: #fff !important;
-    border-color: var(--ocean) !important;
-    transform: translateX(6px) !important; /* Premium slide-right animation */
-    box-shadow: 0 4px 16px rgba(0, 119, 190, 0.25) !important;
+    transform: translateY(-1px) !important;
+    box-shadow: 0 4px 12px rgba(255, 255, 255, 0.15) !important;
 }
 .hy-menu button.active, 
 .hy-menu .btn-menu.active {
-    background: var(--ocean) !important;
-    color: #fff !important;
-    border-color: var(--ocean) !important;
-    box-shadow: 0 4px 16px rgba(0, 119, 190, 0.25) !important;
+    background: rgba(0, 180, 220, 0.25) !important;
+    color: var(--cyan) !important;
+    font-weight: 800 !important;
+    box-shadow: 0 4px 12px rgba(0, 196, 216, 0.15) !important;
 }
 .hy-menu .admin {
-    border-color: rgba(255, 180, 0, 0.3) !important;
+    background: rgba(255, 193, 7, 0.1) !important;
     color: #ffc107 !important;
 }
 .hy-menu .admin:hover {
-    background: #ffc107 !important;
-    color: #000 !important;
-    border-color: #ffc107 !important;
-    box-shadow: 0 4px 16px rgba(255, 180, 0, 0.25) !important;
+    background: rgba(255, 193, 7, 0.2) !important;
+    color: #ffc107 !important;
 }
 .hy-menu .logout {
-    border-color: rgba(220, 50, 50, 0.3) !important;
+    background: rgba(220, 50, 50, 0.1) !important;
     color: #ff6b6b !important;
     margin-top: 1rem !important;
 }
 .hy-menu .logout:hover {
-    background: #ff6b6b !important;
-    color: #fff !important;
-    border-color: #ff6b6b !important;
-    box-shadow: 0 4px 16px rgba(220, 50, 50, 0.25) !important;
+    background: rgba(220, 50, 50, 0.2) !important;
+    color: #ff6b6b !important;
 }
 
-/* 2. Cohesive Button Styling inside Dashboard Content */
+/* 2. Cohesive Button Styling inside Dashboard Content (Matching homepage solid/outline) */
 .hy-content button,
 .hy-content .btn,
 .hy-content .btn-primary,
@@ -1428,9 +1424,11 @@ body { overflow-x: hidden; }
     border-radius: 50px !important; /* Pill shape */
     font-family: var(--font) !important;
     font-weight: 800 !important;
-    font-size: .88rem !important;
+    text-transform: uppercase !important;
+    letter-spacing: 1px !important;
+    font-size: 0.85rem !important;
     padding: 10px 22px !important;
-    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1), transform 0.15s ease !important;
+    transition: all 0.22s ease-in-out !important;
     cursor: pointer !important;
     display: inline-flex !important;
     align-items: center !important;
@@ -1438,6 +1436,7 @@ body { overflow-x: hidden; }
     gap: 8px !important;
     text-decoration: none !important;
     box-shadow: none !important;
+    border: 1.5px solid transparent !important;
 }
 .hy-content button:hover,
 .hy-content .btn:hover,
@@ -1448,7 +1447,7 @@ body { overflow-x: hidden; }
 .hy-content .btn-danger:hover,
 .hy-content .btn-outline-primary:hover,
 .hy-content .btn-outline-danger:hover {
-    transform: translateY(-1.5px) !important;
+    transform: translateY(-1px) !important;
 }
 .hy-content button:active,
 .hy-content .btn:active,
@@ -1456,80 +1455,103 @@ body { overflow-x: hidden; }
     transform: translateY(0) !important;
 }
 
-/* Primary/Ocean styled buttons inside dashboard content */
+/* --- PRIMARY SOLID --- */
 .hy-content .btn-primary,
 .hy-content .btn-ocean,
-.hy-content .btn-outline-primary,
-.hy-content .btn:not(.danger):not(.active):not(.btn-success):not(.btn-warning):not(.btn-danger):not(.btn-secondary) {
-    background: var(--card-bg) !important;
-    color: var(--ocean) !important;
-    border: 1.5px solid var(--border) !important;
+.hy-content .btn:not(.danger):not(.active):not(.btn-success):not(.btn-warning):not(.btn-danger):not(.btn-secondary):not(.btn-outline-primary):not(.btn-outline-danger):not(.btn-outline-success):not(.btn-outline-warning) {
+    background: linear-gradient(135deg, var(--ocean), var(--teal)) !important;
+    color: #fff !important;
+    box-shadow: 0 3px 10px rgba(0, 119, 190, 0.2) !important;
+    border: 1.5px solid transparent !important;
 }
 .hy-content .btn-primary:hover,
 .hy-content .btn-ocean:hover,
-.hy-content .btn-outline-primary:hover,
-.hy-content .btn:not(.danger):not(.active):not(.btn-success):not(.btn-warning):not(.btn-danger):not(.btn-secondary):hover {
+.hy-content .btn:not(.danger):not(.active):not(.btn-success):not(.btn-warning):not(.btn-danger):not(.btn-secondary):not(.btn-outline-primary):not(.btn-outline-danger):not(.btn-outline-success):not(.btn-outline-warning):hover {
+    background: linear-gradient(135deg, var(--teal), var(--cyan)) !important;
+    color: #fff !important;
+    box-shadow: 0 5px 16px rgba(0, 154, 170, 0.4) !important;
+}
+
+/* --- PRIMARY OUTLINE --- */
+.hy-content .btn-outline-primary {
+    background: transparent !important;
+    border: 1.5px solid var(--ocean) !important;
+    color: var(--ocean) !important;
+}
+.hy-content .btn-outline-primary:hover {
     background: var(--ocean) !important;
     color: #fff !important;
     border-color: var(--ocean) !important;
-    box-shadow: 0 4px 16px rgba(0, 119, 190, 0.25) !important;
+    box-shadow: 0 4px 12px rgba(0, 119, 190, 0.3) !important;
 }
 
-/* Success styled buttons inside dashboard content */
+/* --- SUCCESS SOLID --- */
 .hy-content .btn-success {
-    background: var(--card-bg) !important;
-    color: var(--green) !important;
-    border: 1.5px solid rgba(0, 168, 107, 0.3) !important;
+    background: linear-gradient(135deg, #27ae60, #2ecc71) !important;
+    color: #fff !important;
+    box-shadow: 0 3px 10px rgba(39, 174, 96, 0.2) !important;
+    border: 1.5px solid transparent !important;
 }
 .hy-content .btn-success:hover {
-    background: var(--green) !important;
+    background: linear-gradient(135deg, #2ecc71, #27ae60) !important;
     color: #fff !important;
-    border-color: var(--green) !important;
-    box-shadow: 0 4px 16px rgba(0, 168, 107, 0.25) !important;
+    box-shadow: 0 5px 16px rgba(46, 204, 113, 0.4) !important;
 }
 
-/* Danger styled buttons inside dashboard content */
+/* --- DANGER SOLID --- */
 .hy-content .btn-danger,
-.hy-content .btn-outline-danger,
 .hy-content .btn.danger,
 .hy-content .btn-small.danger {
-    background: var(--card-bg) !important;
-    color: #ff4d4d !important;
-    border: 1.5px solid rgba(255, 77, 77, 0.3) !important;
+    background: linear-gradient(135deg, #d32f2f, #ff5252) !important;
+    color: #fff !important;
+    box-shadow: 0 3px 10px rgba(211, 47, 47, 0.2) !important;
+    border: 1.5px solid transparent !important;
 }
 .hy-content .btn-danger:hover,
-.hy-content .btn-outline-danger:hover,
 .hy-content .btn.danger:hover,
 .hy-content .btn-small.danger:hover {
-    background: #ff4d4d !important;
+    background: linear-gradient(135deg, #ff5252, #d32f2f) !important;
     color: #fff !important;
-    border-color: #ff4d4d !important;
-    box-shadow: 0 4px 16px rgba(255, 77, 77, 0.25) !important;
+    box-shadow: 0 5px 16px rgba(211, 47, 47, 0.4) !important;
 }
 
-/* Warning styled buttons inside dashboard content */
+/* --- DANGER OUTLINE --- */
+.hy-content .btn-outline-danger {
+    background: transparent !important;
+    border: 1.5px solid #d32f2f !important;
+    color: #d32f2f !important;
+}
+.hy-content .btn-outline-danger:hover {
+    background: #d32f2f !important;
+    color: #fff !important;
+    border-color: #d32f2f !important;
+    box-shadow: 0 4px 12px rgba(211, 47, 47, 0.3) !important;
+}
+
+/* --- WARNING SOLID --- */
 .hy-content .btn-warning {
-    background: var(--card-bg) !important;
-    color: #ffb300 !important;
-    border: 1.5px solid rgba(255, 179, 0, 0.3) !important;
+    background: linear-gradient(135deg, #f39c12, #f1c40f) !important;
+    color: #fff !important;
+    box-shadow: 0 3px 10px rgba(243, 156, 18, 0.2) !important;
+    border: 1.5px solid transparent !important;
 }
 .hy-content .btn-warning:hover {
-    background: #ffb300 !important;
+    background: linear-gradient(135deg, #f1c40f, #f39c12) !important;
     color: #000 !important;
-    border-color: #ffb300 !important;
-    box-shadow: 0 4px 16px rgba(255, 179, 0, 0.25) !important;
+    box-shadow: 0 5px 16px rgba(243, 156, 18, 0.4) !important;
 }
 
-/* Secondary styled buttons inside dashboard content */
+/* --- SECONDARY SOLID --- */
 .hy-content .btn-secondary {
-    background: var(--card-bg) !important;
-    color: var(--muted) !important;
-    border: 1.5px solid var(--border) !important;
+    background: linear-gradient(135deg, var(--muted), #78909c) !important;
+    color: #fff !important;
+    box-shadow: 0 3px 10px rgba(90, 122, 154, 0.2) !important;
+    border: 1.5px solid transparent !important;
 }
 .hy-content .btn-secondary:hover {
-    background: var(--muted) !important;
+    background: linear-gradient(135deg, #78909c, var(--muted)) !important;
     color: #fff !important;
-    border-color: var(--muted) !important;
+    box-shadow: 0 5px 16px rgba(90, 122, 154, 0.3) !important;
 }
 
 /* 3. Tables Dark Mode Override */
