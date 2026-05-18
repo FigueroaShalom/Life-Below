@@ -45,18 +45,18 @@ $stmtPub->execute();
 $publicaciones = $stmtPub->get_result()->fetch_all(MYSQLI_ASSOC);
 ?>
 
-<div class="card shadow border-0" style="background:rgba(255,255,255,0.9);backdrop-filter:blur(10px);">
+<div class="card shadow border-0" style="background: var(--card-bg) !important; color: var(--text-color) !important; border: 1.5px solid var(--border) !important; backdrop-filter:blur(10px);">
 <div class="card-body p-4">
 
     <!-- TABS -->
-    <div style="display:flex;gap:1rem;margin-bottom:1.8rem;border-bottom:2px solid #e0eef8;padding-bottom:1rem;">
+    <div style="display:flex;gap:1rem;margin-bottom:1.8rem;border-bottom:2px solid var(--border);padding-bottom:1rem;">
         <button id="tab-btn-articulo" onclick="switchTabCrear('articulo')"
-                style="background:var(--ocean,#0077b6);color:#fff;border:none;border-radius:50px;
+                style="background:var(--ocean);color:#fff;border:none;border-radius:50px;
                        padding:8px 22px;font-weight:700;cursor:pointer;">
             Articulo
         </button>
         <button id="tab-btn-video" onclick="switchTabCrear('video')"
-                style="background:rgba(0,0,0,0.07);color:#333;border:none;border-radius:50px;
+                style="background:var(--border);color:var(--text-color);border:none;border-radius:50px;
                        padding:8px 22px;font-weight:700;cursor:pointer;">
             Video
         </button>
@@ -64,7 +64,7 @@ $publicaciones = $stmtPub->get_result()->fetch_all(MYSQLI_ASSOC);
 
     <!-- ══════════════ ARTÍCULO ══════════════ -->
     <div id="tab-articulo">
-        <h3 class="mb-4" style="color:var(--navy,#03045e);font-weight:800;">Crear Nuevo Artículo</h3>
+        <h3 class="mb-4" style="color:var(--text-color) !important;font-weight:800;">Crear Nuevo Artículo</h3>
         <div id="alerta-articulo" class="alert d-none"></div>
 
         <form id="form-crear-contenido">
@@ -96,8 +96,7 @@ $publicaciones = $stmtPub->get_result()->fetch_all(MYSQLI_ASSOC);
                 <textarea name="contenido" class="form-control" rows="8"
                           placeholder="Escribe aquí toda la información..." required></textarea>
             </div>
-            <button type="submit" class="btn btn-primary px-4"
-                    style="background:var(--ocean,#0077b6);border:none;">
+            <button type="submit" class="btn btn-primary px-4">
                 Publicar Ahora
             </button>
         </form>
@@ -105,7 +104,7 @@ $publicaciones = $stmtPub->get_result()->fetch_all(MYSQLI_ASSOC);
 
     <!-- ══════════════ VIDEO ══════════════ -->
     <div id="tab-video" style="display:none;">
-        <h3 class="mb-4" style="color:var(--navy,#03045e);font-weight:800;">Publicar Video</h3>
+        <h3 class="mb-4" style="color:var(--text-color) !important;font-weight:800;">Publicar Video</h3>
         <div id="alerta-video" class="alert d-none"></div>
 
         <form id="form-crear-video" enctype="multipart/form-data">
@@ -222,10 +221,10 @@ function switchTabCrear(tab) {
 
     const bA = document.getElementById('tab-btn-articulo');
     const bV = document.getElementById('tab-btn-video');
-    bA.style.background = isArt ? 'var(--ocean,#0077b6)' : 'rgba(0,0,0,0.07)';
-    bA.style.color      = isArt ? '#fff' : '#333';
-    bV.style.background = isArt ? 'rgba(0,0,0,0.07)' : 'var(--ocean,#0077b6)';
-    bV.style.color      = isArt ? '#333' : '#fff';
+    bA.style.background = isArt ? 'var(--ocean)' : 'var(--border)';
+    bA.style.color      = isArt ? '#fff' : 'var(--text-color)';
+    bV.style.background = isArt ? 'var(--border)' : 'var(--ocean)';
+    bV.style.color      = isArt ? 'var(--text-color)' : '#fff';
 }
 
 /* ── Mostrar campo según fuente ──────────────────────────── */

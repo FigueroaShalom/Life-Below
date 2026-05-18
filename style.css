@@ -1691,6 +1691,23 @@ body { overflow-x: hidden; }
 .text-muted {
     color: var(--muted) !important;
 }
+.hy-content h1,
+.hy-content h2,
+.hy-content h3,
+.hy-content h4,
+.hy-content h5,
+.hy-content h6,
+.hy-content label,
+.hy-content .form-label,
+.hy-content p,
+.hy-content span:not(.badge),
+.hy-content small:not(.badge),
+.hy-content .form-check-label {
+    color: var(--text-color) !important;
+}
+.hy-content legend {
+    color: var(--text-color) !important;
+}
 
 /* 9. Hardcoded #fff background empty states */
 .hy-content div[style*="background:#fff"],
