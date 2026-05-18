@@ -51,8 +51,13 @@ $stmt_sol->close();
                     <form id="form-foto" enctype="multipart/form-data">
                         <input type="file" name="foto_perfil" id="input-foto" class="d-none" accept="image/*">
                         <button type="button" class="btn btn-outline-primary btn-sm mb-2" onclick="document.getElementById('input-foto').click()">Seleccionar Foto</button>
-                        <p class="text-muted small">Tu nueva foto deberá ser aprobada por un administrador.</p>
-                        <button type="submit" class="btn btn-primary w-100" id="btn-save-foto" disabled>Subir para Revisión</button>
+                        <?php if ($user['rol'] === 'administrador'): ?>
+                            <p class="text-muted small">Tu nueva foto de perfil se actualizará de forma inmediata.</p>
+                            <button type="submit" class="btn btn-primary w-100" id="btn-save-foto" disabled>Actualizar Foto</button>
+                        <?php else: ?>
+                            <p class="text-muted small">Tu nueva foto de perfil deberá ser aprobada por un administrador.</p>
+                            <button type="submit" class="btn btn-primary w-100" id="btn-save-foto" disabled>Subir para Revisión</button>
+                        <?php endif; ?>
                     </form>
                 </div>
                 <div class="col-md-8 ps-md-4">
@@ -199,7 +204,7 @@ document.getElementById('form-foto').onsubmit = function(e) {
     .then(res => res.json())
     .then(data => {
         if(data.success) {
-            alert('Foto subida. Un administrador debe aprobarla.');
+            alert(data.mensaje || '¡Foto de perfil procesada con éxito!');
             location.reload();
         } else {
             alert('Error: ' + data.error);
