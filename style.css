@@ -1625,11 +1625,19 @@ body { overflow-x: hidden; }
 .hy-content select,
 .hy-content textarea {
     background: var(--input-bg) !important;
-    color: var(--text-color) !important;
+    color: var(--ocean) !important;
+    font-weight: 700 !important;
     border: 1.5px solid var(--border) !important;
     border-radius: 10px !important;
     padding: 10px 14px !important;
     transition: all 0.2s !important;
+}
+.hy-content .form-control::placeholder,
+.hy-content input::placeholder,
+.hy-content textarea::placeholder {
+    color: var(--ocean) !important;
+    opacity: 0.65 !important;
+    font-weight: 700 !important;
 }
 .hy-content .form-control:focus,
 .hy-content input[type="text"]:focus,
