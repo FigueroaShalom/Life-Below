@@ -2,7 +2,7 @@
 if (session_status() === PHP_SESSION_NONE) session_start();
 require_once __DIR__ . '/../database/Conexion_base.php';
 
-$id_user = $_SESSION['id'];
+$id_user = $_SESSION['user_id'];
 $stmt = $conn->prepare("SELECT user, email, foto, estado_foto, rol FROM usuarios WHERE id = ?");
 $stmt->bind_param("i", $id_user);
 $stmt->execute();

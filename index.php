@@ -1,23 +1,40 @@
 <?php
 require_once 'config.php';
 
-// Manejo de logout
+// ── Manejo de logout ──
 if (isset($_GET['logout'])) {
     session_destroy();
+    // Crear nueva sesión para CSRF token
+    session_start();
+    $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+    header('Location: index.php?section=login');
+    exit;
+}
+
+// ── Secciones permitidas (whitelist) ──
+$secciones_permitidas = [
+    'inicio', 'watch', 'mapa_dinamico', 'galeria', 'noticias',
+    'articulos', 'login', 'registro', 'dashboard'
+];
+
+// ── Sección actual ──
+$current_section = $_GET['section'] ?? 'inicio';
+
+if (!in_array($current_section, $secciones_permitidas)) {
+    $current_section = '404';
+}
+
+// ── Si ya está logueado, no puede ir a login ni registro ──
+if (!empty($_SESSION['logged_in']) && in_array($current_section, ['login', 'registro'])) {
     header('Location: index.php?section=inicio');
     exit;
 }
 
-// Whitelist para seguridad
-$secciones_permitidas = [
-    'inicio', 'watch', 'mapa_dinamico', 'galeria', 'noticias', 'articulos', 'login', 'registro', 'dashboard'
-];
-
-$current_section = $_GET['section'] ?? 'inicio';
-
-// Validar seccion del wihitelist
-if (!in_array($current_section, $secciones_permitidas)) {
-    $current_section = '404';
+// ── Secciones privadas requieren sesión ──
+$secciones_privadas = ['dashboard'];
+if (in_array($current_section, $secciones_privadas) && empty($_SESSION['logged_in'])) {
+    header('Location: index.php?section=login');
+    exit;
 }
 
 $section_file = 'INCLUDES/' . $current_section . '.php';

@@ -1,213 +1,238 @@
 <?php
-session_start();
-include("Conexion_base.php");
 
-function validarPassword($pass) {
-    $errores = [];
-    if (strlen($pass) < 8) $errores[] = "al menos 8 caracteres";
-    if (!preg_match('/[A-Z]/', $pass)) $errores[] = "una mayúscula";
-    if (!preg_match('/[0-9]/', $pass) && !preg_match('/[^a-zA-Z0-9]/', $pass)) $errores[] = "un número o símbolo especial";
-    return empty($errores) ? true : implode(", ", $errores);
+
+session_start();
+header('Content-Type: text/plain; charset=utf-8');
+require_once __DIR__ . '/Conexion_base.php';
+require_once __DIR__ . '/../vendor/autoload.php'; // PHPMailer via Composer
+
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\Exception;
+
+/* ── Configuración Gmail ── */
+define('GMAIL_USER', 'lifebelow5of@gmail.com');        // ← cambia esto
+define('GMAIL_PASS', 'noiw voss xahn lqjx'); // ← contraseña de aplicación Gmail (16 caracteres)
+define('GMAIL_NAME', 'LifeBelow');
+
+function respond(string $msg): void { echo $msg; exit; }
+
+function validarPassword(string $p): bool|string {
+    $err = [];
+    if (strlen($p) < 8)                    $err[] = 'mínimo 8 caracteres';
+    if (!preg_match('/[A-Z]/', $p))        $err[] = 'una mayúscula';
+    if (!preg_match('/[a-z]/', $p))        $err[] = 'una minúscula';
+    if (!preg_match('/[0-9]/', $p))        $err[] = 'un número';
+    if (!preg_match('/[^a-zA-Z0-9]/', $p)) $err[] = 'un símbolo especial';
+    return empty($err) ? true : implode(', ', $err);
 }
+
+function enviarCodigoVerificacion(string $email, string $codigo): bool {
+    $cuerpo = "
+    <div style='font-family:Arial,sans-serif;background:#001e33;padding:32px;border-radius:16px;max-width:480px;margin:0 auto;'>
+      <h2 style='color:#00d4e8;margin-bottom:8px;'>🌊 HYDRON · Vida Marina</h2>
+      <p style='color:#e4f4ff;font-size:15px;'>
+        Gracias por registrarte. Usa este código para activar tu cuenta:
+      </p>
+      <div style='text-align:center;margin:28px 0;'>
+        <span style='background:#0a2a45;color:#00d4e8;font-size:2.2rem;font-weight:900;
+                     letter-spacing:12px;padding:16px 28px;border-radius:14px;
+                     border:2px solid rgba(0,200,220,0.3);display:inline-block;'>
+          {$codigo}
+        </span>
+      </div>
+      <p style='color:rgba(140,190,215,0.7);font-size:13px;'>
+        Este código expira en <strong>15 minutos</strong>.<br>
+        Si no realizaste esta acción, ignora este mensaje.
+      </p>
+      <hr style='border-color:rgba(0,160,200,0.15);margin:20px 0;'>
+      <p style='color:rgba(100,160,200,0.5);font-size:12px;text-align:center;'>© " . date('Y') . " HYDRON</p>
+    </div>";
+
+    try {
+        $mail = new PHPMailer(true);
+        $mail->isSMTP();
+        $mail->Host       = 'smtp.gmail.com';
+        $mail->SMTPAuth   = true;
+        $mail->Username   = GMAIL_USER;
+        $mail->Password   = GMAIL_PASS;
+        $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
+        $mail->Port       = 587;
+        $mail->CharSet    = 'UTF-8';
+        $mail->setFrom(GMAIL_USER, GMAIL_NAME);
+        $mail->addAddress($email);
+        $mail->isHTML(true);
+        $mail->Subject = '🌊 Verifica tu cuenta en HYDRON';
+        $mail->Body    = $cuerpo;
+        $mail->AltBody = "Tu código de verificación es: {$codigo} (expira en 15 minutos)";
+        $mail->send();
+        return true;
+    } catch (Exception $e) {
+        error_log('PHPMailer Error: ' . $e->getMessage());
+        return false;
+    }
+}
+
+if ($_SERVER['REQUEST_METHOD'] !== 'POST') respond('error_method');
 
 $action = $_POST['action'] ?? '';
 
-// 🔍 VALIDAR USUARIO
-if ($action === "validar_user") {
-
-    $user = trim($_POST['user']);
-
-    $stmt = $conn->prepare("SELECT id FROM usuarios WHERE user = ?");
-    $stmt->bind_param("s", $user);
+/* ══════════════════════════════════════
+   validar_user
+══════════════════════════════════════ */
+if ($action === 'validar_user') {
+    $user = trim($_POST['user'] ?? '');
+    if ($user === '') respond('empty');
+    $stmt = $conn->prepare('SELECT id FROM usuarios WHERE user = ? LIMIT 1');
+    $stmt->bind_param('s', $user);
     $stmt->execute();
-    $result = $stmt->get_result();
-
-    echo ($result->num_rows > 0) ? "existe" : "disponible";
+    $stmt->store_result();
+    respond($stmt->num_rows > 0 ? 'existe' : 'disponible');
 }
 
-// 🔍 VALIDAR EMAIL
-elseif ($action === "validar_email") {
-
-    $email = trim($_POST['email']);
-
-    $stmt = $conn->prepare("SELECT id FROM usuarios WHERE email = ?");
-    $stmt->bind_param("s", $email);
+/* ══════════════════════════════════════
+   validar_email
+══════════════════════════════════════ */
+if ($action === 'validar_email') {
+    $email = trim($_POST['email'] ?? '');
+    if (!filter_var($email, FILTER_VALIDATE_EMAIL)) respond('invalid');
+    $stmt = $conn->prepare('SELECT id FROM usuarios WHERE email = ? LIMIT 1');
+    $stmt->bind_param('s', $email);
     $stmt->execute();
-    $result = $stmt->get_result();
-
-    echo ($result->num_rows > 0) ? "existe" : "disponible";
+    $stmt->store_result();
+    respond($stmt->num_rows > 0 ? 'existe' : 'disponible');
 }
 
-// 🚀 REGISTRO (PASO 1: Generación y Envío de Código)
-elseif ($action === "registro") {
+/* ══════════════════════════════════════
+   registro — PRODUCCIÓN (con verificación)
+══════════════════════════════════════ */
+if ($action === 'registro') {
     $csrf = $_POST['csrf_token'] ?? '';
-    if (empty($_SESSION['csrf_token']) || $csrf !== $_SESSION['csrf_token']) {
-        echo "error_csrf";
-        exit();
-    }
+    if (empty($_SESSION['csrf_token']) || !hash_equals($_SESSION['csrf_token'], $csrf)) respond('error_csrf');
 
-    $user = trim($_POST['user']);
-    $email = trim($_POST['email']);
-    $password = trim($_POST['password']);
+    $user     = trim($_POST['user']      ?? '');
+    $email    = trim($_POST['email']     ?? '');
+    $password = $_POST['password']       ?? '';
 
-    if (empty($user) || empty($email) || empty($password)) {
-        echo "vacio";
-        exit();
-    }
+    if (!$user || !$email || !$password) respond('empty_fields');
+    if (!preg_match('/^[a-zA-Z0-9_]{3,50}$/', $user)) respond('user_invalid');
+    if (!filter_var($email, FILTER_VALIDATE_EMAIL))    respond('email_invalid');
 
-    // 🔍 VALIDAR CONTRASEÑA
     $passCheck = validarPassword($password);
-    if ($passCheck !== true) {
-        echo "password_weak: " . $passCheck;
-        exit();
-    }
+    if ($passCheck !== true) respond('password_weak:' . $passCheck);
 
-    // 🔍 VALIDAR USER
-    $stmt = $conn->prepare("SELECT id FROM usuarios WHERE user = ?");
-    $stmt->bind_param("s", $user);
-    $stmt->execute();
-    if ($stmt->get_result()->num_rows > 0) {
-        echo "user";
-        exit();
-    }
+    // Verificar duplicados
+    $s1 = $conn->prepare('SELECT id FROM usuarios WHERE user = ? LIMIT 1');
+    $s1->bind_param('s', $user);
+    $s1->execute();
+    $s1->store_result();
+    if ($s1->num_rows > 0) respond('user');
+    $s1->close();
 
-    // 🔍 VALIDAR EMAIL
-    $stmt = $conn->prepare("SELECT id FROM usuarios WHERE email = ?");
-    $stmt->bind_param("s", $email);
-    $stmt->execute();
-    if ($stmt->get_result()->num_rows > 0) {
-        echo "email";
-        exit();
-    }
+    $s2 = $conn->prepare('SELECT id FROM usuarios WHERE email = ? LIMIT 1');
+    $s2->bind_param('s', $email);
+    $s2->execute();
+    $s2->store_result();
+    if ($s2->num_rows > 0) respond('email');
+    $s2->close();
 
-    // 🔐 ENCRIPTAR CONTRASEÑA
-    $passwordHash = password_hash($password, PASSWORD_DEFAULT);
+    // Generar código verificación
+    $codigo         = str_pad((string)random_int(0, 999999), 6, '0', STR_PAD_LEFT);
+    $codigoExp      = date('Y-m-d H:i:s', time() + 900);
+    $codigoGuardado = $codigo . '|' . $codigoExp;
 
-    // GENERAR CÓDIGO DE VERIFICACIÓN ALEATORIO
-    $code = str_pad(rand(0, 999999), 6, '0', STR_PAD_LEFT);
+    $hash = password_hash($password, PASSWORD_BCRYPT, ['cost' => 12]);
+    $rol  = 'user';
 
-    // GUARDAR EN SESIÓN TEMPORAL
-    $_SESSION['temp_registro'] = [
-        'user' => $user,
-        'email' => $email,
-        'password' => $passwordHash,
-        'codigo' => $code,
-        'expira' => time() + 600 // 10 minutos
-    ];
+    // Insertar con verified=0
+    $ins = $conn->prepare(
+        'INSERT INTO usuarios (user, email, password, rol, verified, verification_code, fecha_de_registro)
+         VALUES (?, ?, ?, ?, 0, ?, NOW())'
+    );
+    $ins->bind_param('sssss', $user, $email, $hash, $rol, $codigoGuardado);
+    $ins->execute();
+    $ins->close();
 
-    // ENVIAR EMAIL DE VERIFICACIÓN (HTML Premium)
-    $to = $email;
-    $subject = "Código de verificación - HYDRON";
-    $message = "
-    <html>
-    <head>
-        <title>Verifica tu cuenta en HYDRON</title>
-        <style>
-            body { font-family: 'Nunito', Arial, sans-serif; background-color: #f0f8ff; color: #1a2a3a; padding: 20px; }
-            .container { max-width: 500px; margin: 0 auto; background-color: #ffffff; padding: 30px; border-radius: 16px; border: 1.5px solid rgba(0,120,190,0.15); box-shadow: 0 4px 24px rgba(0,40,80,0.08); }
-            .header { text-align: center; margin-bottom: 20px; }
-            .logo { font-size: 24px; font-weight: 900; color: #0077be; text-transform: uppercase; letter-spacing: 2px; }
-            .title { font-size: 20px; font-weight: 800; text-align: center; color: #002a44; margin-bottom: 10px; }
-            .code-box { background: linear-gradient(135deg, #0077be, #009aaa); color: #ffffff; font-size: 32px; font-weight: 900; text-align: center; padding: 15px; border-radius: 12px; letter-spacing: 5px; margin: 25px 0; box-shadow: 0 4px 16px rgba(0,119,190,0.2); }
-            .footer { font-size: 12px; color: #5a7a9a; text-align: center; margin-top: 30px; border-top: 1px solid rgba(0,120,190,0.1); padding-top: 15px; }
-        </style>
-    </head>
-    <body>
-        <div class='container'>
-            <div class='header'>
-                <div class='logo'>🌊 HYDRON</div>
-            </div>
-            <div class='title'>¡Hola, $user!</div>
-            <p style='text-align: center; line-height: 1.6;'>Gracias por unirte a la exploración marina. Para activar tu cuenta, ingresa el siguiente código de verificación de 6 dígitos en la página de registro:</p>
-            <div class='code-box'>$code</div>
-            <p style='text-align: center; font-size: 13px; color: #5a7a9a;'>Este código es válido por 10 minutos.</p>
-            <div class='footer'>
-                <p>HYDRON · Exploración y Conservación de la Vida Marina</p>
-            </div>
-        </div>
-    </body>
-    </html>
-    ";
+    $_SESSION['reg_pending_email'] = $email;
+    $_SESSION['reg_pending_exp']   = time() + 900;
 
-    $headers = "MIME-Version: 1.0" . "\r\n";
-    $headers .= "Content-type:text/html;charset=UTF-8" . "\r\n";
-    $headers .= "From: HYDRON <soport@life-bel0w.mx>" . "\r\n";
+    $enviado = enviarCodigoVerificacion($email, $codigo);
+    if (!$enviado) respond('mail_error');
 
-    @mail($to, $subject, $message, $headers);
-
-    // Escribir localmente para pruebas del desarrollador en localhost
-    file_put_contents(__DIR__ . '/../debug_email_code.txt', "Email sent to $email ($user). Verification code: $code\n");
-
-    echo "codigo_enviado";
+    respond('ok_verify');
 }
 
-// 🚀 VERIFICAR CÓDIGO (PASO 2: Confirmación, Inserción y Auto-Login)
-elseif ($action === "verificar_codigo") {
-    $csrf = $_POST['csrf_token'] ?? '';
-    if (empty($_SESSION['csrf_token']) || $csrf !== $_SESSION['csrf_token']) {
-        echo "error_csrf";
-        exit();
-    }
+/* ══════════════════════════════════════
+   verificar_cuenta
+══════════════════════════════════════ */
+if ($action === 'verificar_cuenta') {
+    $email = trim($_POST['email'] ?? '');
+    $code  = trim($_POST['code']  ?? '');
 
-    $code_input = trim($_POST['code'] ?? '');
+    if (!$email || !$code) respond('empty_fields');
 
-    if (empty($_SESSION['temp_registro'])) {
-        echo "session_invalida";
-        exit();
-    }
-
-    $temp = $_SESSION['temp_registro'];
-
-    if (time() > $temp['expira']) {
-        echo "expirado";
-        exit();
-    }
-
-    if ($code_input !== $temp['codigo']) {
-        echo "codigo_incorrecto";
-        exit();
-    }
-
-    $user = $temp['user'];
-    $email = $temp['email'];
-    $passwordHash = $temp['password'];
-    $rol = "usuario";
-
-    // Doble check: verificar si el usuario o email se registraron mientras tanto
-    $stmt = $conn->prepare("SELECT id FROM usuarios WHERE user = ? OR email = ?");
-    $stmt->bind_param("ss", $user, $email);
+    $stmt = $conn->prepare('SELECT id, verification_code, user, rol FROM usuarios WHERE email = ? AND verified = 0 LIMIT 1');
+    $stmt->bind_param('s', $email);
     $stmt->execute();
-    if ($stmt->get_result()->num_rows > 0) {
-        echo "ya_registrado";
-        exit();
-    }
+    $row = $stmt->get_result()->fetch_assoc();
+    $stmt->close();
 
-    $stmt = $conn->prepare("INSERT INTO usuarios (user, email, password, rol) VALUES (?, ?, ?, ?)");
-    $stmt->bind_param("ssss", $user, $email, $passwordHash, $rol);
+    if (!$row) respond('not_found');
 
-    if ($stmt->execute()) {
-        $inserted_id = $stmt->insert_id;
+    $partes     = explode('|', $row['verification_code']);
+    $storedCode = $partes[0] ?? '';
+    $storedExp  = $partes[1] ?? '';
 
-        // ✅ AUTO LOGIN AL VERIFICAR CON ÉXITO
-        $_SESSION['user_id'] = $inserted_id;
-        $_SESSION['id'] = $inserted_id;
-        $_SESSION['user'] = $user;
-        $_SESSION['email'] = $email;
-        $_SESSION['rol'] = $rol;
+    if (strtotime($storedExp) < time())       respond('expired');
+    if (!hash_equals($storedCode, $code))     respond('invalid');
 
-        // Limpiar datos de registro temporal
-        unset($_SESSION['temp_registro']);
+    // Activar cuenta
+    $upd = $conn->prepare('UPDATE usuarios SET verified = 1, verification_code = NULL WHERE id = ?');
+    $upd->bind_param('i', $row['id']);
+    $upd->execute();
+    $upd->close();
 
-        // Eliminar el archivo de debug local si existe
-        if (file_exists(__DIR__ . '/../debug_email_code.txt')) {
-            @unlink(__DIR__ . '/../debug_email_code.txt');
-        }
+    $ll = $conn->prepare('UPDATE usuarios SET last_login = NOW() WHERE id = ?');
+    $ll->bind_param('i', $row['id']);
+    $ll->execute();
+    $ll->close();
 
-        echo "verificado_ok";
-    } else {
-        echo "error";
-    }
+    session_regenerate_id(true);
+    $_SESSION['user_id']   = $row['id'];
+    $_SESSION['username']  = $row['user'];
+    $_SESSION['user_rol']  = $row['rol'];
+    $_SESSION['logged_in'] = true;
+    unset($_SESSION['reg_pending_email'], $_SESSION['reg_pending_exp']);
+
+    respond('ok');
 }
 
-$conn->close();
-?>
+/* ══════════════════════════════════════
+   reenviar_codigo
+══════════════════════════════════════ */
+if ($action === 'reenviar_codigo') {
+    $email = trim($_POST['email'] ?? '');
+    if (!$email) respond('empty_fields');
+
+    $stmt = $conn->prepare('SELECT id FROM usuarios WHERE email = ? AND verified = 0 LIMIT 1');
+    $stmt->bind_param('s', $email);
+    $stmt->execute();
+    $stmt->store_result();
+    if ($stmt->num_rows === 0) respond('not_found');
+    $stmt->close();
+
+    $codigo         = str_pad((string)random_int(0, 999999), 6, '0', STR_PAD_LEFT);
+    $codigoExp      = date('Y-m-d H:i:s', time() + 900);
+    $codigoGuardado = $codigo . '|' . $codigoExp;
+
+    $upd = $conn->prepare('UPDATE usuarios SET verification_code = ? WHERE email = ?');
+    $upd->bind_param('ss', $codigoGuardado, $email);
+    $upd->execute();
+    $upd->close();
+
+    $enviado = enviarCodigoVerificacion($email, $codigo);
+    if (!$enviado) respond('mail_error');
+
+    respond('ok');
+}
+
+respond('unknown_action');
