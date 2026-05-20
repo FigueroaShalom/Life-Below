@@ -1,16 +1,4 @@
 <?php
-/**
- * auth/google_auth.php — HYDRON Auth v2
- * Autenticación con Google OAuth 2.0
- *
- * REQUISITOS:
- * 1. Crear proyecto en https://console.cloud.google.com
- * 2. Habilitar Google+ API / People API
- * 3. Crear credenciales OAuth 2.0 (tipo "Web Application")
- * 4. Agregar URI de redirección autorizado: https://tu-dominio.com/auth/google_callback.php
- * 5. Instalar librería: composer require league/oauth2-google
- *    o usa el flujo manual de curl que está aquí abajo.
- */
 
 session_start();
 require_once __DIR__ . '/../config.php';
