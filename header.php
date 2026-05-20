@@ -3,6 +3,8 @@ $current_section = $_GET['section'] ?? 'inicio';
 ?>
 <!DOCTYPE html>
 <html lang="es">
+    <!-- Particles.js para fondo dinámico -->
+<script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -23,7 +25,7 @@ $current_section = $_GET['section'] ?? 'inicio';
     <!-- Theme script to prevent flash -->
     <script>
         (function() {
-            const isLoggedIn = <?php echo isset($_SESSION['user']) ? 'true' : 'false'; ?>;
+            const isLoggedIn = <?php echo !empty($_SESSION['logged_in']) ? 'true' : 'false'; ?>;
             const savedTheme = isLoggedIn ? (localStorage.getItem('theme') || 'dark') : 'dark';
             
             if (savedTheme === 'dark') {
@@ -122,19 +124,18 @@ $current_section = $_GET['section'] ?? 'inicio';
         </a>
 
         <nav class="hy-nav">
-            <a href="index.php?section=inicio"   class="hy-nav-link <?php echo $current_section==='inicio'   ? 'hy-active':'' ?>">Inicio</a>
-            <a href="index.php?section=watch"    class="hy-nav-link <?php echo $current_section==='watch'    ? 'hy-active':'' ?>">HydroWatch</a>
+            <a href="index.php?section=inicio"        class="hy-nav-link <?php echo $current_section==='inicio'        ? 'hy-active':'' ?>">Inicio</a>
+            <a href="index.php?section=watch"         class="hy-nav-link <?php echo $current_section==='watch'         ? 'hy-active':'' ?>">Videos</a>
             <a href="index.php?section=mapa_dinamico" class="hy-nav-link <?php echo $current_section==='mapa_dinamico' ? 'hy-active':'' ?>">Ocean Map</a>
-            <a href="index.php?section=galeria"  class="hy-nav-link <?php echo $current_section==='galeria'  ? 'hy-active':'' ?>">Galería</a>
-            <a href="index.php?section=noticias" class="hy-nav-link <?php echo $current_section==='noticias' ? 'hy-active':'' ?>">Noticias</a>
-            <a href="index.php?section=articulos"class="hy-nav-link <?php echo $current_section==='articulos'? 'hy-active':'' ?>">Artículos</a>
+            <a href="index.php?section=galeria"       class="hy-nav-link <?php echo $current_section==='galeria'       ? 'hy-active':'' ?>">Galería</a>
+            <a href="index.php?section=noticias"      class="hy-nav-link <?php echo $current_section==='noticias'      ? 'hy-active':'' ?>">Noticias</a>
+            <a href="index.php?section=articulos"     class="hy-nav-link <?php echo $current_section==='articulos'     ? 'hy-active':'' ?>">Artículos</a>
         </nav>
-
-        <div class="hy-nav-actions">
-            <?php if (isset($_SESSION['user'])): 
+<div class="hy-nav-actions">
+            <?php if (!empty($_SESSION['logged_in']) && !empty($_SESSION['user_id'])): 
                 require_once __DIR__ . '/database/Conexion_base.php';
                 $stmt_head = $conn->prepare("SELECT foto FROM usuarios WHERE id = ?");
-                $stmt_head->bind_param("i", $_SESSION['id']);
+                $stmt_head->bind_param("i", $_SESSION['user_id']);
                 $stmt_head->execute();
                 $res_head = $stmt_head->get_result()->fetch_assoc();
                 $foto_head = (!empty($res_head['foto'])) ? $res_head['foto'] : 'https://cdn-icons-png.flaticon.com/512/149/149071.png';
@@ -145,7 +146,7 @@ $current_section = $_GET['section'] ?? 'inicio';
                     </button>
                     <div class="hy-dropdown-menu" id="profileMenu">
                         <div class="hy-dropdown-header">
-                            <strong><?php echo htmlspecialchars($_SESSION['user']); ?></strong>
+                            <strong><?php echo htmlspecialchars($_SESSION['username'] ?? 'Usuario'); ?></strong>
                         </div>
                         <a href="index.php?section=dashboard">Perfil</a>
                         <a href="#" id="themeToggle" style="cursor: pointer;"><span class="theme-text">Oscuro</span></a>
@@ -170,7 +171,7 @@ $current_section = $_GET['section'] ?? 'inicio';
         <a href="index.php?section=galeria">Galería</a>
         <a href="index.php?section=noticias">Noticias</a>
         <a href="index.php?section=articulos">Artículos</a>
-        <?php if (isset($_SESSION['user'])): ?>
+        <?php if (!empty($_SESSION['logged_in'])): ?>
             <a href="index.php?section=dashboard">Dashboard</a>
             <a href="index.php?logout=1">Salir</a>
         <?php else: ?>

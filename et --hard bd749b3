@@ -1,0 +1,25 @@
+[33mc9a3a77[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mdavid[m[33m)[m HEAD@{0}: reset: moving to HEAD
+[33mc9a3a77[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mdavid[m[33m)[m HEAD@{1}: reset: moving to HEAD
+[33mc9a3a77[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mdavid[m[33m)[m HEAD@{2}: commit: Actualizacion de registro
+[33m5964b71[m HEAD@{3}: pull origin main: Fast-forward
+[33m825d74d[m[33m ([m[1;32mMia[m[33m)[m HEAD@{4}: merge mia: Fast-forward
+[33m1890e00[m HEAD@{5}: checkout: moving from Mia to david
+[33m825d74d[m[33m ([m[1;32mMia[m[33m)[m HEAD@{6}: commit: Mis cambios que estaban en la rama de Mia
+[33m4ea9f98[m HEAD@{7}: commit (merge): Merge branch 'Mia' of https://github.com/FigueroaShalom/Life-Below into Mia
+[33mbd749b3[m HEAD@{8}: commit: guardando cambios antes de pull
+[33m3774232[m HEAD@{9}: checkout: moving from david to Mia
+[33maca2eb4[m HEAD@{10}: checkout: moving from Mia to david
+[33m3774232[m HEAD@{11}: checkout: moving from david to Mia
+[33maca2eb4[m HEAD@{12}: checkout: moving from Braulio1 to david
+[33m49e1a8a[m HEAD@{13}: checkout: moving from david to Braulio1
+[33maca2eb4[m HEAD@{14}: pull origin david: Fast-forward
+[33m035984b[m HEAD@{15}: checkout: moving from main to david
+[33m7a9890c[m[33m ([m[1;31morigin/Braulio[m[33m)[m HEAD@{16}: checkout: moving from david to main
+[33m035984b[m HEAD@{17}: commit: rediseño completo HYDRON
+[33mea68749[m HEAD@{18}: commit (merge): Acepto todos los cambios de main
+[33m21a4281[m HEAD@{19}: reset: moving to HEAD
+[33m21a4281[m HEAD@{20}: checkout: moving from main to david
+[33mdc81728[m HEAD@{21}: checkout: moving from david to main
+[33m21a4281[m HEAD@{22}: commit: Inicio de base de datos
+[33m9e6bef3[m HEAD@{23}: checkout: moving from main to david
+[33m32b2049[m HEAD@{24}: clone: from https://github.com/FigueroaShalom/Hydron.git

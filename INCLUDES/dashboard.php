@@ -2,13 +2,14 @@
 // INCLUDES/dashboard.php
 if (session_status() === PHP_SESSION_NONE) session_start();
 
-if(!isset($_SESSION['id'])){
+if(empty($_SESSION['logged_in'])){
     echo "<script>window.location.href='index.php?section=login';</script>";
     exit();
 }
+$id_user = $_SESSION['user_id'];
 
 require_once __DIR__ . '/../database/Conexion_base.php';
-$id_user = $_SESSION['id'];
+$id_user = $_SESSION['user_id'];
 $stmt = $conn->prepare("SELECT user, email, rol, foto FROM usuarios WHERE id = ?");
 $stmt->bind_param("i", $id_user);
 $stmt->execute();
@@ -167,13 +168,13 @@ $_SESSION['email'] = $email;
 <button class="admin" onclick="cargar('Perfil(dashboard)/crear_Usuarios')">Crear Usuario</button>
 
 <?php } elseif($rol == "editor"){ ?>
-<button onclick="cargar('crear_Contenido')">Crear Contenido</button>
+<button onclick="cargar('crear_contenido')">Crear Contenido</button>
 <button onclick="cargar('mis_Publicaciones')">Mis Publicaciones</button>
 <button onclick="cargar('mis_borradores')">Mis Borradores</button>
 <button onclick="cargar('publicaciones_Revision')">En revisión</button>
 
 <?php } elseif($rol == "autor"){ ?>
-<button onclick="cargar('crear_Contenido')">Crear Contenido</button>
+<button onclick="cargar('crear_contenido')">Crear Contenido</button>
 <button onclick="cargar('mis_Publicaciones')">Mis Publicaciones</button>
 <button onclick="cargar('mis_borradores')">Mis Borradores</button>
 

@@ -28,6 +28,11 @@ define('UPLOADS_DIR', __DIR__ . '/uploads/');
 define('ADMIN_USER', $env_vars['ADMIN_USER'] ?? 'admin');
 define('ADMIN_PASS', $env_vars['ADMIN_PASS'] ?? 'admin123');
 
+// Google OAuth
+define('GOOGLE_CLIENT_ID', $env_vars['GOOGLE_CLIENT_ID'] ?? '');
+define('GOOGLE_CLIENT_SECRET', $env_vars['GOOGLE_CLIENT_SECRET'] ?? '');
+define('GOOGLE_REDIRECT_URI', $env_vars['GOOGLE_REDIRECT_URI'] ?? 'http://localhost/HYDRON/auth/google_callback.php');
+
 // Crear carpeta uploads si no existe
 if (!file_exists(UPLOADS_DIR)) {
     mkdir(UPLOADS_DIR, 0777, true);
